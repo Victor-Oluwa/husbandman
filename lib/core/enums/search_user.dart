@@ -1,0 +1,1 @@
+enum SearchUserProperty { name, email }

@@ -1,0 +1,7 @@
+Check if first timer
+true => Onboarding
+false => Auth Page => Retrieve Token
+                      Token available => ValidateUser => Validated => Home
+                                                         Unvalidated => Sign In Screen
+                      Token empty => Sign In Screen
+

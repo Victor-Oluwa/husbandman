@@ -1,0 +1,12 @@
+{
+  "id": "empty.id",
+  "name": "empty.name",
+  "video": "empty.video",
+  "images": [],
+  "inCart": 0,
+  "sold": 0,
+  "quantity": 0,
+  "price": 0.0,
+  "deliveryTime": "delivery-time.empty",
+  "description": "description.empty"
+}
