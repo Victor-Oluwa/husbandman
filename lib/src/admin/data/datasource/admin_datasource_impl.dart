@@ -1,25 +1,35 @@
 import 'dart:convert';
+import 'dart:math';
 
 import 'package:http/http.dart' as http;
+import 'package:husbandman/core/common/app/entities/invitation_token_entity.dart';
+import 'package:husbandman/core/common/app/models/invitation_token_model.dart';
 import 'package:husbandman/core/common/app/models/order_model.dart';
 import 'package:husbandman/core/common/app/models/user/user_model.dart';
+import 'package:husbandman/core/common/app/token-generator/token_generator.dart';
+import 'package:husbandman/core/common/strings/error_messages.dart';
 import 'package:husbandman/core/enums/filter_user.dart';
 import 'package:husbandman/core/enums/search_user.dart';
 import 'package:husbandman/core/error/exceptions.dart';
 import 'package:husbandman/core/utils/constants.dart';
 import 'package:husbandman/core/utils/typedef.dart';
 import 'package:husbandman/src/admin/data/datasource/admin_datasource.dart';
-import 'package:husbandman/src/admin/domain/entity/invitation_token_entity.dart';
 
 const kBlockUserEndpoint = '/admin/block-user';
 const kChangeFarmerBadgeEndpoint = '/admin/farmer/change-badge';
 const kDeleteAccountEndpoint = '/admin/delete-account';
 const kFetchAllOrdersEndpoint = '/admin/fetch-all-orders';
+const kFetchAllInvitationTokenEndpoint = '/admin/fetch-all-invitation-token';
+const kFetchAllUsersEndpoint = '/admin/fetch-all-users';
+const kFilterUserEndpoint = '/admin/filter-user';
+const kGenerateInvitationTokenEndpoint = '/admin/generate-invitation-token';
+const kSearchUserEndpoint = '/admin/search-user';
 
 class AdminDatasourceImpl implements AdminDatasource {
-  const AdminDatasourceImpl(this._client);
+  const AdminDatasourceImpl(this._client, this._tokenGenerator);
 
   final http.Client _client;
+  final TokenGenerator _tokenGenerator;
 
   @override
   Future<void> blockAccount({required String accountId}) async {
@@ -144,37 +154,165 @@ class AdminDatasourceImpl implements AdminDatasource {
   }
 
   @override
-  Future<List<InvitationTokenEntity>> fetchAllInvitationToken() {
-    // TODO: implement fetchAllInvitationToken
-    throw UnimplementedError();
+  Future<List<InvitationTokenModel>> fetchAllInvitationToken() async {
+    try {
+      final response = await _client.get(
+        Uri.parse('$kBaseUrl$kFetchAllInvitationTokenEndpoint'),
+        headers: {
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+      );
+
+      if (response.statusCode != 200 && response.statusCode != 201) {
+        throw AdminException(
+          message: response.body,
+          statusCode: response.statusCode,
+        );
+      }
+
+      final result = List<DataMap>.from(jsonDecode(response.body) as List)
+          .map(InvitationTokenModel.fromMap)
+          .toList();
+      return result;
+    } on AdminException catch (e) {
+      rethrow;
+    } catch (e) {
+      throw AdminException(message: e.toString(), statusCode: 404);
+    }
   }
 
   @override
-  Future<List<UserModel>> fetchAllUsers() {
-    // TODO: implement fetchAllUsers
-    throw UnimplementedError();
+  Future<List<UserModel>> fetchAllUsers() async {
+    try {
+      final response = await _client.get(
+        Uri.parse(
+          '$kBaseUrl$kFetchAllUsersEndpoint',
+        ),
+        headers: {
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+      );
+
+      if (response.statusCode != 200 && response.statusCode != 201) {
+        throw AdminException(
+          message: response.body,
+          statusCode: response.statusCode,
+        );
+      }
+
+      final result = List<DataMap>.from(jsonDecode(response.body) as List)
+          .map(UserModel.fromMap)
+          .toList();
+
+      return result;
+    } on AdminException catch (e) {
+      rethrow;
+    } catch (e) {
+      throw AdminException(
+        message: e.toString(),
+        statusCode: 404,
+      );
+    }
   }
 
   @override
   Future<List<UserModel>> filterUser({
     required FilterUserProperty property,
     required dynamic value,
-  }) {
-    // TODO: implement filterUser
-    throw UnimplementedError();
+  }) async {
+    try {
+      final response = await _client.post(
+        Uri.parse(
+          '$kBaseUrl$kFilterUserEndpoint',
+        ),
+        headers: {
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode({
+          'property': property.name,
+          'value': value,
+        }),
+      );
+
+      if (response.statusCode != 200 && response.statusCode != 201) {
+        throw AdminException(
+          message: response.body,
+          statusCode: response.statusCode,
+        );
+      }
+
+      final result = List<DataMap>.from(jsonDecode(response.body) as List)
+          .map(UserModel.fromMap)
+          .toList();
+
+      return result;
+    } on AdminException catch (e) {
+      rethrow;
+    } catch (e) {
+      throw AdminException(
+        message: e.toString(),
+        statusCode: 404,
+      );
+    }
   }
 
   @override
-  Future<String> generateUniqueInvitationToken() {
-    // TODO: implement generateUniqueInvitationToken
-    throw UnimplementedError();
+  Future<String> generateUniqueInvitationToken() async {
+    try {
+      final result = _tokenGenerator.generateToken();
+
+      if (result.length > 11 || result.length < 11) {
+        throw const AdminException(
+          message: kInvalidTokenLength,
+          statusCode: 400,
+        );
+      }
+
+      return result;
+    } on AdminException catch (e) {
+      rethrow;
+    } catch (e) {
+      throw AdminException(message: e.toString(), statusCode: 404);
+    }
   }
 
   @override
-  Future<List<UserModel>> searchUser(
-      {required String query, required SearchUserProperty property}) {
-    // TODO: implement searchUser
-    throw UnimplementedError();
+  Future<List<UserModel>> searchUser({
+    required String query,
+    required SearchUserProperty property,
+  }) async {
+    try {
+      final response = await _client.post(
+        Uri.parse('$kBaseUrl$kSearchUserEndpoint'),
+        headers: {
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode({
+          'query': query,
+          'property': property.name,
+        }),
+      );
+
+      if (response.statusCode != 200 && response.statusCode != 201) {
+        throw AdminException(
+          message: response.body,
+          statusCode: response.statusCode,
+        );
+      }
+
+      final result = List<DataMap>.from(jsonDecode(response.body) as List)
+          .map(UserModel.fromMap)
+          .toList();
+
+      return result;
+    } on AdminException catch (e) {
+      rethrow;
+    } catch (e) {
+      throw AdminException(
+        message: e.toString(),
+        statusCode: 404,
+      );
+    }
   }
 
   @override

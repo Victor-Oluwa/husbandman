@@ -16,7 +16,7 @@ class ProductModel extends ProductEntity {
 
   factory ProductModel.fromMap(Map<String, dynamic> map) {
     return ProductModel(
-      id: map['id'] as String,
+      id: map['_id'] as String,
       name: map['name'] as String,
       video: map['video'] as String,
       images: (map['images'] as List).cast<String>(),
@@ -45,7 +45,7 @@ class ProductModel extends ProductEntity {
 
   Map<String, dynamic> toMap() {
     return {
-      'id': id,
+      '_id': id,
       'name': name,
       'video': video,
       'images': images,

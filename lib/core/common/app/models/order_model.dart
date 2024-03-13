@@ -13,7 +13,7 @@ class OrderModel extends OrderEntity {
 
   factory OrderModel.fromMap(Map<String, dynamic> map) {
     return OrderModel(
-      id: map['id'] as String,
+      id: map['_id'] as String,
       farmer: map['farmer'] as String,
       products: (map['products'] as List).cast<ProductEntity>(),
       time: map['time'] as String,
@@ -21,18 +21,19 @@ class OrderModel extends OrderEntity {
     );
   }
 
-  OrderModel.empty()
+ const OrderModel.empty()
       : this(
           id: 'empty.id',
           farmer: 'empty.farmer',
-          products: [],
+          products: const [],
           time: 'empty.time',
           totalDeliveryTime: 'empty.totalDeliveryTime',
         );
 
+  @override
   Map<String, dynamic> toMap() {
     return {
-      'id': id,
+      '_id': id,
       'farmer': farmer,
       'products': products,
       'time': time,

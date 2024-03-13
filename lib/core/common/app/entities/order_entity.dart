@@ -10,6 +10,16 @@ class OrderEntity extends Equatable {
     required this.totalDeliveryTime,
   });
 
+  factory OrderEntity.fromMap(Map<String, dynamic> map) {
+    return OrderEntity(
+      id: map['_id'] as String,
+      farmer: map['farmer'] as String,
+      products: map['products'] as List<ProductEntity>,
+      time: map['time'] as String,
+      totalDeliveryTime: map['totalDeliveryTime'] as String,
+    );
+  }
+
   const OrderEntity.empty()
       : this(
           id: 'empty.id',
@@ -27,4 +37,14 @@ class OrderEntity extends Equatable {
 
   @override
   List<Object?> get props => [farmer, products, time, totalDeliveryTime];
+
+  Map<String, dynamic> toMap() {
+    return {
+      '_id': id,
+      'farmer': farmer,
+      'products': products,
+      'time': time,
+      'totalDeliveryTime': totalDeliveryTime,
+    };
+  }
 }

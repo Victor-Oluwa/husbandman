@@ -7,7 +7,7 @@ import 'package:husbandman/core/error/exceptions.dart';
 import 'package:husbandman/core/error/failure.dart';
 import 'package:husbandman/src/admin/data/datasource/admin_datasource.dart';
 import 'package:husbandman/src/admin/data/repo/admin_repo_impl.dart';
-import 'package:husbandman/src/admin/domain/entity/invitation_token_entity.dart';
+import 'package:husbandman/core/common/app/entities/invitation_token_entity.dart';
 import 'package:husbandman/src/admin/domain/use-cases/filter_user.dart';
 import 'package:husbandman/src/admin/domain/use-cases/search_user.dart';
 import 'package:husbandman/src/admin/domain/use-cases/share_invitation_token_to_email.dart';
