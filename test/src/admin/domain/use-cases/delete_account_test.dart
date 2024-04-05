@@ -40,7 +40,7 @@ void main() {
           .thenAnswer(
         (_) async => Left(
           ServerFailure(
-              message: 'This account refused to be deleted', statusCode: 123),
+              message: 'This account refused to be deleted', statusCode: 123,),
         ),
       );
 

@@ -56,7 +56,7 @@ void main() {
           Left<ServerFailure, dynamic>(ServerFailure(
             message: 'The provided email does not belong to an account',
             statusCode: 401,
-          )),
+          ),),
         ),
       );
 

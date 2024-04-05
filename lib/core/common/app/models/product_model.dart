@@ -43,6 +43,7 @@ class ProductModel extends ProductEntity {
           description: 'description.empty',
         );
 
+  @override
   Map<String, dynamic> toMap() {
     return {
       '_id': id,

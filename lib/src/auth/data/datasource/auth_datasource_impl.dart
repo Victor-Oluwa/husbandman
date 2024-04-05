@@ -1,8 +1,12 @@
 import 'dart:convert';
 
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
+import 'package:husbandman/core/common/app/models/user/admin_model.dart';
+import 'package:husbandman/core/common/app/models/user/buyer_model.dart';
+import 'package:husbandman/core/common/app/models/user/farmer_model.dart';
+import 'package:husbandman/core/common/app/models/user/user_model.dart';
+import 'package:husbandman/core/common/app/provider/invitation_key_provider.dart';
 import 'package:husbandman/core/common/app/provider/user_provider.dart';
 import 'package:husbandman/core/common/app/storage/hbm_storage.dart';
 import 'package:husbandman/core/common/strings/error_messages.dart';
@@ -11,11 +15,6 @@ import 'package:husbandman/core/error/exceptions.dart';
 import 'package:husbandman/core/utils/constants.dart';
 import 'package:husbandman/core/utils/typedef.dart';
 import 'package:husbandman/src/auth/data/datasource/auth_datasource.dart';
-import 'package:husbandman/core/common/app/models/user/admin_model.dart';
-import 'package:husbandman/core/common/app/models/user/buyer_model.dart';
-import 'package:husbandman/core/common/app/models/user/farmer_model.dart';
-import 'package:husbandman/core/common/app/models/user/user_model.dart';
-import 'package:husbandman/src/auth/domain/entity/user_entity.dart';
 
 const kBuyerSignUpEndpoint = '/buyer/sign-up';
 const kFarmerSignUpEndpoint = '/farmer/sign-up';
@@ -25,7 +24,7 @@ const kSendResetPasswordTokenEndpoint = '/admin/password/reset/send-token';
 const kSignInEndpoint = '/user/sign-in';
 const kUpdateUserEndpoint = '/user/update-info';
 const kValidateUserEndpoint = '/admin/validate-user';
-const kValidateFarmerInvitationKeyEndpoint = '/admin/farmer-key';
+const kValidateFarmerInvitationKeyEndpoint = '/admin/farmer-key/validate';
 
 class AuthDataSourceImpl implements AuthDataSource {
   AuthDataSourceImpl(this._client, this._storage, this._ref);
@@ -38,11 +37,12 @@ class AuthDataSourceImpl implements AuthDataSource {
   Future<bool> authenticateResetPasswordToken({
     required String token,
   }) async {
-    final response = await _client.post(
-      Uri.parse('$kBaseUrl$kAuthenticateResetPasswordTokenEndpoint'),
-      body: jsonEncode({'token': token}),
-    );
     try {
+      final response = await _client.post(
+        Uri.parse('$kBaseUrl$kAuthenticateResetPasswordTokenEndpoint'),
+        body: jsonEncode({'token': token}),
+      );
+
       if (response.statusCode != 200 && response.statusCode != 201) {
         throw AuthException(
           message: response.body,
@@ -84,7 +84,7 @@ class AuthDataSourceImpl implements AuthDataSource {
           statusCode: response.statusCode,
         );
       }
-    } on AuthException catch (e) {
+    } on AuthException catch (_) {
       rethrow;
     } catch (e) {
       throw AuthException(
@@ -100,6 +100,19 @@ class AuthDataSourceImpl implements AuthDataSource {
     try {
       final result = await _storage.writeData(key: kAuthToken, value: token);
       return result;
+    } catch (e) {
+      throw AuthException(message: e.toString(), statusCode: 500);
+    }
+  }
+
+  @override
+  Future<void> cacheVerifiedInvitationToken({required String token}) async {
+    try {
+       _ref
+          .read(invitationKeyProvider.notifier)
+          .cacheInvitationToken(token: token);
+    } on AuthException catch (_) {
+      rethrow;
     } catch (e) {
       throw AuthException(message: e.toString(), statusCode: 500);
     }
@@ -131,12 +144,14 @@ class AuthDataSourceImpl implements AuthDataSource {
 
       if (response.statusCode != 201 && response.statusCode != 200) {
         throw AuthException(
-            message: response.body, statusCode: response.statusCode);
+          message: response.body,
+          statusCode: response.statusCode,
+        );
       }
-    } on AuthException catch (e) {
+    } on AuthException catch (_) {
       rethrow;
     } catch (e) {
-      throw AuthException(message: e.toString(), statusCode: 200);
+      throw AuthException(message: e.toString(), statusCode: 500);
     }
   }
 
@@ -146,7 +161,7 @@ class AuthDataSourceImpl implements AuthDataSource {
       final result = await _storage.readData(key: kAuthToken);
       return result ?? '';
     } catch (e) {
-      throw AuthException(message: e.toString(), statusCode: 500);
+      throw AuthException(message: e.toString(), statusCode: 400);
     }
   }
 
@@ -229,7 +244,9 @@ class AuthDataSourceImpl implements AuthDataSource {
       );
       if (response.statusCode != 200 && response.statusCode != 201) {
         throw AuthException(
-            message: response.body, statusCode: response.statusCode);
+          message: response.body,
+          statusCode: response.statusCode,
+        );
       }
 
       final responseMap = jsonDecode(response.body) as DataMap;
@@ -351,7 +368,7 @@ class AuthDataSourceImpl implements AuthDataSource {
             statusCode: 401,
           );
       }
-    } on AuthException catch (e) {
+    } on AuthException catch (_) {
       rethrow;
     } catch (e) {
       throw AuthException(message: e.toString(), statusCode: 600);
@@ -380,7 +397,7 @@ class AuthDataSourceImpl implements AuthDataSource {
         );
       }
       return response.body;
-    } on AuthException catch (e) {
+    } on AuthException catch (_) {
       rethrow;
     } catch (e) {
       throw AuthException(message: e.toString(), statusCode: 400);

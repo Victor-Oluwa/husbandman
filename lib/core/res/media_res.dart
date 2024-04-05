@@ -6,10 +6,15 @@ class MediaRes {
   static const _baseVector = 'assets/vector';
   static const _baseLottie = 'assets/lottie';
 
-  static const onboardingFarmer = '$_baseVector/onboarding_farmer.svg';
-  static const onboardingProduct = '$_baseVector/onboarding_product.svg';
-  static const onboardingDeliveryGuy =
-      '$_baseVector/onboarding_deliveryGuy.svg';
+  static const produceBasket = '$_baseVector/Produce-Basket.svg';
+  static const deliveryBus = '$_baseVector/Delivery-Bus.svg';
+  static const africaElephant = '$_baseVector/Africa-Elephant.svg';
+  static const africaMap = '$_baseVector/Africa-Map.svg';
+  static const farmerGirl = '$_baseVector/Farmer-Girl.svg';
+  static const femaleBuyer = '$_baseVector/Buyer-Girl.svg';
+  static const happyFarmer = '$_baseVector/Happy-Farmer.svg';
+
+
   static const pageUnderConstruction =
       '$_baseLottie/page_under_construction.json';
 }

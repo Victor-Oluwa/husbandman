@@ -1,9 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:husbandman/core/utils/typedef.dart';
 import 'package:husbandman/core/common/app/models/user/admin_model.dart';
 import 'package:husbandman/core/common/app/models/user/buyer_model.dart';
 import 'package:husbandman/core/common/app/models/user/farmer_model.dart';
-import 'package:husbandman/core/common/app/models/user/user_model.dart';
+import 'package:husbandman/core/utils/typedef.dart';
 
 final farmerProvider = StateNotifierProvider<FarmerNotifier, FarmerModel>(
   (ref) => FarmerNotifier(),
@@ -36,6 +35,11 @@ class FarmerNotifier extends StateNotifier<FarmerModel> {
   void updateFarmerFromMap({required DataMap map}) {
     state = FarmerModel.fromMap(map);
   }
+
+  FarmerModel updateFarmerFromModel( FarmerModel farmer) {
+    return state = farmer;
+
+  }
 }
 
 class BuyerNotifier extends StateNotifier<BuyerModel> {
@@ -59,6 +63,10 @@ class BuyerNotifier extends StateNotifier<BuyerModel> {
   void updateBuyerFromMap({required DataMap map}) {
     state = BuyerModel.fromMap(map);
   }
+
+  BuyerModel updateBuyerFromModel( BuyerModel buyer) {
+    return state = buyer;
+  }
 }
 
 class AdminNotifier extends StateNotifier<AdminModel> {
@@ -81,5 +89,10 @@ class AdminNotifier extends StateNotifier<AdminModel> {
 
   void updateAdminFromMap({required DataMap map}) {
     state = AdminModel.fromMap(map);
+  }
+
+  AdminModel updateAdminFromModel( AdminModel farmer) {
+    return state = farmer;
+
   }
 }

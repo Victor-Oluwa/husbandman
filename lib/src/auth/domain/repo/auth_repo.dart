@@ -17,6 +17,8 @@ abstract class AuthRepo {
 
   ResultFuture<void> cacheUserToken({required String token});
 
+  ResultFuture<void> cacheVerifiedInvitationToken({required String token});
+
   ResultFuture<void> farmerSignUp({
     required String name,
     required String email,

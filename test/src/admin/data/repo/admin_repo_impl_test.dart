@@ -1,4 +1,5 @@
 import 'package:dartz/dartz.dart';
+import 'package:husbandman/core/common/app/entities/invitation_token_entity.dart';
 import 'package:husbandman/core/common/app/models/order_model.dart';
 import 'package:husbandman/core/common/app/models/user/user_model.dart';
 import 'package:husbandman/core/enums/filter_user.dart';
@@ -7,7 +8,6 @@ import 'package:husbandman/core/error/exceptions.dart';
 import 'package:husbandman/core/error/failure.dart';
 import 'package:husbandman/src/admin/data/datasource/admin_datasource.dart';
 import 'package:husbandman/src/admin/data/repo/admin_repo_impl.dart';
-import 'package:husbandman/core/common/app/entities/invitation_token_entity.dart';
 import 'package:husbandman/src/admin/domain/use-cases/filter_user.dart';
 import 'package:husbandman/src/admin/domain/use-cases/search_user.dart';
 import 'package:husbandman/src/admin/domain/use-cases/share_invitation_token_to_email.dart';
@@ -201,7 +201,7 @@ void main() {
   });
 
   group('Fetch All Orders', () {
-    final tOrders = [OrderModel.empty()];
+    final tOrders = [const OrderModel.empty()];
     test(
       'Should call [AdminDatasource] and return Right(List<OrderModel>)',
       () async {
@@ -642,7 +642,7 @@ void main() {
           ),
         ).thenThrow(
           const AdminException(
-            message: 'Failed to sent token',
+            message: 'Failed to send token',
             statusCode: 404,
           ),
         );
@@ -655,14 +655,64 @@ void main() {
           equals(
             Left<AdminFailure, dynamic>(
               AdminFailure(
-                message: 'Failed to sent token',
+                message: 'Failed to send token',
                 statusCode: 404,
               ),
             ),
           ),
         );
 
-        verify(()=> adminDatasource.shareInvitationTokenToWhatsApp(token: tToken,),);
+        verify(
+          () => adminDatasource.shareInvitationTokenToWhatsApp(
+            token: tToken,
+          ),
+        );
+        verifyNoMoreInteractions(adminDatasource);
+      },
+    );
+  });
+
+  group('SaveInvitationToken', () {
+    const tToken = 'token';
+    test(
+      'Should call [AdminRepo] and return [Right<void>] when successful',
+      () async {
+        when(
+          () => adminDatasource.saveInvitationToken(
+            token: any(named: 'token'),
+          ),
+        ).thenAnswer((_) async => Future.value());
+
+        final result = await adminRepoImpl.saveInvitationToken(token: tToken);
+        expect(result, equals(const Right<dynamic, void>(null)));
+
+        verify(() => adminDatasource.saveInvitationToken(token: tToken));
+        verifyNoMoreInteractions(adminDatasource);
+      },
+    );
+
+    test(
+      'Should call [AdminDatasource] and return [Left<AuthFailure>]',
+      () async {
+        when(
+          () => adminDatasource.saveInvitationToken(
+            token: any(named: 'token'),
+          ),
+        ).thenThrow(
+          const AdminException(message: 'Token is invalid', statusCode: 400),
+        );
+
+        final result = await adminRepoImpl.saveInvitationToken(token: tToken);
+        expect(
+          result,
+          equals(
+            Left<AdminFailure, dynamic>(
+              AdminFailure(message: 'Token is invalid', statusCode: 400),
+            ),
+          ),
+        );
+
+        verify(() => adminDatasource.saveInvitationToken(token: tToken)).called(1);
         verifyNoMoreInteractions(adminDatasource);
       },
     );

@@ -1,7 +1,6 @@
 
 import 'package:husbandman/core/enums/update_user.dart';
 import 'package:husbandman/core/utils/typedef.dart';
-import 'package:husbandman/core/common/app/models/user/user_model.dart';
 import 'package:husbandman/src/auth/domain/entity/user_entity.dart';
 
 abstract class AuthDataSource {
@@ -20,6 +19,8 @@ abstract class AuthDataSource {
   });
 
   Future<void> cacheUserToken({required String token});
+
+  Future<void> cacheVerifiedInvitationToken({required String token});
 
   Future<void> farmerSignUp({
     required String name,

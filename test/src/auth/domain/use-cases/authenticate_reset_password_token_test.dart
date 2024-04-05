@@ -37,7 +37,7 @@ void main() {
           .thenAnswer(
         (_) async => Left(
           ServerFailure(
-              message: 'Token authentication failed', statusCode: 401),
+              message: 'Token authentication failed', statusCode: 401,),
         ),
       );
 

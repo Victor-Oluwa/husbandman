@@ -1,7 +1,6 @@
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:husbandman/core/error/failure.dart';
-import 'package:husbandman/core/utils/typedef.dart';
 import 'package:husbandman/src/auth/domain/entity/user_entity.dart';
 import 'package:husbandman/src/auth/domain/repo/auth_repo.dart';
 import 'package:husbandman/src/auth/domain/use-cases/update_user.dart';

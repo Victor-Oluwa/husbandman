@@ -1,7 +1,6 @@
 import 'package:dartz/dartz.dart';
 import 'package:husbandman/core/error/failure.dart';
 import 'package:husbandman/src/auth/domain/repo/auth_repo.dart';
-import 'package:husbandman/src/auth/domain/use-cases/authenticate_reset_password_token.dart';
 import 'package:husbandman/src/auth/domain/use-cases/reset_password.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';

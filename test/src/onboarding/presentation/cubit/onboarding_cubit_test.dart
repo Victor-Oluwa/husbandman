@@ -21,8 +21,9 @@ void main() {
     cacheFirstTimer = MockCacheFirstTimer();
     checkIfUserIsFirstTimer = MockCheckIfUserIsFirstTimer();
     cubit = OnboardingCubit(
-        cacheFirstTimer: cacheFirstTimer,
-        checkIfUserIsFirstTimer: checkIfUserIsFirstTimer,);
+      cacheFirstTimer: cacheFirstTimer,
+      checkIfUserIsFirstTimer: checkIfUserIsFirstTimer,
+    );
   });
 
   final testFailure =
@@ -34,51 +35,56 @@ void main() {
 
   group('cacheFirstTimer', () {
     blocTest<OnboardingCubit, OnboardingState>(
-        'emits [CachingFirstTimer] and [UserCached] when successfull.',
-        build: () {
-          when(() => cacheFirstTimer())
-              .thenAnswer((_) async => const Right(null));
-          return cubit;
-        },
-        act: (cubit) => cubit.cacheFirstTimer(),
-        expect: () => const [CachingFirstTimer(), UserCached()],
-        verify: (_) {
-          verify(() => cacheFirstTimer()).called(1);
-          verifyNoMoreInteractions(cacheFirstTimer);
-        },);
+      'emits [CachingFirstTimer] and [UserCached] when successfull.',
+      build: () {
+        when(() => cacheFirstTimer())
+            .thenAnswer((_) async => const Right(null));
+        return cubit;
+      },
+      act: (cubit) => cubit.cacheFirstTimer(),
+      expect: () => const [CachingFirstTimer(), UserCached()],
+      verify: (_) {
+        verify(() => cacheFirstTimer()).called(1);
+        verifyNoMoreInteractions(cacheFirstTimer);
+      },
+    );
 
     blocTest<OnboardingCubit, OnboardingState>(
-        'emits [CachingFirstTimer] and [OnboardingError] when unsuccessful.',
-        build: () {
-          when(() => cacheFirstTimer())
-              .thenAnswer((_) async => Left(testFailure));
-          return cubit;
-        },
-        act: (cubit) => cubit.cacheFirstTimer(),
-        expect: () => [
-              const CachingFirstTimer(),
-              OnboardingError(testFailure.errorMessage),
-            ],
-        verify: (_) {
-          verify(() => cacheFirstTimer()).called(1);
-          verifyNoMoreInteractions(cacheFirstTimer);
-        },);
+      'emits [CachingFirstTimer] and [OnboardingError] when unsuccessful.',
+      build: () {
+        when(() => cacheFirstTimer())
+            .thenAnswer((_) async => Left(testFailure));
+        return cubit;
+      },
+      act: (cubit) => cubit.cacheFirstTimer(),
+      expect: () => [
+        const CachingFirstTimer(),
+        OnboardingError(testFailure.errorMessage),
+      ],
+      verify: (_) {
+        verify(() => cacheFirstTimer()).called(1);
+        verifyNoMoreInteractions(cacheFirstTimer);
+      },
+    );
   });
 
   group('checkIfUserIsFirstTimer', () {
     blocTest<OnboardingCubit, OnboardingState>(
-        'emit [CheckingIfUserIsCached] [OnboardingStatus]',
-        build: () {
-          when(() => checkIfUserIsFirstTimer())
-              .thenAnswer((invocation) async => const Right(false));
-          return cubit;
-        },
-        act: (cubit) => cubit.checkIfUserIsFirstTimer(),
-        expect: () =>
-            [const CheckingIfUserIsFirstTimer(), const OnboardingStatus(false)],
-        verify: (_) {
-          verify(() => checkIfUserIsFirstTimer()).called(1);
-          verifyNoMoreInteractions(checkIfUserIsFirstTimer);
-        },);
+      'emit [CheckingIfUserIsCached] [OnboardingStatus]',
+      build: () {
+        when(() => checkIfUserIsFirstTimer())
+            .thenAnswer((invocation) async => const Right(false));
+        return cubit;
+      },
+      act: (cubit) => cubit.checkIfUserIsFirstTimer(),
+      expect: () => [
+        const CheckingIfUserIsFirstTimer(),
+        const FirstTimerStatus(isFirstTimer: false),
+      ],
+      verify: (_) {
+        verify(() => checkIfUserIsFirstTimer()).called(1);
+        verifyNoMoreInteractions(checkIfUserIsFirstTimer);
+      },
+    );
   });
 }

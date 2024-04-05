@@ -28,12 +28,24 @@ class BuyerSignedUp extends AuthState {
   const BuyerSignedUp();
 }
 
+class BuyerSigningUp extends AuthState{
+  const BuyerSigningUp();
+}
+
 class FarmerSignedUp extends AuthState {
   const FarmerSignedUp();
 }
 
+class FarmerSigningUp extends AuthState{
+  const FarmerSigningUp();
+}
+
 class UserTokenCached extends AuthState {
   const UserTokenCached();
+}
+
+class InvitationTokenCached extends AuthState{
+  const InvitationTokenCached();
 }
 
 class UserTokenRetrieved extends AuthState {

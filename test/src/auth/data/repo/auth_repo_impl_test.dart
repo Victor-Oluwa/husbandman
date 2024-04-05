@@ -1,11 +1,9 @@
 import 'package:dartz/dartz.dart';
+import 'package:husbandman/core/common/app/models/user/buyer_model.dart';
 import 'package:husbandman/core/enums/update_user.dart';
 import 'package:husbandman/core/error/exceptions.dart';
 import 'package:husbandman/core/error/failure.dart';
-import 'package:husbandman/core/utils/typedef.dart';
 import 'package:husbandman/src/auth/data/datasource/auth_datasource.dart';
-import 'package:husbandman/core/common/app/models/user/buyer_model.dart';
-import 'package:husbandman/core/common/app/models/user/user_model.dart';
 import 'package:husbandman/src/auth/data/repo/auth_repo_impl.dart';
 import 'package:husbandman/src/auth/domain/entity/user_entity.dart';
 import 'package:husbandman/src/auth/domain/use-cases/farmer_signup.dart';
@@ -60,7 +58,7 @@ void main() {
 
       verify(
         () => authDataSource.authenticateResetPasswordToken(
-            token: tResetPasswordToken),
+            token: tResetPasswordToken,),
       ).called(1);
       verifyNoMoreInteractions(authDataSource);
     });
@@ -230,6 +228,62 @@ void main() {
       verifyNoMoreInteractions(authDataSource);
     });
   });
+
+  group(
+    'CacheVerifiedInvitationToken',
+    () {
+      const tToken = 'token';
+      test(
+        'Should call AuthDatasource and return Right<void> when successful',
+        () async {
+          when(
+            () => authDataSource.cacheVerifiedInvitationToken(
+              token: any(named: 'token'),
+            ),
+          ).thenAnswer(
+            (_) async => Future.value(),
+          );
+
+          final result =
+              await authRepoImpl.cacheVerifiedInvitationToken(token: tToken);
+          expect(result, equals(const Right<void, void>(null)));
+
+          verify(() =>
+                  authDataSource.cacheVerifiedInvitationToken(token: tToken),)
+              .called(1);
+          verifyNoMoreInteractions(authDataSource);
+        },
+      );
+
+      test('Should call AuthDatasource and return Left<AuthFailure>', () async {
+        when(() => authDataSource.cacheVerifiedInvitationToken(token: tToken))
+            .thenThrow(
+          const AuthException(
+            message: 'Failed to cache token',
+            statusCode: 500,
+          ),
+        );
+
+        final result =
+            await authRepoImpl.cacheVerifiedInvitationToken(token: tToken);
+        expect(
+          result,
+          equals(
+            Left<AuthFailure, dynamic>(
+              AuthFailure(
+                message: 'Failed to cache token',
+                statusCode: 500,
+              ),
+            ),
+          ),
+        );
+
+        verify(() => authDataSource.cacheVerifiedInvitationToken(token: tToken))
+            .called(1);
+        verifyNoMoreInteractions(authDataSource);
+      });
+    },
+  );
 
   group('Farmer Sign Up', () {
     test('Should return [Right(null)] when successful', () async {
@@ -582,7 +636,7 @@ void main() {
 
       verify(
         () => authDataSource.updateUser(
-            newData: 'Johnson', culprit: UpdateUserCulprit.name),
+            newData: 'Johnson', culprit: UpdateUserCulprit.name,),
       ).called(1);
 
       verifyNoMoreInteractions(authDataSource);
@@ -684,8 +738,11 @@ void main() {
 
       expect(result, equals(const Right<dynamic, String>(tKeyId)));
 
-      verify(() => authDataSource.validateFarmerInvitationKey(
-          invitationKey: tInvitationKey,),);
+      verify(
+        () => authDataSource.validateFarmerInvitationKey(
+          invitationKey: tInvitationKey,
+        ),
+      );
 
       verifyNoMoreInteractions(authDataSource);
     });
@@ -719,7 +776,7 @@ void main() {
       );
 
       verify(() => authDataSource.validateFarmerInvitationKey(
-          invitationKey: tInvitationKey));
+          invitationKey: tInvitationKey,),);
       verifyNoMoreInteractions(authDataSource);
     });
   });

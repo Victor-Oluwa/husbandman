@@ -7,41 +7,45 @@ class PageContent extends Equatable {
   final String title;
   final String description;
   final String buttonText;
+  final String? accessory;
+
   const PageContent({
     required this.image,
     required this.title,
     required this.description,
     required this.buttonText,
+    this.accessory,
   });
 
   const PageContent.first()
       : this(
           buttonText: 'Next',
           description: 'kindly provide the info listed in the description so '
-              ' I can proceed with the sitloshy catalog items '
+              ' I can proceed with the callosity catalog items '
               ' upload catalog items upload.',
-          image: MediaRes.onboardingProduct,
-          title: 'QUALITY FARM PRODUCE',
+          image: MediaRes.produceBasket,
+          title: 'QUALITY  PRODUCE',
         );
 
   const PageContent.second()
       : this(
           buttonText: 'Next',
           description: 'kindly provide the info listed in the description so '
-              ' I can proceed with the sitloshy catalog items '
+              ' I can proceed with the callosity catalog items '
               ' upload catalog items upload.',
-          image: MediaRes.onboardingFarmer,
-          title: 'CHAT WITH FARMERS',
+          image: MediaRes.deliveryBus,
+          title: 'SAFE DELIVERY',
         );
 
   const PageContent.third()
       : this(
-          buttonText: 'GET STARTED',
+          buttonText: 'Sign Up',
           description: 'kindly provide the info listed in the description so '
-              ' I can proceed with the sitloshy catalog items '
+              ' I can proceed with the callosity catalog items '
               ' upload catalog items upload.',
-          image: MediaRes.onboardingDeliveryGuy,
-          title: 'HOME DELIVERY',
+          image: MediaRes.africaElephant,
+          accessory: MediaRes.africaMap,
+          title: 'PROUDLY AFRICA',
         );
 
   @override

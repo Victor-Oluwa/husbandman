@@ -1,6 +1,5 @@
 import 'package:husbandman/core/common/app/entities/order_entity.dart';
 import 'package:husbandman/core/common/app/entities/product_entity.dart';
-import 'package:husbandman/core/common/app/models/product_model.dart';
 
 class OrderModel extends OrderEntity {
   const OrderModel({

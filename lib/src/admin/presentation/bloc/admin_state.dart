@@ -81,6 +81,14 @@ class FoundUsers extends AdminState {
   List<Object> get props => [users];
 }
 
+class InvitationTokenSaved extends AdminState{
+   const InvitationTokenSaved();
+}
+
+class SavingInvitationToken extends AdminState{
+  const SavingInvitationToken();
+}
+
 class AdminError extends AdminState{
   const AdminError(this.message);
 

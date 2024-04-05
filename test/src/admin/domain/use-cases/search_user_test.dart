@@ -68,7 +68,7 @@ void main() {
 
       verify(
         () => adminRepo.searchUser(
-            query: searchUserParams.query, property: searchUserParams.property),
+            query: searchUserParams.query, property: searchUserParams.property,),
       );
       verifyNoMoreInteractions(adminRepo);
     });

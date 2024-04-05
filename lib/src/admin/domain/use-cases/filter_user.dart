@@ -4,7 +4,6 @@ import 'package:husbandman/core/enums/filter_user.dart';
 import 'package:husbandman/core/usecases/usecases.dart';
 import 'package:husbandman/core/utils/typedef.dart';
 import 'package:husbandman/src/admin/domain/repo/admin_repo.dart';
-import 'package:husbandman/src/auth/domain/entity/user_entity.dart';
 
 class FilterUser extends UseCaseWithParams<List<UserModel>, FilterUserParams> {
   const FilterUser(this._adminRepo);

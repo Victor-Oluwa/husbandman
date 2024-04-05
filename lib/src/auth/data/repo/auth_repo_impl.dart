@@ -4,7 +4,6 @@ import 'package:husbandman/core/error/exceptions.dart';
 import 'package:husbandman/core/error/failure.dart';
 import 'package:husbandman/core/utils/typedef.dart';
 import 'package:husbandman/src/auth/data/datasource/auth_datasource.dart';
-import 'package:husbandman/core/common/app/models/user/user_model.dart';
 import 'package:husbandman/src/auth/domain/entity/user_entity.dart';
 import 'package:husbandman/src/auth/domain/repo/auth_repo.dart';
 
@@ -59,6 +58,18 @@ class AuthRepoImpl implements AuthRepo {
       return const Right(null);
     } on AuthException catch (e) {
       return Left(AuthFailure.fromException(e));
+    }
+  }
+
+  @override
+  ResultFuture<void> cacheVerifiedInvitationToken(
+      {required String token,}) async {
+    try {
+      final result =
+          await _authDataSource.cacheVerifiedInvitationToken(token: token);
+      return Right(result);
+    } on AuthException catch (e) {
+      return Left(AuthFailure(message: e.message, statusCode: e.statusCode));
     }
   }
 

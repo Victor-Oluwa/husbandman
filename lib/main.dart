@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:husbandman/core/extensions/context_extension.dart';
@@ -6,22 +7,30 @@ import 'package:husbandman/core/res/color.dart';
 import 'package:husbandman/core/res/fonts.dart';
 import 'package:husbandman/core/services/injection_container.dart';
 import 'package:husbandman/core/services/routes.dart';
+import 'package:husbandman/core/services/shared_preference.dart';
 
 Future<void> main() async {
-  //This WidgetsFlutterBinding is here because '
-  // ' there is an async operation in the block
+  //WidgetsFlutterBinding is here because '
+  // ' there is at least one async operation in the block
   WidgetsFlutterBinding.ensureInitialized();
-  await init();
+  await sharedPrefs.init();
   runApp(const ProviderScope(child: MyApp()));
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends ConsumerWidget {
   const MyApp({super.key});
 
   static const String title = 'Husbandman';
 
   @override
-  Widget build(BuildContext context) => MaterialApp(
+  Widget build(BuildContext context, WidgetRef ref) {
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(create: (context) => ref.read(onboardingCubitProvider)),
+        BlocProvider(create: (context) => ref.read(authBlocProvider)),
+        BlocProvider(create: (context) => ref.read(adminBlocProvider)),
+      ],
+      child: MaterialApp(
         debugShowCheckedModeBanner: false,
         title: title,
         theme: ThemeData(
@@ -62,5 +71,7 @@ class MyApp extends StatelessWidget {
         ),
         themeMode: ThemeMode.light,
         onGenerateRoute: generateRoute,
-      );
+      ),
+    );
+  }
 }

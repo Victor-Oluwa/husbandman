@@ -8,7 +8,7 @@ import 'package:test/test.dart';
 import '../../../../fixtures/fixtures_reader.dart';
 
 void main() {
-  final tOrderModel = OrderModel.empty();
+  const tOrderModel = OrderModel.empty();
   final tMap =
       jsonDecode(fixtures(folder: 'order', fileName: 'order.json')) as DataMap;
 

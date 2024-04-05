@@ -3,16 +3,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:husbandman/core/common/widgets/hbm_text_widget.dart';
 import 'package:husbandman/core/extensions/context_extension.dart';
+import 'package:husbandman/core/res/color.dart';
 import 'package:husbandman/core/res/fonts.dart';
 import 'package:husbandman/src/onboarding/domain/entities/page__content.dart';
 
 class OnboardingBody extends StatelessWidget {
   const OnboardingBody({
     required this.pageContent,
+    required this.onNext,
     super.key,
   });
 
   final PageContent pageContent;
+  final VoidCallback onNext;
 
   @override
   Widget build(BuildContext context) {
@@ -36,12 +39,12 @@ class OnboardingBody extends StatelessWidget {
           ),
           SizedBox(height: context.height * 0.07),
           ElevatedButton(
-            onPressed: () {},
+            onPressed: onNext,
+            style: ElevatedButton.styleFrom(
+              backgroundColor: HBMColors.slateGray,
+              foregroundColor: HBMColors.almond,
+            ),
             child: HBMTextWidget(data: pageContent.buttonText),
-            // style: ElevatedButton.styleFrom(
-              // backgroundColor: HBMColors.slateGray,
-              // foregroundColor: HBMColors.almond,
-            // ),
           ),
         ],
       ),

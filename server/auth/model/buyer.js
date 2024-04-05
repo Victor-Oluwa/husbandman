@@ -26,7 +26,7 @@ const buyerSchema = mongoose.Schema({
     },
     balance: {
         type: Number,
-        required: true
+        default: 0.0
     },
     dealingsId: {
         type: [String],
@@ -41,10 +41,10 @@ const buyerSchema = mongoose.Schema({
     },
     phone: {
         type: [String],
-        required: true,
+        default: '',
     },
     notifications: {
-        type: [String],
+        type: String,
         default: '',
     },
     cartIds: {

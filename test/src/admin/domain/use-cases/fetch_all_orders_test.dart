@@ -3,7 +3,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:husbandman/core/common/app/models/order_model.dart';
 import 'package:husbandman/core/error/failure.dart';
 import 'package:husbandman/src/admin/domain/repo/admin_repo.dart';
-import 'package:husbandman/src/admin/domain/use-cases/delete_account.dart';
 import 'package:husbandman/src/admin/domain/use-cases/fetch_all_orders.dart';
 import 'package:mocktail/mocktail.dart';
 
@@ -13,7 +12,7 @@ void main() {
   late AdminRepo adminRepo;
   late FetchAllOrders usecase;
 
-  final tOrders = [OrderModel.empty()];
+  final tOrders = [const OrderModel.empty()];
 
   setUp(() {
     adminRepo = MockAdminRepo();

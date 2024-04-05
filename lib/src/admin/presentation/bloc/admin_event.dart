@@ -79,3 +79,13 @@ class SearchUserEvent extends AdminEvent {
   @override
   List<Object> get props => [query, property];
 }
+
+class SaveInvitationTokenEvent extends AdminEvent{
+  const SaveInvitationTokenEvent({required this.token});
+  final String token;
+
+  @override
+  List<String> get props => [token];
+
+}
+

@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:math';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
@@ -702,6 +701,79 @@ void main() {
             }),
           ),
         ).called(1);
+        verifyNoMoreInteractions(client);
+      },
+    );
+  });
+
+  group('Save User Token', () {
+    const tToken = 'token';
+    test(
+      'Should call complete successfully when status code is 200 or 201',
+      () async {
+        when(
+          () => client.post(
+            any(),
+            body: any(named: 'body'),
+            headers: any(named: 'headers'),
+          ),
+        ).thenAnswer(
+          (_) async => http.Response('Token saved successfully', 200),
+        );
+
+        final methodCall = adminDatasource.saveInvitationToken;
+        expect(methodCall(token: tToken), completes);
+
+        verify(
+          () => client.post(
+            Uri.parse('$kBaseUrl$kSaveInvitationTokenEndpoint'),
+            headers: {
+              'Content-Type': 'application/json; charset=UTF-8',
+            },
+            body: jsonEncode({
+              'token': tToken,
+            }),
+          ),
+        );
+        verifyNoMoreInteractions(client);
+      },
+    );
+
+    test(
+      'Should call throw [AdminException] successfully when status code is 200 or 201',
+      () async {
+        when(
+          () => client.post(
+            any(),
+            body: any(named: 'body'),
+            headers: any(named: 'headers'),
+          ),
+        ).thenAnswer(
+          (_) async => http.Response('Failed to save token', 400),
+        );
+
+        final methodCall = adminDatasource.saveInvitationToken;
+        expect(
+          methodCall(token: tToken),
+          throwsA(
+            const AdminException(
+              message: 'Failed to save token',
+              statusCode: 400,
+            ),
+          ),
+        );
+
+        verify(
+          () => client.post(
+            Uri.parse('$kBaseUrl$kSaveInvitationTokenEndpoint'),
+            headers: {
+              'Content-Type': 'application/json; charset=UTF-8',
+            },
+            body: jsonEncode({
+              'token': tToken,
+            }),
+          ),
+        );
         verifyNoMoreInteractions(client);
       },
     );

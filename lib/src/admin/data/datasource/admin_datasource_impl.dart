@@ -1,8 +1,6 @@
 import 'dart:convert';
-import 'dart:math';
 
 import 'package:http/http.dart' as http;
-import 'package:husbandman/core/common/app/entities/invitation_token_entity.dart';
 import 'package:husbandman/core/common/app/models/invitation_token_model.dart';
 import 'package:husbandman/core/common/app/models/order_model.dart';
 import 'package:husbandman/core/common/app/models/user/user_model.dart';
@@ -24,6 +22,7 @@ const kFetchAllUsersEndpoint = '/admin/fetch-all-users';
 const kFilterUserEndpoint = '/admin/filter-user';
 const kGenerateInvitationTokenEndpoint = '/admin/generate-invitation-token';
 const kSearchUserEndpoint = '/admin/search-user';
+const kSaveInvitationTokenEndpoint = '/admin/save-token';
 
 class AdminDatasourceImpl implements AdminDatasource {
   const AdminDatasourceImpl(this._client, this._tokenGenerator);
@@ -50,7 +49,7 @@ class AdminDatasourceImpl implements AdminDatasource {
           statusCode: response.statusCode,
         );
       }
-    } on AdminException catch (e) {
+    } on AdminException catch (_) {
       rethrow;
     } catch (e) {
       throw AdminException(
@@ -83,7 +82,7 @@ class AdminDatasourceImpl implements AdminDatasource {
           statusCode: response.statusCode,
         );
       }
-    } on AdminException catch (e) {
+    } on AdminException catch (_) {
       rethrow;
     } catch (e) {
       throw AdminException(
@@ -112,7 +111,7 @@ class AdminDatasourceImpl implements AdminDatasource {
           statusCode: response.statusCode,
         );
       }
-    } on AdminException catch (e) {
+    } on AdminException catch (_) {
       rethrow;
     } catch (e) {
       throw AdminException(message: e.toString(), statusCode: 404);
@@ -143,7 +142,7 @@ class AdminDatasourceImpl implements AdminDatasource {
           .toList();
 
       return result;
-    } on AdminException catch (e) {
+    } on AdminException catch (_) {
       rethrow;
     } catch (e) {
       throw AdminException(
@@ -174,7 +173,7 @@ class AdminDatasourceImpl implements AdminDatasource {
           .map(InvitationTokenModel.fromMap)
           .toList();
       return result;
-    } on AdminException catch (e) {
+    } on AdminException catch (_) {
       rethrow;
     } catch (e) {
       throw AdminException(message: e.toString(), statusCode: 404);
@@ -205,7 +204,7 @@ class AdminDatasourceImpl implements AdminDatasource {
           .toList();
 
       return result;
-    } on AdminException catch (e) {
+    } on AdminException catch (_) {
       rethrow;
     } catch (e) {
       throw AdminException(
@@ -246,7 +245,7 @@ class AdminDatasourceImpl implements AdminDatasource {
           .toList();
 
       return result;
-    } on AdminException catch (e) {
+    } on AdminException catch (_) {
       rethrow;
     } catch (e) {
       throw AdminException(
@@ -269,7 +268,7 @@ class AdminDatasourceImpl implements AdminDatasource {
       }
 
       return result;
-    } on AdminException catch (e) {
+    } on AdminException catch (_) {
       rethrow;
     } catch (e) {
       throw AdminException(message: e.toString(), statusCode: 404);
@@ -305,7 +304,7 @@ class AdminDatasourceImpl implements AdminDatasource {
           .toList();
 
       return result;
-    } on AdminException catch (e) {
+    } on AdminException catch (_) {
       rethrow;
     } catch (e) {
       throw AdminException(
@@ -328,5 +327,30 @@ class AdminDatasourceImpl implements AdminDatasource {
   Future<void> shareInvitationTokenToWhatsApp({required String token}) {
     // TODO: implement shareInvitationTokenToWhatsApp
     throw UnimplementedError();
+  }
+
+  @override
+  Future<void> saveInvitationToken({required String token}) async {
+    try {
+      final response = await _client.post(
+        Uri.parse('$kBaseUrl$kSaveInvitationTokenEndpoint'),
+        headers: {
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode({
+          'token': token,
+        }),
+      );
+
+      if (response.statusCode != 200 && response.statusCode != 201) {
+        throw AdminException(
+            message: response.body, statusCode: response.statusCode,);
+      }
+
+    } on AdminException catch (_) {
+      rethrow;
+    } catch (e) {
+      throw AdminException(message: e.toString(), statusCode: 400);
+    }
   }
 }

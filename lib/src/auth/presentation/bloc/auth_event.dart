@@ -54,6 +54,14 @@ class CacheUserTokenEvent extends AuthEvent {
   List<String> get props => [token];
 }
 
+class CacheVerifiedInvitationTokenEvent extends AuthEvent{
+  const CacheVerifiedInvitationTokenEvent({required this.token});
+  final String token;
+
+  @override
+  List<String> get props => [token];
+}
+
 class FarmerSignUpEvent extends AuthEvent {
   const FarmerSignUpEvent({
     required this.name,

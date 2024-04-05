@@ -14,6 +14,7 @@ import 'package:husbandman/src/admin/domain/use-cases/fetch_all_orders.dart';
 import 'package:husbandman/src/admin/domain/use-cases/fetch_all_users.dart';
 import 'package:husbandman/src/admin/domain/use-cases/filter_user.dart';
 import 'package:husbandman/src/admin/domain/use-cases/generate_unique_invitation_token.dart';
+import 'package:husbandman/src/admin/domain/use-cases/save_invitation_token.dart';
 import 'package:husbandman/src/admin/domain/use-cases/search_user.dart';
 import 'package:husbandman/src/auth/domain/entity/user_entity.dart';
 
@@ -32,6 +33,7 @@ class AdminBloc extends Bloc<AdminEvent, AdminState> {
     required FilterUser filterUser,
     required GenerateUniqueInvitationToken generateUniqueInvitationToken,
     required SearchUser searchUser,
+    required SaveInvitationToken saveInvitationToken,
   })  : _blockAccount = blockAccount,
         _changeFarmerBadge = changeFarmerBadge,
         _deleteAccount = deleteAccount,
@@ -41,6 +43,7 @@ class AdminBloc extends Bloc<AdminEvent, AdminState> {
         _filterUser = filterUser,
         _generateUniqueInvitationToken = generateUniqueInvitationToken,
         _searchUser = searchUser,
+        _saveInvitationToken = saveInvitationToken,
         super(const AdminInitial()) {
     on<AdminEvent>((event, emit) {
       emit(const AdminLoading());
@@ -54,8 +57,10 @@ class AdminBloc extends Bloc<AdminEvent, AdminState> {
     on<FetchAllUsersEvent>(_fetchAllUsersHandler);
     on<FilterUserEvent>(_filterUserHandler);
     on<GenerateUniqueInvitationTokenEvent>(
-        _generateUniqueInvitationTokenHandler);
+      _generateUniqueInvitationTokenHandler,
+    );
     on<SearchUserEvent>(_searchUserHandler);
+    on<SaveInvitationTokenEvent>(_saveInvitationTokenHandler);
   }
 
   final BlockAccount _blockAccount;
@@ -67,6 +72,7 @@ class AdminBloc extends Bloc<AdminEvent, AdminState> {
   final FilterUser _filterUser;
   final GenerateUniqueInvitationToken _generateUniqueInvitationToken;
   final SearchUser _searchUser;
+  final SaveInvitationToken _saveInvitationToken;
 
   Future<void> _blockAccountHandler(
     BlockAccountEvent event,
@@ -202,6 +208,19 @@ class AdminBloc extends Bloc<AdminEvent, AdminState> {
       (r) => emit(
         FoundUsers(r),
       ),
+    );
+  }
+
+  Future<void> _saveInvitationTokenHandler(
+    SaveInvitationTokenEvent event,
+    Emitter<AdminState> emit,
+  ) async {
+    emit(const SavingInvitationToken());
+    final result = await _saveInvitationToken(event.token);
+
+    result.fold(
+      (l) => AdminError(l.errorMessage),
+      (_) => const InvitationTokenSaved(),
     );
   }
 }

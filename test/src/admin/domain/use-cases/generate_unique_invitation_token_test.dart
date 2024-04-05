@@ -30,7 +30,7 @@ void main() {
       verifyNoMoreInteractions(adminRepo);
     });
 
-    test('Should call AdminRepo and', () async {
+    test('Should call AdminRepo and return Sever Failure', () async {
       when(() => adminRepo.generateUniqueInvitationToken()).thenAnswer(
         (_) async => Left(
           ServerFailure(message: 'Tired of generating token', statusCode: 321),

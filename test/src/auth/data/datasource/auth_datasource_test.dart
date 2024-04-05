@@ -1,16 +1,16 @@
 import 'dart:convert';
-import 'dart:developer';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
+import 'package:husbandman/core/common/app/models/user/buyer_model.dart';
 import 'package:husbandman/core/common/app/models/user/farmer_model.dart';
+import 'package:husbandman/core/common/app/provider/invitation_key_provider.dart';
 import 'package:husbandman/core/common/app/provider/user_provider.dart';
 import 'package:husbandman/core/common/app/storage/hbm_storage.dart';
 import 'package:husbandman/core/error/exceptions.dart';
 import 'package:husbandman/core/utils/constants.dart';
 import 'package:husbandman/src/auth/data/datasource/auth_datasource.dart';
 import 'package:husbandman/src/auth/data/datasource/auth_datasource_impl.dart';
-import 'package:husbandman/core/common/app/models/user/buyer_model.dart';
 import 'package:husbandman/src/auth/domain/use-cases/update_user.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';
@@ -202,6 +202,63 @@ void main() {
       verifyNoMoreInteractions(storage);
     });
   });
+
+  group(
+    'CacheVerifiedInvitationToken',
+    () {
+      test(
+        'Should call FlutterSecureStorage to cache invitation token',
+        () async {
+          when(
+            () => ref.read(invitationKeyProvider.notifier).cacheInvitationToken(
+                  token: any(named: 'token'),
+                ),
+          ).thenAnswer(
+            (_) => InvitationKeyNotifier(),
+          );
+
+          await authDatasource.cacheVerifiedInvitationToken(
+            token: tUserToken,
+          );
+
+          verify(
+            () => ref
+                .read(invitationKeyProvider.notifier)
+                .cacheInvitationToken(token: any(named: 'token')),
+          );
+          verifyNoMoreInteractions(ref);
+        },
+      );
+
+      test(
+        'Should call Riverpod and throw AuthException when something goes wrong',
+        () async {
+          when(
+            () => ref
+                .read(invitationKeyProvider.notifier)
+                .cacheInvitationToken(token: tUserToken),
+          ).thenThrow(Exception());
+
+          final methodCall = authDatasource.cacheVerifiedInvitationToken;
+          expect(
+            methodCall(token: tUserToken),
+            equals(
+              throwsA(
+                isA<AuthException>(),
+              ),
+            ),
+          );
+
+          verify(
+            () => ref
+                .read(invitationKeyProvider.notifier)
+                .cacheInvitationToken(token: tUserToken),
+          );
+          verifyNoMoreInteractions(ref);
+        },
+      );
+    },
+  );
 
   group('Farmer Sign Up', () {
     test(
@@ -721,7 +778,8 @@ void main() {
       );
 
       final result = await authDatasource.validateFarmerInvitationKey(
-          invitationKey: tInvitationKey,);
+        invitationKey: tInvitationKey,
+      );
 
       expect(result, equals(tInvitationId));
 

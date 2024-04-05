@@ -42,8 +42,8 @@ class OnboardingCubit extends Cubit<OnboardingState> {
     final result = await _checkIfUserIsFirstTimer();
 
     result.fold(
-      (l) => emit(const OnboardingStatus(true)),
-      (r) => emit(OnboardingStatus(r)),
+      (l) => emit(const FirstTimerStatus(isFirstTimer: true)),
+      (r) => emit(FirstTimerStatus(isFirstTimer: r)),
     );
   }
 }

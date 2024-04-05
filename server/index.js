@@ -4,7 +4,8 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const mongoose = require('mongoose');
 const cors = require('cors');
-const authRouter = require('./auth/routes/auth');
+const authRouter = require('./auth/routes/auth/commander/auth');
+const adminRouter = require('./auth/routes/admin/commander/admin');
 
 //IMPORTS FROM OTHER FILES
 
@@ -15,6 +16,7 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 app.use(authRouter);
+app.use(adminRouter);
 
 //Connections
 mongoose.connect(process.env.MONGODB_URI, {

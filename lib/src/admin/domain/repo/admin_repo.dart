@@ -42,4 +42,6 @@ abstract class AdminRepo {
     required String query,
     required SearchUserProperty property,
   });
+
+  ResultFuture<void> saveInvitationToken({required String token});
 }

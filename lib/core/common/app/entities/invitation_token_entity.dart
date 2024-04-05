@@ -7,6 +7,7 @@ class InvitationTokenEntity extends Equatable {
     required this.ownerEmail,
     required this.ownerId,
     required this.assigned,
+    required this.value,
   });
 
   factory InvitationTokenEntity.fromMap(Map<String, dynamic> map) {
@@ -16,6 +17,7 @@ class InvitationTokenEntity extends Equatable {
       ownerEmail: map['ownerEmail'] as String,
       ownerId: map['ownerId'] as String,
       assigned: map['assigned'] as bool,
+      value: map['value'] as String,
     );
   }
 
@@ -26,6 +28,7 @@ class InvitationTokenEntity extends Equatable {
           ownerEmail: 'empty.email',
           ownerId: 'empty.id',
           assigned: false,
+          value: 'empty.value',
         );
 
   final String id;
@@ -33,6 +36,7 @@ class InvitationTokenEntity extends Equatable {
   final String ownerEmail;
   final String ownerId;
   final bool assigned;
+  final String value;
 
   @override
   List<Object> get props => [ownerEmail];
@@ -44,6 +48,7 @@ class InvitationTokenEntity extends Equatable {
       'ownerEmail': ownerEmail,
       'ownerId': ownerId,
       'assigned': assigned,
+      'value':value,
     };
   }
 }

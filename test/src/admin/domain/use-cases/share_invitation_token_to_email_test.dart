@@ -39,7 +39,7 @@ void main() {
       verify(
         () => adminRepo.shareInvitationTokenToEmail(
             token: tShareInvitationTokenToEmailParams.token,
-            emailAddress: tShareInvitationTokenToEmailParams.emailAddress),
+            emailAddress: tShareInvitationTokenToEmailParams.emailAddress,),
       ).called(1);
       verifyNoMoreInteractions(adminRepo);
     });
@@ -69,7 +69,7 @@ void main() {
       verify(
         () => adminRepo.shareInvitationTokenToEmail(
             token: tShareInvitationTokenToEmailParams.token,
-            emailAddress: tShareInvitationTokenToEmailParams.emailAddress),
+            emailAddress: tShareInvitationTokenToEmailParams.emailAddress,),
       ).called(1);
       verifyNoMoreInteractions(adminRepo);
     });

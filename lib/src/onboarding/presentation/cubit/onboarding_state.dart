@@ -24,9 +24,9 @@ class UserCached extends OnboardingState {
   const UserCached();
 }
 
-class OnboardingStatus extends OnboardingState {
-  const OnboardingStatus(
-    this.isFirstTimer,
+class FirstTimerStatus extends OnboardingState {
+  const FirstTimerStatus(
+    {required this.isFirstTimer,}
   );
   final bool isFirstTimer;
   @override

@@ -1,7 +1,5 @@
-import 'dart:convert';
 
 import 'package:husbandman/core/common/app/models/user/user_model.dart';
-import 'package:husbandman/src/auth/domain/entity/user_entity.dart';
 
 class BuyerModel extends UserModel {
   const BuyerModel({

@@ -1,5 +1,5 @@
-import 'package:husbandman/core/utils/typedef.dart';
 import 'package:husbandman/core/common/app/models/user/user_model.dart';
+import 'package:husbandman/core/utils/typedef.dart';
 
 class AdminModel extends UserModel {
   const AdminModel({

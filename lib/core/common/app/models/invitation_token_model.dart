@@ -7,6 +7,7 @@ class InvitationTokenModel extends InvitationTokenEntity {
     required super.ownerEmail,
     required super.ownerId,
     required super.assigned,
+    required super.value,
   });
 
   factory InvitationTokenModel.fromMap(Map<String, dynamic> map) {
@@ -16,6 +17,7 @@ class InvitationTokenModel extends InvitationTokenEntity {
       ownerEmail: map['ownerEmail'] as String,
       ownerId: map['ownerId'] as String,
       assigned: map['assigned'] as bool,
+      value: map['value'] as String,
     );
   }
 
@@ -26,6 +28,7 @@ class InvitationTokenModel extends InvitationTokenEntity {
           ownerEmail: 'empty.email',
           ownerId: 'empty.id',
           assigned: false,
+          value: 'empty.value',
         );
 
   @override
@@ -36,6 +39,7 @@ class InvitationTokenModel extends InvitationTokenEntity {
       'ownerEmail': ownerEmail,
       'ownerId': ownerId,
       'assigned': assigned,
+      'value': value,
     };
   }
 }
