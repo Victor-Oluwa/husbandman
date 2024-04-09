@@ -8,7 +8,7 @@ const validateInvitationKey = require('../sergents/validate_invitation_key');
 const farmer_sign_up = require('../sergents/farmer_sign_up');
 
 const authRouter = express.Router();
-router
+
 //Sergents
 authRouter.use(signIn);
 authRouter.use(buyerSignUp);
@@ -18,3 +18,4 @@ authRouter.use(validateInvitationKey);
 
 // Export File
 module.exports = authRouter;
+

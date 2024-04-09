@@ -8,6 +8,6 @@ class SaveInvitationToken extends UseCaseWithParams<void,String>{
 
   @override
   ResultFuture<void> call(String params)async {
-  return _repo.saveInvitationToken(token: params);
+  return _repo.saveInvitationToken(key: params);
   }
 }

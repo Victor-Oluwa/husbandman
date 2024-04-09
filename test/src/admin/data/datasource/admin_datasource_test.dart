@@ -562,11 +562,11 @@ void main() {
   });
 
   group('Generate Unique Invitation Token', () {
-    const tToken = '11111111111';
-    const eToken = '1111111';
+    const tToken = '1111111';
+    const eToken = '11111111111';
 
     test(
-      'Should return a [11 digits Strings]  when successful',
+      'Should return a [7 digits Strings]  when successful',
       () async {
         when(() => tokenGenerator.generateToken()).thenAnswer((_) => tToken);
 
@@ -606,7 +606,7 @@ void main() {
 
     test(
       'Should throw AdminException when '
-      ' returned digits is less than or more than 11',
+      ' returned digits is less than or more than 7',
       () async {
         when(() => tokenGenerator.generateToken()).thenAnswer((_) => eToken);
 
@@ -722,7 +722,7 @@ void main() {
         );
 
         final methodCall = adminDatasource.saveInvitationToken;
-        expect(methodCall(token: tToken), completes);
+        expect(methodCall(key: tToken), completes);
 
         verify(
           () => client.post(
@@ -731,7 +731,7 @@ void main() {
               'Content-Type': 'application/json; charset=UTF-8',
             },
             body: jsonEncode({
-              'token': tToken,
+              'key': tToken,
             }),
           ),
         );
@@ -754,7 +754,7 @@ void main() {
 
         final methodCall = adminDatasource.saveInvitationToken;
         expect(
-          methodCall(token: tToken),
+          methodCall(key: tToken),
           throwsA(
             const AdminException(
               message: 'Failed to save token',
@@ -770,7 +770,7 @@ void main() {
               'Content-Type': 'application/json; charset=UTF-8',
             },
             body: jsonEncode({
-              'token': tToken,
+              'key': tToken,
             }),
           ),
         );

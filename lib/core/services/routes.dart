@@ -5,8 +5,10 @@ import 'package:husbandman/src/admin/presentation/view/key_generator_screen.dart
 import 'package:husbandman/src/auth/presentation/view/account_type_screen.dart';
 import 'package:husbandman/src/auth/presentation/view/buyer_sign_up_screen.dart';
 import 'package:husbandman/src/auth/presentation/view/farmer_signUp_screen.dart';
+import 'package:husbandman/src/auth/presentation/view/home_screen.dart';
 import 'package:husbandman/src/auth/presentation/view/sign_in_screen.dart';
 import 'package:husbandman/src/auth/presentation/view/user_verification_page.dart';
+import 'package:husbandman/src/auth/presentation/view/verify_invitation_key_screen.dart';
 import 'package:husbandman/src/onboarding/presentation/view/onboarding_screen.dart';
 
 Route<dynamic> generateRoute(RouteSettings settings) {
@@ -52,6 +54,19 @@ Route<dynamic> generateRoute(RouteSettings settings) {
         (p0) => const KeyGeneratorScreen(),
         settings: settings,
       );
+
+    case RouteNames.verifyInvitationKey:
+      return _pageBuilder(
+        (p0) => const VerifyInvitationKeyScreen(),
+        settings: settings,
+      );
+
+    case RouteNames.homePage:
+      return _pageBuilder(
+            (p0) => const HomeScreen(),
+        settings: settings,
+      );
+
 
     default:
       return _pageBuilder(

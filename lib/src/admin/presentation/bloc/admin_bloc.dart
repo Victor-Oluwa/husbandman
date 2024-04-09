@@ -216,7 +216,7 @@ class AdminBloc extends Bloc<AdminEvent, AdminState> {
     Emitter<AdminState> emit,
   ) async {
     emit(const SavingInvitationToken());
-    final result = await _saveInvitationToken(event.token);
+    final result = await _saveInvitationToken(event.key);
 
     result.fold(
       (l) => AdminError(l.errorMessage),

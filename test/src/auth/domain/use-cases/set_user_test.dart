@@ -13,6 +13,8 @@ void main() {
   late SetUser usecase;
 
   final tUserMap = {'user': 'user'};
+  final tUserEntity = UserEntity.empty();
+
   registerFallbackValue(UserEntity.empty());
 
   setUp(() {
@@ -27,11 +29,11 @@ void main() {
           user: any(named: 'user'),
         ),
       ).thenAnswer(
-        (_) async => const Right(null),
+        (_) async => Right(tUserEntity),
       );
       final result = await usecase(tUserMap);
 
-      expect(result, equals(const Right<dynamic, void>(null)));
+      expect(result, equals(Right<dynamic, UserEntity>(tUserEntity)));
 
       verify(() => authRepo.setUser(user: tUserMap));
       verifyNoMoreInteractions(authRepo);

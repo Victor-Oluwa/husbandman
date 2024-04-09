@@ -39,22 +39,32 @@ function reportError(e, res) {
 
     if (e.message == error.USER_ALREADY_EXIST) {
         res.status(status.USER_ALREADY_EXIST).json(e.message);
+        return;
+
     }
 
     if (e.message == error.USER_DOES_NOT_EXIST) {
         res.status(status.USER_DOES_NOT_EXIST).json(e.message);
+        return;
+
     }
 
     if (e.messsage == error.WRONG_PASSWORD) {
         res.status(status.WRONG_PASSWORD).json(e.message);
+        return;
+
     }
 
     if (e.message == error.BAD_EMAIL) {
         res.status(status.BAD_EMAIL).json(e.message);
+        return;
+
     }
 
     if (e.message == error.INVALID_KEY) {
         res.status(status.INVALID_KEY).json(e.message);
+        return;
+
     }
     res.status(500).json(e);
 }

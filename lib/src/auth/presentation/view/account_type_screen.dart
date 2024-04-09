@@ -30,7 +30,7 @@ class AccountTypeScreen extends StatelessWidget {
                 ),
                 InkWell(
                   onTap: () {
-                    Navigator.pushNamed(context, RouteNames.farmerSignUpScreen);
+                    Navigator.pushNamed(context, RouteNames.verifyInvitationKey);
                   },
                   child: Wrap(
                     alignment: WrapAlignment.center,

@@ -1,5 +1,6 @@
 import 'package:dartz/dartz.dart';
 import 'package:husbandman/core/error/failure.dart';
+import 'package:husbandman/src/auth/domain/entity/user_entity.dart';
 import 'package:husbandman/src/auth/domain/repo/auth_repo.dart';
 import 'package:husbandman/src/auth/domain/use-cases/buyer_signup.dart';
 import 'package:mocktail/mocktail.dart';
@@ -12,6 +13,7 @@ void main() {
   late BuyerSignUp usecase;
 
   const buyerSignUpParams = BuyerSignUpParams.empty();
+  final tUserEntity = UserEntity.empty();
 
   setUp(() {
     authRepo = MockAuthRepo();
@@ -20,6 +22,7 @@ void main() {
 
   test('BuyerSignUp use case Should return [Right(void)] when successful',
       () async {
+
     when(
       () => authRepo.buyerSignUp(
         name: any(named: 'name'),
@@ -29,12 +32,12 @@ void main() {
         address: any(named: 'address'),
       ),
     ).thenAnswer(
-      (_) async => const Right(null),
+      (_) async => Right(tUserEntity),
     );
 
     final result = await usecase(buyerSignUpParams);
 
-    expect(result, equals(const Right<dynamic, void>(null)));
+    expect(result, equals( Right<dynamic, UserEntity>(tUserEntity)));
 
     verify(
       () => authRepo.buyerSignUp(

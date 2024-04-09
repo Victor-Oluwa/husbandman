@@ -25,10 +25,10 @@ class AdminModel extends UserModel {
       password: map['password'] as String ?? '',
       phone: (map['phone'] as List).cast<String>() ?? [],
       address: map['address'] as String ?? '',
-      balance: map['balance'] as double ?? 0.0,
+      balance:  double.parse(map['balance'].toString()) ?? 0.0,
       dealingsId: (map['dealingsId'] as List).cast<String>() ?? [],
       type: map['type'] as String ?? '',
-      token: map['token'] as String ?? '',
+      token: 'Mr Token',
       notifications: (map['notifications'] as List).cast<String>() ?? [],
       lastSeen: map['lastSeen'] as String ?? '',
     );

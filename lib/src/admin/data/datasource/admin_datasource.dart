@@ -43,6 +43,6 @@ abstract class AdminDatasource{
     required SearchUserProperty property,
   });
 
-  Future<void> saveInvitationToken({required String token});
+  Future<void> saveInvitationToken({required String key});
 }
 

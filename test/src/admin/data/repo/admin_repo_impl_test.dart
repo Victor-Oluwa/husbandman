@@ -679,14 +679,14 @@ void main() {
       () async {
         when(
           () => adminDatasource.saveInvitationToken(
-            token: any(named: 'token'),
+            key: any(named: 'key'),
           ),
         ).thenAnswer((_) async => Future.value());
 
-        final result = await adminRepoImpl.saveInvitationToken(token: tToken);
+        final result = await adminRepoImpl.saveInvitationToken(key: tToken);
         expect(result, equals(const Right<dynamic, void>(null)));
 
-        verify(() => adminDatasource.saveInvitationToken(token: tToken));
+        verify(() => adminDatasource.saveInvitationToken(key: tToken));
         verifyNoMoreInteractions(adminDatasource);
       },
     );
@@ -696,13 +696,13 @@ void main() {
       () async {
         when(
           () => adminDatasource.saveInvitationToken(
-            token: any(named: 'token'),
+            key: any(named: 'key'),
           ),
         ).thenThrow(
           const AdminException(message: 'Token is invalid', statusCode: 400),
         );
 
-        final result = await adminRepoImpl.saveInvitationToken(token: tToken);
+        final result = await adminRepoImpl.saveInvitationToken(key: tToken);
         expect(
           result,
           equals(
@@ -712,7 +712,7 @@ void main() {
           ),
         );
 
-        verify(() => adminDatasource.saveInvitationToken(token: tToken)).called(1);
+        verify(() => adminDatasource.saveInvitationToken(key: tToken)).called(1);
         verifyNoMoreInteractions(adminDatasource);
       },
     );

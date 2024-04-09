@@ -20,4 +20,6 @@ module.exports = {
     FETCH_ALL_USERS: '/admin/fetch-all-users',
     FILTER_USER: '/admin/filter-user',
     SEARCH_USER: '/admin/generate-invitation-token',
+    SAVE_INVITATION_TOKEN: '/admin/save-token',
+
 }

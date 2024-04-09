@@ -10,7 +10,7 @@ abstract class AuthDataSource {
     required String token,
   });
 
-  Future<void> buyerSignUp({
+  Future<UserEntity> buyerSignUp({
     required String name,
     required String email,
     required String password,
@@ -35,7 +35,7 @@ abstract class AuthDataSource {
 
   Future<String> retrieveUserToken();
 
-  Future<void> setUser({required DataMap user});
+  Future<UserEntity> setUser({required DataMap user});
 
   Future<void> sendResetPasswordToken({
     required String email,

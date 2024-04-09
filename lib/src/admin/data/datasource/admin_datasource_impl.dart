@@ -260,7 +260,7 @@ class AdminDatasourceImpl implements AdminDatasource {
     try {
       final result = _tokenGenerator.generateToken();
 
-      if (result.length > 11 || result.length < 11) {
+      if (result.length > 7 || result.length < 7) {
         throw const AdminException(
           message: kInvalidTokenLength,
           statusCode: 400,
@@ -330,7 +330,7 @@ class AdminDatasourceImpl implements AdminDatasource {
   }
 
   @override
-  Future<void> saveInvitationToken({required String token}) async {
+  Future<void> saveInvitationToken({required String key}) async {
     try {
       final response = await _client.post(
         Uri.parse('$kBaseUrl$kSaveInvitationTokenEndpoint'),
@@ -338,7 +338,7 @@ class AdminDatasourceImpl implements AdminDatasource {
           'Content-Type': 'application/json; charset=UTF-8',
         },
         body: jsonEncode({
-          'token': token,
+          'key': key,
         }),
       );
 

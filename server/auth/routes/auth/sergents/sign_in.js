@@ -1,12 +1,6 @@
 const express = require('express');
 const authMW = require('../../../middlewere/auth_middlewere');
-const bcryptjs = require("bcryptjs");
 const endpoints = require('../../../endpoints');
-const Buyer = require('../../../model/buyer');
-const Farmer = require('../../../model/farmer');
-const error = require('../../../error');
-const status = require('../../../status');
-const Admin = require('../../../model/admin');
 const arsenal = require('../arsenal/sign_in_arsenal');
 
 const router = express.Router();

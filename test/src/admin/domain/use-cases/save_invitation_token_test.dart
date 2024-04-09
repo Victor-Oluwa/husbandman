@@ -19,20 +19,20 @@ void main() {
 
   group('SaveInvitationToken', () {
     test('Should call [AdminRepo] and return [Right<void>]', () async {
-      when(() => adminRepo.saveInvitationToken(token: any(named: 'token')))
+      when(() => adminRepo.saveInvitationToken(key: any(named: 'key')))
           .thenAnswer((_) async => const Right(null));
 
       final result = await usecase(tToken);
       expect(result, equals(const Right<dynamic, void>(null)));
 
-      verify(() => adminRepo.saveInvitationToken(token: tToken));
+      verify(() => adminRepo.saveInvitationToken(key: tToken));
       verifyNoMoreInteractions(adminRepo);
     });
 
     test('Should call [AuthRepo] and return [Right<ServerFailure>]', () async {
       when(
         () => adminRepo.saveInvitationToken(
-          token: any(named: 'token'),
+          key: any(named: 'key'),
         ),
       ).thenAnswer(
         (_) async => Left(
@@ -50,7 +50,7 @@ void main() {
         ),
       );
 
-      verify(() => adminRepo.saveInvitationToken(token: tToken));
+      verify(() => adminRepo.saveInvitationToken(key: tToken));
       verifyNoMoreInteractions(adminRepo);
     });
   });

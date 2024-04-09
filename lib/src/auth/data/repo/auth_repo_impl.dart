@@ -28,7 +28,7 @@ class AuthRepoImpl implements AuthRepo {
   }
 
   @override
-  ResultFuture<void> buyerSignUp({
+  ResultFuture<UserEntity> buyerSignUp({
     required String name,
     required String email,
     required String password,
@@ -36,14 +36,14 @@ class AuthRepoImpl implements AuthRepo {
     required String address,
   }) async {
     try {
-      await _authDataSource.buyerSignUp(
+    final result = await _authDataSource.buyerSignUp(
         name: name,
         email: email,
         password: password,
         type: type,
         address: address,
       );
-      return const Right(null);
+      return Right(result);
     } on AuthException catch (e) {
       return Left(
         AuthFailure.fromException(e),
@@ -138,10 +138,10 @@ class AuthRepoImpl implements AuthRepo {
   }
 
   @override
-  ResultFuture<void> setUser({required DataMap user}) async {
+  ResultFuture<UserEntity> setUser({required DataMap user}) async {
     try {
-      await _authDataSource.setUser(user: user);
-      return const Right(null);
+      final result = await _authDataSource.setUser(user: user);
+      return Right(result);
     } on AuthException catch (e) {
       return Left(
         AuthFailure.fromException(e),

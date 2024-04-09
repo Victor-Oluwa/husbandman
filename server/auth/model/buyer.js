@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-const validating = require('validator');
 
 const buyerSchema = mongoose.Schema({
     name: {
@@ -10,11 +9,7 @@ const buyerSchema = mongoose.Schema({
     email: {
         type: String,
         required: true,
-        validate: {
-            validator: validating.isEmail
-        },
         trim: true,
-        unique: true,
     },
     password: {
         type: String,
@@ -34,6 +29,7 @@ const buyerSchema = mongoose.Schema({
     },
     lastSeen: {
         type: String,
+        default: '',
     },
     type: {
         type: String,
@@ -44,7 +40,7 @@ const buyerSchema = mongoose.Schema({
         default: '',
     },
     notifications: {
-        type: String,
+        type: [String],
         default: '',
     },
     cartIds: {

@@ -1,11 +1,12 @@
 const error = require('../../../error');
-const { jwt } = require('jsonwebtoken');
 const Buyer = require('../../../model/buyer');
 const Farmer = require('../../../model/farmer');
 const Admin = require('../../../model/admin');
 const status = require('../../../status');
+const jwt = require('jsonwebtoken');
 
 async function getToken(req) {
+    // console.log('Hahha' + process.env.AUTH_TOKEN_KEY)
     const token = req.header(process.env.AUTH_TOKEN_KEY);
     return token;
 
@@ -43,7 +44,9 @@ function reportError(e, res) {
 
     if (e.message == error.BAD_TOKEN) {
         res.status(status.BAD_TOKEN).json(e.message);
+        return;
     }
+    console.log(e);
 
     res.status(500).json(e);
 }

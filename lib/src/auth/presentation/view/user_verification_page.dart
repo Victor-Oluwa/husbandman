@@ -36,12 +36,13 @@ class _UserVerificationPageState extends State<UserVerificationPage> {
                 //If user is firs timer. They are navigated to Onboarding
                 Navigator.pushNamedAndRemoveUntil(
                   context,
-                  RouteNames.onboardingScreen, 
+                  RouteNames.onboardingScreen,
                   (route) => false,
                 );
               } else if (state is FirstTimerStatus && !state.isFirstTimer) {
                 // If user is not a first timer. User's token is retrieved for verification
                 context.read<AuthBloc>().add(RetrieveUserTokenEvent());
+
               }
             },
           ),
@@ -54,6 +55,7 @@ class _UserVerificationPageState extends State<UserVerificationPage> {
                     .add(ValidateUserEvent(token: state.token));
               } else if (state is AuthError) {
                 ///If validation fails user is navigated to the Sign In screen
+                log('Validate error: $state');
                 Navigator.pushNamedAndRemoveUntil(
                   context,
                   RouteNames.signInScreen,
@@ -67,17 +69,30 @@ class _UserVerificationPageState extends State<UserVerificationPage> {
                 final user = state.user as UserModel;
                 context.read<AuthBloc>().add(SetUserEvent(user: user.toMap()));
 
-                if (state is UserSet) {
-                  // If the user object is saved successfully.User is navigated to the home screen
-                  user.type == 'Admin'
-                      ? log('Navigating to Admin HomeScreen')
-                      : log('Navigating to User HomeScreen');
-                }
-              } else {
+              } else if (state is AuthError) {
+                log('Validate error ii: $state');
                 Navigator.pushNamedAndRemoveUntil(
                   context,
                   RouteNames.signInScreen,
                   (route) => false,
+                );
+                return;
+              }
+
+              if (state is UserSet) {
+                // If the user object is saved successfully.User is navigated to the home screen
+                log('User set');
+                state.user.type == 'Admin'
+                    ? Navigator.pushNamedAndRemoveUntil(
+                  context, RouteNames.homePage, (route) => false,)
+                    :  Navigator.pushNamedAndRemoveUntil(
+                  context, RouteNames.homePage, (route) => false,);
+              }else if (state is AuthError) {
+                log('Set User error: $state');
+                Navigator.pushNamedAndRemoveUntil(
+                  context,
+                  RouteNames.signInScreen,
+                      (route) => false,
                 );
                 return;
               }

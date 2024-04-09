@@ -46,7 +46,7 @@ router.post(endpoints.FARMER_SIGNUP, authMW, async (req, res) => {
 
     } catch (error) {
         arsenal.reportError(error, res);
-
+        c
     }
 
 

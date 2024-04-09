@@ -165,9 +165,9 @@ class AdminRepoImpl implements AdminRepo {
   }
 
   @override
-  ResultFuture<void> saveInvitationToken({required String token})async {
+  ResultFuture<void> saveInvitationToken({required String key})async {
  try{
-   final result = await _adminDatasource.saveInvitationToken(token: token);
+   final result = await _adminDatasource.saveInvitationToken(key: key);
    return Right(result);
  } on AdminException catch(e){
    return Left(AdminFailure.fromException(e));

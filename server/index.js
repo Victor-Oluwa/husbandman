@@ -14,6 +14,9 @@ const app = express();
 
 //Middleware
 app.use(express.json());
+// app.use(cors(
+//     { origin: 'https://192.168.141.1:3000' }
+// ));
 app.use(cors());
 app.use(authRouter);
 app.use(adminRouter);

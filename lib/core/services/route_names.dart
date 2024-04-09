@@ -6,4 +6,6 @@ class RouteNames {
   static const buyerSignUpScreen = 'buyer-sign-up-Screen';
   static const signInScreen = 'sign-in-screen';
   static const generateToken = 'generate-token';
+  static const verifyInvitationKey = 'verify-invitationKey-screen';
+  static const homePage = 'home-page-screen';
 }

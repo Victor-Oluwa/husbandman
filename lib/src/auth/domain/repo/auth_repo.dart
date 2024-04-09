@@ -7,7 +7,7 @@ abstract class AuthRepo {
     required String token,
   });
 
-  ResultFuture<void> buyerSignUp({
+  ResultFuture<UserEntity> buyerSignUp({
     required String name,
     required String email,
     required String password,
@@ -32,7 +32,7 @@ abstract class AuthRepo {
 
   ResultFuture<String> retrieveUserToken();
 
-  ResultFuture<void> setUser({required DataMap user});
+  ResultFuture<UserEntity> setUser({required DataMap user});
 
   ResultFuture<void> sendResetPasswordToken({
     required String email,
@@ -53,4 +53,6 @@ abstract class AuthRepo {
   ResultFuture<String> validateFarmerInvitationKey({
     required String invitationKey,
   });
+
+  // ResultFuture<void> cacheInvitationKey({required String key});
 }

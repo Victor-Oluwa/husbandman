@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
@@ -58,7 +59,7 @@ class AuthDataSourceImpl implements AuthDataSource {
   }
 
   @override
-  Future<void> buyerSignUp({
+  Future<UserModel> buyerSignUp({
     required String name,
     required String email,
     required String password,
@@ -70,12 +71,15 @@ class AuthDataSourceImpl implements AuthDataSource {
         Uri.parse(
           '$kBaseUrl$kBuyerSignUpEndpoint',
         ),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
         body: jsonEncode({
-          'name': 'name',
-          'email': 'email',
-          'password': 'password',
-          'type': 'type',
-          'address': 'address',
+          'name': name,
+          'email': email,
+          'password': password,
+          'type': type,
+          'address': address,
         }),
       );
       if (response.statusCode != 200 && response.statusCode != 201) {
@@ -84,6 +88,11 @@ class AuthDataSourceImpl implements AuthDataSource {
           statusCode: response.statusCode,
         );
       }
+
+      final responseMap = jsonDecode(response.body) as DataMap;
+
+      final buyerModel = BuyerModel.fromMap(responseMap);
+      return buyerModel;
     } on AuthException catch (_) {
       rethrow;
     } catch (e) {
@@ -92,14 +101,12 @@ class AuthDataSourceImpl implements AuthDataSource {
         statusCode: 505,
       );
     }
-    _client.close();
   }
 
   @override
   Future<void> cacheUserToken({required String token}) async {
     try {
-      final result = await _storage.writeData(key: kAuthToken, value: token);
-      return result;
+      await _storage.writeData(key: kAuthToken, value: token);
     } catch (e) {
       throw AuthException(message: e.toString(), statusCode: 500);
     }
@@ -108,7 +115,7 @@ class AuthDataSourceImpl implements AuthDataSource {
   @override
   Future<void> cacheVerifiedInvitationToken({required String token}) async {
     try {
-       _ref
+      _ref
           .read(invitationKeyProvider.notifier)
           .cacheInvitationToken(token: token);
     } on AuthException catch (_) {
@@ -187,7 +194,7 @@ class AuthDataSourceImpl implements AuthDataSource {
   }
 
   @override
-  Future<void> setUser({required DataMap user}) async {
+  Future<UserModel> setUser({required DataMap user}) async {
     try {
       final userModel = UserModel.fromMap(user);
       switch (userModel.type) {
@@ -200,6 +207,7 @@ class AuthDataSourceImpl implements AuthDataSource {
         default:
           throw const AuthException(message: kInvalidUserType, statusCode: 401);
       }
+      return userModel;
     } catch (e) {
       throw AuthException(message: e.toString(), statusCode: 100);
     }
@@ -300,19 +308,19 @@ class AuthDataSourceImpl implements AuthDataSource {
         );
       }
       final userModel = UserModel.fromMap(jsonDecode(response.body) as DataMap);
-      final farmerModel =
-          FarmerModel.fromMap(jsonDecode(response.body) as DataMap);
-      final buyerModel =
-          BuyerModel.fromMap(jsonDecode(response.body) as DataMap);
-      final adminModel =
-          AdminModel.fromMap(jsonDecode(response.body) as DataMap);
 
       switch (userModel.type) {
         case 'Farmer':
+          final farmerModel =
+          FarmerModel.fromMap(jsonDecode(response.body) as DataMap);
           return farmerModel;
         case 'Buyer':
+          final buyerModel =
+          BuyerModel.fromMap(jsonDecode(response.body) as DataMap);
           return buyerModel;
         case 'Admin':
+          final adminModel =
+          AdminModel.fromMap(jsonDecode(response.body) as DataMap);
           return adminModel;
         default:
           throw const AuthException(
@@ -334,6 +342,7 @@ class AuthDataSourceImpl implements AuthDataSource {
         Uri.parse('$kBaseUrl$kValidateUserEndpoint'),
         headers: {
           'Content-Type': 'application/json; charset=UTF-8',
+          kAuthToken: token,
         },
         body: jsonEncode({
           'token': token,
@@ -346,21 +355,20 @@ class AuthDataSourceImpl implements AuthDataSource {
           statusCode: response.statusCode,
         );
       }
-
       final userModel = UserModel.fromMap(jsonDecode(response.body) as DataMap);
-      final farmerModel =
-          FarmerModel.fromMap(jsonDecode(response.body) as DataMap);
-      final buyerModel =
-          BuyerModel.fromMap(jsonDecode(response.body) as DataMap);
-      final adminModel =
-          AdminModel.fromMap(jsonDecode(response.body) as DataMap);
 
       switch (userModel.type) {
         case 'Farmer':
+          final farmerModel =
+              FarmerModel.fromMap(jsonDecode(response.body) as DataMap);
           return farmerModel;
         case 'Buyer':
+          final buyerModel =
+              BuyerModel.fromMap(jsonDecode(response.body) as DataMap);
           return buyerModel;
         case 'Admin':
+          final adminModel =
+              AdminModel.fromMap(jsonDecode(response.body) as DataMap);
           return adminModel;
         default:
           throw const AuthException(

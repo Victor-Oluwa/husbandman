@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:husbandman/core/common/app/models/user/buyer_model.dart';
 import 'package:husbandman/core/common/app/models/user/farmer_model.dart';
@@ -13,7 +14,6 @@ import 'package:husbandman/src/auth/data/datasource/auth_datasource.dart';
 import 'package:husbandman/src/auth/data/datasource/auth_datasource_impl.dart';
 import 'package:husbandman/src/auth/domain/use-cases/update_user.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:test/test.dart';
 
 class MockHttpClient extends Mock implements http.Client {}
 
@@ -98,26 +98,38 @@ void main() {
   group('Buyer Sign Up', () {
     test('Should complete successfully when statusCode is [200] or [201]',
         () async {
-      when(() => client.post(any(), body: any(named: 'body'))).thenAnswer(
-        (_) async => http.Response('Buyer created successfully', 200),
+      when(
+        () => client.post(
+          any(),
+          headers: any(named: 'headers'),
+          body: any(named: 'body'),
+        ),
+      ).thenAnswer(
+        (_) async => http.Response(
+          jsonEncode(tBuyerModelResponse.toMap()),
+          200,
+        ),
       );
 
-      final methodCall = authDatasource.buyerSignUp;
+      final result = await authDatasource.buyerSignUp(
+        name: 'name',
+        email: 'email',
+        password: 'password',
+        type: 'type',
+        address: 'address',
+      );
 
       expect(
-        methodCall(
-          name: 'name',
-          email: 'email',
-          password: 'password',
-          type: 'type',
-          address: 'address',
-        ),
-        completes,
+        result,
+        equals(tBuyerModelResponse),
       );
 
       verify(
         () => client.post(
           Uri.parse('$kBaseUrl$kBuyerSignUpEndpoint'),
+          headers: <String, String>{
+            'Content-Type': 'application/json; charset=UTF-8',
+          },
           body: jsonEncode({
             'name': 'name',
             'email': 'email',
@@ -132,7 +144,7 @@ void main() {
 
     test('Should throw [AuthException] when status code is not [200] or [201]',
         () async {
-      when(() => client.post(any(), body: any(named: 'body'))).thenAnswer(
+      when(() => client.post(any(), headers: any(named: 'headers'), body: any(named: 'body'))).thenAnswer(
         (_) async => http.Response('User already exist', 400),
       );
 
@@ -154,6 +166,9 @@ void main() {
       verify(
         () => client.post(
           Uri.parse('$kBaseUrl$kBuyerSignUpEndpoint'),
+          headers: <String, String>{
+            'Content-Type': 'application/json; charset=UTF-8',
+          },
           body: jsonEncode({
             'name': 'name',
             'email': 'email',

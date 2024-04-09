@@ -6,12 +6,13 @@ const router = express.Router();
 
 
 router.post(endpoints.VALIDATE_USER, authMW, async (req, res) => {
+
     try {
         const token = await arsenal.getToken(req);
         const user = await arsenal.verifyToken(token);
         await user.save();
 
-        res.status(200).json(user);
+        res.status(200).json({ token: req.token, ...user._doc });
 
     } catch (e) {
         arsenal.reportError(e, res);

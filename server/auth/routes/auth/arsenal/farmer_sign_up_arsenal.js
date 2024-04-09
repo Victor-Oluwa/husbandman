@@ -7,9 +7,9 @@ const status = require("../../../status");
 const InvitationKey = require("../../../model/invitation_key");
 
 async function findKey(key) {
-    const key = await InvitationKey.findOne({ value: key });
+    const exist = await InvitationKey.findOne({ value: key });
 
-    if (!key) {
+    if (!exist) {
         throw new Error(error.INVALID_KEY);
     }
     return key;

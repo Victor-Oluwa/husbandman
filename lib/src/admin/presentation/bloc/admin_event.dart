@@ -81,11 +81,11 @@ class SearchUserEvent extends AdminEvent {
 }
 
 class SaveInvitationTokenEvent extends AdminEvent{
-  const SaveInvitationTokenEvent({required this.token});
-  final String token;
+  const SaveInvitationTokenEvent({required this.key});
+  final String key;
 
   @override
-  List<String> get props => [token];
+  List<String> get props => [key];
 
 }
 

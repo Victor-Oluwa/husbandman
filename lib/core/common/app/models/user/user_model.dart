@@ -32,18 +32,14 @@ class UserModel extends UserEntity {
       password: map['password'] as String ?? '',
       phone: (map['phone'] as List).cast<String>() ?? [],
       address: map['address'] as String ?? '',
-      balance: map['balance'] as double ?? 0.0,
+      balance:  double.parse(map['balance'].toString()) ?? 0.0,
       dealingsId: (map['dealingsId'] as List).cast<String>() ?? [],
-      about: map['about'] as String ?? '',
       type: map['type'] as String ?? '',
-      token: map['token'] as String ?? '',
+      token: map['token'].toString() ?? '',
       profilePic: map['profilePic'] as String ?? '',
       notifications: (map['notifications'] as List).cast<String>() ?? [],
       customers: (map['customers'] as List).cast<String>() ?? [],
       lastSeen: map['lastSeen'] as String ?? '',
-      products: (map['products'] as List).cast<String>() ?? [],
-      badge: map['badge'] as int ?? 0,
-      bannerImage: map['bannerImage'] as String ?? '',
     );
   }
 

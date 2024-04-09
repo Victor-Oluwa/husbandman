@@ -1,5 +1,6 @@
 import 'package:dartz/dartz.dart';
 import 'package:husbandman/core/common/app/models/user/buyer_model.dart';
+import 'package:husbandman/core/common/app/models/user/user_model.dart';
 import 'package:husbandman/core/enums/update_user.dart';
 import 'package:husbandman/core/error/exceptions.dart';
 import 'package:husbandman/core/error/failure.dart';
@@ -113,7 +114,7 @@ void main() {
           address: any(named: 'address'),
           type: any(named: 'type'),
         ),
-      ).thenAnswer((_) async => Future.value());
+      ).thenAnswer((_) async => tTestUser);
 
       final result = await authRepoImpl.buyerSignUp(
         name: farmerSignUpParams.name,
@@ -123,7 +124,7 @@ void main() {
         type: farmerSignUpParams.type,
       );
 
-      expect(result, equals(const Right<dynamic, void>(null)));
+      expect(result, equals( Right<dynamic, BuyerModel>(tTestUser)));
 
       verify(
         () => authDataSource.buyerSignUp(
@@ -525,11 +526,11 @@ void main() {
     test('Should return [Right(null)] when successful', () async {
       when(
         () => authDataSource.setUser(user: any(named: 'user')),
-      ).thenAnswer((_) async => Future.value());
+      ).thenAnswer((_) async => tTestUser);
 
       final result = await authRepoImpl.setUser(user: tDataMap);
 
-      expect(result, equals(const Right<dynamic, void>(null)));
+      expect(result, equals(Right<dynamic, UserModel>(tTestUser)));
 
       verify(() => authDataSource.setUser(user: tDataMap)).called(1);
 

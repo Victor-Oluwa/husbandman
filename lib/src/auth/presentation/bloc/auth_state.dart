@@ -25,7 +25,11 @@ class SignedIn extends AuthState {
 }
 
 class BuyerSignedUp extends AuthState {
-  const BuyerSignedUp();
+  const BuyerSignedUp(this.user);
+  final UserEntity user;
+
+  @override
+  List<Object> get props => [user];
 }
 
 class BuyerSigningUp extends AuthState{
@@ -62,7 +66,11 @@ class PasswordReset extends AuthState {
 }
 
 class UserSet extends AuthState {
-  const UserSet();
+  const UserSet(this.user);
+
+  final UserEntity user;
+  @override
+  List<Object> get props => [user];
 }
 
 class UserValidated extends AuthState {

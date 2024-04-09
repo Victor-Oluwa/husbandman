@@ -132,9 +132,9 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
     result.fold(
           (l) => emit(AuthError(l.errorMessage)),
-          (_) =>
+          (r) =>
           emit(
-            const BuyerSignedUp(),
+             BuyerSignedUp(r),
           ),
     );
   }
@@ -186,9 +186,9 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
     result.fold(
           (l) => emit(AuthError(l.errorMessage)),
-          (_) =>
+          (r) =>
           emit(
-            const UserSet(),
+             UserSet(r),
           ),
     );
   }

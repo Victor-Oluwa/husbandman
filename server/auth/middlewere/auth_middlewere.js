@@ -3,7 +3,7 @@ const jwt = require("jsonwebtoken");
 
 const authMW = async (req, res, next) => {
     try {
-        const token = req.header(process.env.USER_TOKEN);
+        const token = req.header(process.env.AUTH_TOKEN_KEY);
         if (!token)
             return res
                 .status(401)

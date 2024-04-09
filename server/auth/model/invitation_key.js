@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-const validating = require('validator');
 
 const invitationKeySchema = mongoose.Schema({
     ownerName: {
@@ -8,10 +7,7 @@ const invitationKeySchema = mongoose.Schema({
     },
     ownerEmail: {
         type: String,
-        required: true,
-        validate: {
-            validator: validating.isEmail,
-        }
+        default: 'hbmdemoemail@gmail.com',
     },
     ownerId: {
         type: String,
@@ -19,7 +15,7 @@ const invitationKeySchema = mongoose.Schema({
     },
     assigned: {
         type: Boolean,
-        required: true,
+        default: false,
     },
     value: {
         type: String,
