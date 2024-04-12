@@ -27,4 +27,5 @@ class HBMStrings {
       'Kindly tick the private Policy box before proceeding';
   static const String accountType = 'Account Type';
   static const String seller = 'Seller';
+  static const String farmer = 'Farmer';
 }

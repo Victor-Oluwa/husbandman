@@ -37,7 +37,11 @@ class BuyerSigningUp extends AuthState{
 }
 
 class FarmerSignedUp extends AuthState {
-  const FarmerSignedUp();
+  const FarmerSignedUp(this.user);
+  final UserEntity user;
+
+  @override
+  List<Object> get props => [user];
 }
 
 class FarmerSigningUp extends AuthState{
@@ -111,6 +115,10 @@ class ResetPasswordTokenAuthenticated extends AuthState {
 
   @override
   List<bool> get props => [status];
+}
+
+class SignedOut extends AuthState{
+  const SignedOut();
 }
 
 class AuthError extends AuthState {

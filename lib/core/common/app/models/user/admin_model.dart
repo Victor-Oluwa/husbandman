@@ -28,7 +28,7 @@ class AdminModel extends UserModel {
       balance:  double.parse(map['balance'].toString()) ?? 0.0,
       dealingsId: (map['dealingsId'] as List).cast<String>() ?? [],
       type: map['type'] as String ?? '',
-      token: 'Mr Token',
+      token: map['token'] as String ?? '',
       notifications: (map['notifications'] as List).cast<String>() ?? [],
       lastSeen: map['lastSeen'] as String ?? '',
     );

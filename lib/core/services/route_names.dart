@@ -8,4 +8,6 @@ class RouteNames {
   static const generateToken = 'generate-token';
   static const verifyInvitationKey = 'verify-invitationKey-screen';
   static const homePage = 'home-page-screen';
+  static const adminHome = 'admin-home-screen';
+
 }

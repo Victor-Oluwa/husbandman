@@ -8,7 +8,7 @@ const jwt = require('jsonwebtoken');
 
 
 async function checkIfUserAlreadyExist(email) {
-
+    console.log('Email: ' + email);
     if (!email) {
         throw new Error(error.BAD_EMAIL);
     }
@@ -50,7 +50,6 @@ async function createJWT(user) {
 }
 
 function reportError(e, res) {
-    console.log(e.message);
     if (e.message == error.USER_ALREADY_EXIST) {
         res.status(status.USER_ALREADY_EXIST).json(e.message);
         return;
@@ -61,22 +60,22 @@ function reportError(e, res) {
         return;
     }
 
-    if (e == error.WRONG_PASSWORD) {
+    if (e.message == error.WRONG_PASSWORD) {
         res.status(status.WRONG_PASSWORD).json(e.message);
         return;
     }
 
-    if (e == error.BAD_EMAIL) {
+    if (e.message == error.BAD_EMAIL) {
         res.status(status.BAD_EMAIL).json(e.message);
         return;
     }
 
-    if (e == error.KEY_IS_REGISTERED) {
+    if (e.message == error.KEY_IS_REGISTERED) {
         res.status(status.KEY_IS_REGISTERED).json(e.message);
         return;
     }
 
-    if (e == error.JSON_WEB_TOKEN_ERROR) {
+    if (e.message == error.JSON_WEB_TOKEN_ERROR) {
         res.status(status.JSON_WEB_TOKEN_ERROR).json(e.message);
         return;
     }
@@ -90,8 +89,6 @@ module.exports = {
     reportError,
     hashPassword
 };
-
-
 
 
 

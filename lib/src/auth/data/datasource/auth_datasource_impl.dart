@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:developer';
 
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
 import 'package:husbandman/core/common/app/models/user/admin_model.dart';
@@ -126,7 +127,7 @@ class AuthDataSourceImpl implements AuthDataSource {
   }
 
   @override
-  Future<void> farmerSignUp({
+  Future<UserModel> farmerSignUp({
     required String name,
     required String email,
     required String password,
@@ -135,17 +136,21 @@ class AuthDataSourceImpl implements AuthDataSource {
     required String invitationKey,
   }) async {
     try {
+      log('Passed email: $email');
       final response = await _client.post(
         Uri.parse(
           '$kBaseUrl$kFarmerSignUpEndpoint',
         ),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
         body: jsonEncode({
           'name': name,
           'email': email,
           'password': password,
           'address': address,
           'type': type,
-          'invitationKey': invitationKey,
+          'invitationKey': _ref.read(invitationKeyProvider).substring(1, 8),
         }),
       );
 
@@ -155,6 +160,12 @@ class AuthDataSourceImpl implements AuthDataSource {
           statusCode: response.statusCode,
         );
       }
+
+      final responseMap = jsonDecode(response.body) as DataMap;
+
+      final farmerModel = FarmerModel.fromMap(responseMap);
+      return farmerModel;
+
     } on AuthException catch (_) {
       rethrow;
     } catch (e) {
@@ -166,7 +177,8 @@ class AuthDataSourceImpl implements AuthDataSource {
   Future<String> retrieveUserToken() async {
     try {
       final result = await _storage.readData(key: kAuthToken);
-      return result ?? '';
+      log('Retrieved token: $result');
+      return result ?? 'Returned null';
     } catch (e) {
       throw AuthException(message: e.toString(), statusCode: 400);
     }
@@ -197,16 +209,8 @@ class AuthDataSourceImpl implements AuthDataSource {
   Future<UserModel> setUser({required DataMap user}) async {
     try {
       final userModel = UserModel.fromMap(user);
-      switch (userModel.type) {
-        case 'Farmer':
-          _ref.read(farmerProvider.notifier).updateFarmerFromMap(map: user);
-        case 'Buyer':
-          _ref.read(buyerProvider.notifier).updateBuyerFromMap(map: user);
-        case 'Admin':
-          _ref.read(adminProvider.notifier).updateAdminFromMap(map: user);
-        default:
-          throw const AuthException(message: kInvalidUserType, statusCode: 401);
-      }
+      _ref.read(userProvider.notifier).updateUserFromMap(map: user);
+
       return userModel;
     } catch (e) {
       throw AuthException(message: e.toString(), statusCode: 100);
@@ -256,20 +260,21 @@ class AuthDataSourceImpl implements AuthDataSource {
           statusCode: response.statusCode,
         );
       }
-
       final responseMap = jsonDecode(response.body) as DataMap;
+
       final userModel = UserModel.fromMap(responseMap);
-      final farmerModel = FarmerModel.fromMap(responseMap);
-      final buyerModel = BuyerModel.fromMap(responseMap);
-      final adminModel =
-          AdminModel.fromMap(jsonDecode(response.body) as DataMap);
+      log('Farmer sign in response: $responseMap');
 
       switch (userModel.type) {
         case 'Farmer':
+          final farmerModel = FarmerModel.fromMap(responseMap);
           return farmerModel;
         case 'Buyer':
+          final buyerModel = BuyerModel.fromMap(responseMap);
           return buyerModel;
         case 'Admin':
+          final adminModel =
+          AdminModel.fromMap(jsonDecode(response.body) as DataMap);
           return adminModel;
         default:
           throw const AuthException(
@@ -281,6 +286,18 @@ class AuthDataSourceImpl implements AuthDataSource {
       rethrow;
     } catch (e) {
       throw AuthException(message: e.toString(), statusCode: 400);
+    }
+  }
+
+  @override
+  Future<void> signOut() async {
+    try {
+      final result = _storage.deleteData(key: kAuthToken);
+      return result;
+    } on AuthException catch (_) {
+      rethrow;
+    } catch (e) {
+      throw AuthException(message: e.toString(), statusCode: 505);
     }
   }
 
@@ -360,15 +377,15 @@ class AuthDataSourceImpl implements AuthDataSource {
       switch (userModel.type) {
         case 'Farmer':
           final farmerModel =
-              FarmerModel.fromMap(jsonDecode(response.body) as DataMap);
+          FarmerModel.fromMap(jsonDecode(response.body) as DataMap);
           return farmerModel;
         case 'Buyer':
           final buyerModel =
-              BuyerModel.fromMap(jsonDecode(response.body) as DataMap);
+          BuyerModel.fromMap(jsonDecode(response.body) as DataMap);
           return buyerModel;
         case 'Admin':
           final adminModel =
-              AdminModel.fromMap(jsonDecode(response.body) as DataMap);
+          AdminModel.fromMap(jsonDecode(response.body) as DataMap);
           return adminModel;
         default:
           throw const AuthException(

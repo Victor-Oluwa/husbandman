@@ -4,6 +4,7 @@ const Farmer = require('../../../model/farmer');
 const Admin = require('../../../model/admin');
 const error = require('../../../error');
 const status = require("../../../status");
+const InvitationKey = require("../../../model/invitation_key");
 
 async function checkIfUserIsRegistered(email) {
     if (!email) {
@@ -23,6 +24,20 @@ async function checkIfUserIsRegistered(email) {
     }
 
     return user;
+}
+
+async function verifySellerToken(email) {
+    let seller = await Farmer.findOne({ email: email });
+    if (!seller) {
+        console.log('User is not a seller');
+        return;
+    }
+
+    let key = await InvitationKey.findOne({ ownerEmail: email });
+    if (!key) {
+        throw new Error(error.NO_KEY_ASSIGNED);
+    }
+    console.log('User has the key: ' + key);
 }
 
 async function verifyPassword(password, user) {
@@ -66,6 +81,18 @@ function reportError(e, res) {
         return;
 
     }
+
+    if (e.message == error.JSON_WEB_TOKEN_ERROR) {
+        res.status(status.JSON_WEB_TOKEN_ERROR).json(e.message);
+        return;
+
+    }
+
+    if (e.message == error.NO_KEY_ASSIGNED) {
+        res.status(status.NO_KEY_ASSIGNED).json(e.message);
+        return;
+
+    }
     res.status(500).json(e);
 }
 
@@ -73,4 +100,5 @@ module.exports = {
     checkIfUserIsRegistered,
     verifyPassword,
     reportError,
+    verifySellerToken,
 }

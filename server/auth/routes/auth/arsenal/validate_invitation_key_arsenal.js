@@ -15,8 +15,8 @@ async function validateKey(invitationKey) {
     if (key.assigned == true) {
         throw new Error(error.KEY_IS_REGISTERED);
     }
-
-    return key;
+    console.log(key);
+    return key.value;
 };
 
 function reportError(e, res) {

@@ -19,7 +19,7 @@ abstract class AuthRepo {
 
   ResultFuture<void> cacheVerifiedInvitationToken({required String token});
 
-  ResultFuture<void> farmerSignUp({
+  ResultFuture<UserEntity> farmerSignUp({
     required String name,
     required String email,
     required String password,
@@ -42,6 +42,8 @@ abstract class AuthRepo {
     required String email,
     required String password,
   });
+
+  ResultFuture<void> signOut();
 
   ResultFuture<UserEntity> updateUser({
     required dynamic newData,

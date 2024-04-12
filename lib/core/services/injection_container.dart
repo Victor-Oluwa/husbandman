@@ -32,6 +32,7 @@ import 'package:husbandman/src/auth/domain/use-cases/retrieve_user_token.dart';
 import 'package:husbandman/src/auth/domain/use-cases/send_reset_password_token.dart';
 import 'package:husbandman/src/auth/domain/use-cases/set_user.dart';
 import 'package:husbandman/src/auth/domain/use-cases/sign_in.dart';
+import 'package:husbandman/src/auth/domain/use-cases/sign_out.dart';
 import 'package:husbandman/src/auth/domain/use-cases/update_user.dart';
 import 'package:husbandman/src/auth/domain/use-cases/validate_farmer_invitation_key.dart';
 import 'package:husbandman/src/auth/domain/use-cases/validate_user.dart';
@@ -167,6 +168,7 @@ final authBlocProvider = Provider<AuthBloc>((ref) {
     authenticateResetPasswordToken:
     ref.read(authenticateResetPasswordTokenProvider),
     signIn: ref.read(signInProvider),
+    signOut: ref.read(signOutProvider),
     farmerSignUp: ref.read(farmerSignUpProvider),
     buyerSignUp: ref.read(buyerSignUpProvider),
     cacheUserToken: ref.read(cacheUserTokenProvider),
@@ -203,6 +205,10 @@ Provider<AuthenticateResetPasswordToken>((ref) {
 
 final signInProvider = Provider<SignIn>((ref) {
   return SignIn(ref.read(authRepoProvider));
+});
+
+final signOutProvider = Provider<SignOut>((ref){
+  return SignOut(ref.read(authRepoProvider));
 });
 
 final farmerSignUpProvider = Provider<FarmerSignUp>((ref) {

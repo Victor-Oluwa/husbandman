@@ -8,11 +8,12 @@ const InvitationKey = require('../../../model/invitation_key');
 
 const router = express.Router();
 
-router.post(endpoints.FARMER_SIGNUP, authMW, async (req, res) => {
+router.post(endpoints.FARMER_SIGNUP, async (req, res) => {
 
     try {
         const { name, email, password, address, type, invitationKey } = req.body;
 
+        console.log('Passed type: ' + type);
         await arsenal.checkIfUserAlreadyExist(email);
 
         let hashedPassword = await arsenal.hashPassword(password);
@@ -40,13 +41,12 @@ router.post(endpoints.FARMER_SIGNUP, authMW, async (req, res) => {
 
 
         newFarmer = await newFarmer.save();
-        let token = arsenal.createJWT(newFarmer);
+        let token = await arsenal.createJWT(newFarmer);
 
         res.status(200).json({ token, ...newFarmer._doc });
 
     } catch (error) {
         arsenal.reportError(error, res);
-        c
     }
 
 

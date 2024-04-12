@@ -1,6 +1,7 @@
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:husbandman/core/error/failure.dart';
+import 'package:husbandman/src/auth/domain/entity/user_entity.dart';
 import 'package:husbandman/src/auth/domain/repo/auth_repo.dart';
 import 'package:husbandman/src/auth/domain/use-cases/farmer_signup.dart';
 import 'package:mocktail/mocktail.dart';
@@ -12,6 +13,8 @@ void main() {
   late FarmerSignUp usecase;
 
   const farmerSignUpParams = FarmerSignUpParams.empty();
+
+  final tUserEntity = UserEntity.empty();
 
   setUp(() {
     authRepo = MockAuthRepo();
@@ -29,11 +32,11 @@ void main() {
           type: any(named: 'type'),
           invitationKey: any(named: 'invitationKey'),
         ),
-      ).thenAnswer((invocation) async => const Right(null));
+      ).thenAnswer((invocation) async => Right(tUserEntity));
 
       final result = await usecase(farmerSignUpParams);
 
-      expect(result, equals(const Right<dynamic, void>(null)));
+      expect(result, equals( Right<dynamic, UserEntity>(tUserEntity)));
 
       verify(
         () => authRepo.farmerSignUp(

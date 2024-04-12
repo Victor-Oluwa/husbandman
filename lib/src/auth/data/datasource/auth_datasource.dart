@@ -22,7 +22,7 @@ abstract class AuthDataSource {
 
   Future<void> cacheVerifiedInvitationToken({required String token});
 
-  Future<void> farmerSignUp({
+  Future<UserEntity> farmerSignUp({
     required String name,
     required String email,
     required String password,
@@ -45,6 +45,8 @@ abstract class AuthDataSource {
     required String email,
     required String password,
   });
+
+  Future<void> signOut();
 
   Future<UserEntity> updateUser({
     required dynamic newData,

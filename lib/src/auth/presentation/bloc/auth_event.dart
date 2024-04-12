@@ -26,6 +26,13 @@ class SignInEvent extends AuthEvent {
   List<String> get props => [email, password];
 }
 
+class SignOutEvent extends AuthEvent{
+  const SignOutEvent();
+
+  @override
+  List<Object?> get props => [];
+}
+
 class BuyerSignUpEvent extends AuthEvent {
   const BuyerSignUpEvent({
     required this.name,

@@ -63,10 +63,15 @@ Route<dynamic> generateRoute(RouteSettings settings) {
 
     case RouteNames.homePage:
       return _pageBuilder(
-            (p0) => const HomeScreen(),
+        (p0) => const HomeScreen(),
         settings: settings,
       );
 
+    case RouteNames.adminHome:
+      return _pageBuilder(
+        (p0) => const KeyGeneratorScreen(),
+        settings: settings,
+      );
 
     default:
       return _pageBuilder(

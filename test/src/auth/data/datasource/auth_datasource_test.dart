@@ -32,7 +32,7 @@ void main() {
   const tNewPassword = 'new-password';
   const tEmail = 'email';
   final tFarmerMapped = FarmerModel.empty().toMap();
-  final tFarmerModelResponse = BuyerModel.empty();
+  final tFarmerModelResponse = FarmerModel.empty();
   final tBuyerModelResponse = BuyerModel.empty();
 
   registerFallbackValue(Uri());
@@ -144,7 +144,8 @@ void main() {
 
     test('Should throw [AuthException] when status code is not [200] or [201]',
         () async {
-      when(() => client.post(any(), headers: any(named: 'headers'), body: any(named: 'body'))).thenAnswer(
+      when(() => client.post(any(),
+          headers: any(named: 'headers'), body: any(named: 'body'))).thenAnswer(
         (_) async => http.Response('User already exist', 400),
       );
 
@@ -280,24 +281,24 @@ void main() {
       'Should complete successfully when status code is [200] or [201]',
       () async {
         when(() => client.post(any(), body: any(named: 'body'))).thenAnswer(
-          (_) async => http.Response(
-            'New farmer created successfully',
+          (_) async =>  http.Response(
+            jsonEncode(tFarmerModelResponse.toMap()),
             200,
           ),
         );
 
-        final methodCall = authDatasource.farmerSignUp;
+        final result = await authDatasource.farmerSignUp(
+          name: 'name',
+          email: 'email',
+          password: 'password',
+          address: 'address',
+          type: 'type',
+          invitationKey: 'invitationKey',
+        );
 
         expect(
-          methodCall(
-            name: 'name',
-            email: 'email',
-            password: 'password',
-            address: 'address',
-            type: 'type',
-            invitationKey: 'invitationKey',
-          ),
-          completes,
+          result,
+          equals(tFarmerModelResponse),
         );
 
         verify(
@@ -447,17 +448,17 @@ void main() {
   group('Set User', () {
     test('Should call [Riverpod Ref] and set user state', () async {
       when(
-        () => ref.read(farmerProvider.notifier).updateFarmerFromMap(
+        () => ref.read(userProvider.notifier).updateUserFromMap(
               map: any(named: 'map'),
             ),
-      ).thenAnswer((_) => FarmerNotifier());
+      ).thenAnswer((_) => UserNotifier());
 
       await authDatasource.setUser(user: tFarmerMapped);
 
       verify(
         () => ref
-            .read(farmerProvider.notifier)
-            .updateFarmerFromMap(map: tFarmerMapped),
+            .read(userProvider.notifier)
+            .updateUserFromMap(map: tFarmerMapped),
       ).called(1);
       verifyNoMoreInteractions(ref);
     });
@@ -466,8 +467,8 @@ void main() {
         () async {
       when(
         () => ref
-            .read(farmerProvider.notifier)
-            .updateFarmerFromMap(map: any(named: 'map')),
+            .read(userProvider.notifier)
+            .updateUserFromMap(map: any(named: 'map')),
       ).thenThrow(Exception());
 
       final methodCall = authDatasource.setUser;
@@ -544,7 +545,7 @@ void main() {
           ),
         ).thenAnswer(
           (_) async => http.Response(
-            jsonEncode(tFarmerModelResponse.toMap()),
+            jsonEncode(tBuyerModelResponse.toMap()),
             200,
           ),
         );
@@ -556,7 +557,7 @@ void main() {
 
         expect(
           result,
-          equals(tFarmerModelResponse),
+          equals(tBuyerModelResponse),
         );
 
         verify(
@@ -615,6 +616,37 @@ void main() {
     );
   });
 
+  group('Sigh Out', () {
+    test(
+      'Should call [HBMStorage] and return void when successful',
+      () async {
+        when(() => storage.deleteData(key: any(named: 'key'))).thenAnswer(
+          (_) async => Future.value(),
+        );
+
+        await authDatasource.signOut();
+
+        verify(() => storage.deleteData(key: kAuthToken)).called(1);
+        verifyNoMoreInteractions(storage);
+      },
+    );
+
+    test(
+      'Should call [HBMStorage] and return void when successful',
+      () async {
+        when(() => storage.deleteData(key: any(named: 'key'))).thenThrow(
+          Exception(),
+        );
+
+        final methodCall = authDatasource.signOut;
+        expect(methodCall, throwsA(isA<AuthException>()));
+
+        verify(() => storage.deleteData(key: kAuthToken)).called(1);
+        verifyNoMoreInteractions(storage);
+      },
+    );
+  });
+
   group('Update User', () {
     const tUpdateUserParams = UpdateUserParams.empty();
     test('Should return a [UserModel] if status code is [200] or [201]',
@@ -627,7 +659,7 @@ void main() {
         ),
       ).thenAnswer(
         (_) async => http.Response(
-          jsonEncode(tFarmerModelResponse.toMap()),
+          jsonEncode(tBuyerModelResponse.toMap()),
           200,
         ),
       );
@@ -637,7 +669,7 @@ void main() {
         culprit: tUpdateUserParams.culprit,
       );
 
-      expect(result, tFarmerModelResponse);
+      expect(result, tBuyerModelResponse);
 
       verify(
         () => client.post(
@@ -729,6 +761,7 @@ void main() {
           Uri.parse('$kBaseUrl$kValidateUserEndpoint'),
           headers: {
             'Content-Type': 'application/json; charset=UTF-8',
+            kAuthToken: tUserToken,
           },
           body: jsonEncode({'token': tUserToken}),
         ),
@@ -765,6 +798,7 @@ void main() {
             Uri.parse('$kBaseUrl$kValidateUserEndpoint'),
             headers: {
               'Content-Type': 'application/json; charset=UTF-8',
+              kAuthToken: tUserToken,
             },
             body: jsonEncode({'token': tUserToken}),
           ),

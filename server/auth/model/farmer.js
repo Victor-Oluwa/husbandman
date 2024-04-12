@@ -21,7 +21,7 @@ const farmerSchema = mongoose.Schema({
     },
     balance: {
         type: Number,
-        required: true
+        default: 0.0
     },
     dealingsId: {
         type: [String],
@@ -29,14 +29,15 @@ const farmerSchema = mongoose.Schema({
     },
     lastSeen: {
         type: String,
+        default: ''
     },
     type: {
         type: String,
-        required: true
+        default: 'Farmer'
     },
     phone: {
         type: [String],
-        required: true,
+        default: '',
     },
     notifications: {
         type: [String],
@@ -48,7 +49,7 @@ const farmerSchema = mongoose.Schema({
     },
     badge: {
         type: Number,
-        required: true,
+        default: 0,
     },
     bannerImage: {
         type: String,

@@ -21,13 +21,22 @@ class VerifyInvitationKeyScreen extends StatelessWidget {
           child: BlocConsumer<AuthBloc, AuthState>(
             listener: (context, state) {
               if (state is FarmerInvitationKeyValidated) {
+                context.read<AuthBloc>().add(
+                      CacheVerifiedInvitationTokenEvent(
+                          token: state.invitationKey),
+                    );
+              } else if (state is AuthError) {
+                HBMSnackBar.show(context: context, content: state.message);
+              }
+
+              if (state is InvitationTokenCached) {
                 Navigator.pushNamedAndRemoveUntil(
                   context,
                   RouteNames.farmerSignUpScreen,
                   (route) => false,
                 );
-              }else if(state is AuthError){
-               HBMSnackBar.show(context: context, content: state.message);
+              } else if (state is AuthError) {
+                HBMSnackBar.show(context: context, content: state.message);
               }
             },
             builder: (context, state) {
@@ -53,7 +62,8 @@ class VerifyInvitationKeyScreen extends StatelessWidget {
                     onSubmit: (String key) {
                       context.read<AuthBloc>().add(
                             ValidateFarmerInvitationKeyEvent(
-                                invitationKey: key,),
+                              invitationKey: key,
+                            ),
                           );
                     }, // end onSubmit
                   ),

@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:husbandman/core/common/app/models/user/user_model.dart';
+import 'package:husbandman/core/common/strings/hbm_strings.dart';
 import 'package:husbandman/core/common/widgets/hbm_text_widget.dart';
 import 'package:husbandman/core/services/route_names.dart';
 import 'package:husbandman/src/auth/presentation/bloc/auth_bloc.dart';
@@ -50,6 +51,7 @@ class _UserVerificationPageState extends State<UserVerificationPage> {
             listener: (context, state) {
               if (state is UserTokenRetrieved) {
                 //User token is validated after being retrieved
+                log('Token retrieved: ${state.token}');
                 context
                     .read<AuthBloc>()
                     .add(ValidateUserEvent(token: state.token));
@@ -81,10 +83,9 @@ class _UserVerificationPageState extends State<UserVerificationPage> {
 
               if (state is UserSet) {
                 // If the user object is saved successfully.User is navigated to the home screen
-                log('User set');
-                state.user.type == 'Admin'
+                state.user.type == HBMStrings.admin
                     ? Navigator.pushNamedAndRemoveUntil(
-                  context, RouteNames.homePage, (route) => false,)
+                  context, RouteNames.adminHome, (route) => false,)
                     :  Navigator.pushNamedAndRemoveUntil(
                   context, RouteNames.homePage, (route) => false,);
               }else if (state is AuthError) {

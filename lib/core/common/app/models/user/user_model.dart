@@ -35,7 +35,7 @@ class UserModel extends UserEntity {
       balance:  double.parse(map['balance'].toString()) ?? 0.0,
       dealingsId: (map['dealingsId'] as List).cast<String>() ?? [],
       type: map['type'] as String ?? '',
-      token: map['token'].toString() ?? '',
+      token: map['token'] as String ?? '',
       profilePic: map['profilePic'] as String ?? '',
       notifications: (map['notifications'] as List).cast<String>() ?? [],
       customers: (map['customers'] as List).cast<String>() ?? [],

@@ -2,7 +2,10 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:husbandman/core/common/app/models/user/user_model.dart';
+import 'package:husbandman/core/common/app/provider/user_provider.dart';
 import 'package:husbandman/core/common/strings/hbm_strings.dart';
 import 'package:husbandman/core/common/widgets/hbm_text_widget.dart';
 import 'package:husbandman/core/extensions/context_extension.dart';
@@ -11,16 +14,17 @@ import 'package:husbandman/core/res/fonts.dart';
 import 'package:husbandman/core/res/media_res.dart';
 import 'package:husbandman/core/services/route_names.dart';
 import 'package:husbandman/core/utils/constants.dart';
+import 'package:husbandman/core/utils/core_utils.dart';
 import 'package:husbandman/src/auth/presentation/bloc/auth_bloc.dart';
 
-class SignInScreen extends StatefulWidget {
+class SignInScreen extends ConsumerStatefulWidget {
   const SignInScreen({super.key});
 
   @override
-  State<SignInScreen> createState() => _FarmerSignUpScreenState();
+  ConsumerState<SignInScreen> createState() => _FarmerSignUpScreenState();
 }
 
-class _FarmerSignUpScreenState extends State<SignInScreen> {
+class _FarmerSignUpScreenState extends ConsumerState<SignInScreen> {
   late TextEditingController _emailController;
   late TextEditingController _passwordController;
 
@@ -44,21 +48,62 @@ class _FarmerSignUpScreenState extends State<SignInScreen> {
           child: SingleChildScrollView(
             child: BlocListener<AuthBloc, AuthState>(
               listener: (context, state) {
-               if(state is SignedIn){
-                 Navigator.pushNamedAndRemoveUntil(
-                   context,
-                   RouteNames.homePage,
-                       (route) => false,
-                 );
-               }
+                if (state is SignedIn) {
+                  final user = state.user as UserModel;
+                  context
+                      .read<AuthBloc>()
+                      .add(SetUserEvent(user: user.toMap()));
+                } else if (state is AuthError) {
+                  CoreUtils.showSnackBar(
+                    message: state.message,
+                    context: context,
+                  );
+                }
+
+                if (state is UserSet) {
+                  context.read<AuthBloc>().add(
+                        CacheUserTokenEvent(token: state.user.token),
+                      );
+                }else if (state is AuthError){
+                  CoreUtils.showSnackBar(
+                    message: state.message,
+                    context: context,
+                  );
+                }
+
+                if (state is UserTokenCached) {
+                  final user = ref.read(userProvider).type;
+                  user == HBMStrings.admin? Navigator.pushNamedAndRemoveUntil(
+                    context,
+                    RouteNames.adminHome,
+                    (route) => false,
+                  ): Navigator.pushNamedAndRemoveUntil(
+                    context,
+                    RouteNames.homePage,
+                        (route) => false,
+                  );
+                }else if (state is AuthError) {
+                  CoreUtils.showSnackBar(
+                    message: state.message,
+                    context: context,
+                  );
+                }
               },
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  SvgPicture.asset(
-                    width: context.width * 1.0,
-                    alignment: Alignment.topCenter,
-                    MediaRes.happyFarmer,
+                  GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        _emailController.text = 'admin@gmail.com';
+                        _passwordController.text = '123456789';
+                      });
+                    },
+                    child: SvgPicture.asset(
+                      width: context.width * 1.0,
+                      alignment: Alignment.topCenter,
+                      MediaRes.happyFarmer,
+                    ),
                   ),
                   Padding(
                     padding: EdgeInsets.only(left: sidePadding),
@@ -81,7 +126,9 @@ class _FarmerSignUpScreenState extends State<SignInScreen> {
                         InkWell(
                           onTap: () {
                             Navigator.pushNamed(
-                              context, RouteNames.accountTypeScreen,);
+                              context,
+                              RouteNames.accountTypeScreen,
+                            );
                           },
                           child: HBMTextWidget(
                             data: HBMStrings.signUp,
@@ -157,10 +204,10 @@ class _FarmerSignUpScreenState extends State<SignInScreen> {
                         minimumSize: MaterialStateProperty.all(
                           Size(context.width * 0.35, context.height * 0.06),
                         ),
-                        foregroundColor: MaterialStateProperty.all(
-                            Colors.white),
+                        foregroundColor:
+                            MaterialStateProperty.all(Colors.white),
                         backgroundColor:
-                        MaterialStateProperty.all(HBMColors.slateGray),
+                            MaterialStateProperty.all(HBMColors.slateGray),
                       ),
                       onPressed: () {
                         if (!formKey.currentState!.validate()) {
@@ -172,14 +219,14 @@ class _FarmerSignUpScreenState extends State<SignInScreen> {
                               ),
                             ),
                           );
-                        } else {
-                          context.read<AuthBloc>().add(
-                            SignInEvent(
-                              email: _emailController.text,
-                              password: _passwordController.text,
-                            ),
-                          );
+                          return;
                         }
+                        context.read<AuthBloc>().add(
+                              SignInEvent(
+                                email: _emailController.text,
+                                password: _passwordController.text,
+                              ),
+                            );
                       },
                       child: HBMTextWidget(
                         data: HBMStrings.signIn,

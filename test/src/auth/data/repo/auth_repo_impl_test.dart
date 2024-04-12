@@ -1,5 +1,6 @@
 import 'package:dartz/dartz.dart';
 import 'package:husbandman/core/common/app/models/user/buyer_model.dart';
+import 'package:husbandman/core/common/app/models/user/farmer_model.dart';
 import 'package:husbandman/core/common/app/models/user/user_model.dart';
 import 'package:husbandman/core/enums/update_user.dart';
 import 'package:husbandman/core/error/exceptions.dart';
@@ -17,7 +18,9 @@ void main() {
   late AuthDataSource authDataSource;
   late AuthRepoImpl authRepoImpl;
 
-  final tTestUser = BuyerModel.empty();
+  final tBuyerUser = BuyerModel.empty();
+  final tFarmerUser = FarmerModel.empty();
+
   final tDataMap = {
     'name': 'James',
     'email': 'jame@gmail.com',
@@ -59,7 +62,8 @@ void main() {
 
       verify(
         () => authDataSource.authenticateResetPasswordToken(
-            token: tResetPasswordToken,),
+          token: tResetPasswordToken,
+        ),
       ).called(1);
       verifyNoMoreInteractions(authDataSource);
     });
@@ -114,7 +118,7 @@ void main() {
           address: any(named: 'address'),
           type: any(named: 'type'),
         ),
-      ).thenAnswer((_) async => tTestUser);
+      ).thenAnswer((_) async => tBuyerUser);
 
       final result = await authRepoImpl.buyerSignUp(
         name: farmerSignUpParams.name,
@@ -124,7 +128,7 @@ void main() {
         type: farmerSignUpParams.type,
       );
 
-      expect(result, equals( Right<dynamic, BuyerModel>(tTestUser)));
+      expect(result, equals(Right<dynamic, BuyerModel>(tBuyerUser)));
 
       verify(
         () => authDataSource.buyerSignUp(
@@ -249,9 +253,9 @@ void main() {
               await authRepoImpl.cacheVerifiedInvitationToken(token: tToken);
           expect(result, equals(const Right<void, void>(null)));
 
-          verify(() =>
-                  authDataSource.cacheVerifiedInvitationToken(token: tToken),)
-              .called(1);
+          verify(
+            () => authDataSource.cacheVerifiedInvitationToken(token: tToken),
+          ).called(1);
           verifyNoMoreInteractions(authDataSource);
         },
       );
@@ -297,7 +301,7 @@ void main() {
           type: any(named: 'type'),
           invitationKey: any(named: 'invitationKey'),
         ),
-      ).thenAnswer((_) async => Future.value());
+      ).thenAnswer((_) async => tFarmerUser);
 
       final result = await authRepoImpl.farmerSignUp(
         name: farmerSignUpParams.name,
@@ -308,7 +312,7 @@ void main() {
         invitationKey: farmerSignUpParams.invitationKey,
       );
 
-      expect(result, equals(const Right<dynamic, void>(null)));
+      expect(result, equals( Right<dynamic, UserEntity>(tFarmerUser)));
 
       verify(
         () => authDataSource.farmerSignUp(
@@ -526,11 +530,11 @@ void main() {
     test('Should return [Right(null)] when successful', () async {
       when(
         () => authDataSource.setUser(user: any(named: 'user')),
-      ).thenAnswer((_) async => tTestUser);
+      ).thenAnswer((_) async => tBuyerUser);
 
       final result = await authRepoImpl.setUser(user: tDataMap);
 
-      expect(result, equals(Right<dynamic, UserModel>(tTestUser)));
+      expect(result, equals(Right<dynamic, UserModel>(tBuyerUser)));
 
       verify(() => authDataSource.setUser(user: tDataMap)).called(1);
 
@@ -571,14 +575,14 @@ void main() {
           email: any(named: 'email'),
           password: any(named: 'password'),
         ),
-      ).thenAnswer((_) async => tTestUser);
+      ).thenAnswer((_) async => tBuyerUser);
 
       final result = await authRepoImpl.signIn(
         email: tEmail,
         password: tPassword,
       );
 
-      expect(result, equals(Right<dynamic, BuyerModel>(tTestUser)));
+      expect(result, equals(Right<dynamic, BuyerModel>(tBuyerUser)));
 
       verify(() => authDataSource.signIn(email: tEmail, password: tPassword));
       verifyNoMoreInteractions(authDataSource);
@@ -619,6 +623,51 @@ void main() {
     });
   });
 
+  group('Sign out', () {
+    test(
+      'Should call [AuthDatasource] and return Right<void>',
+      () async {
+        when(() => authDataSource.signOut()).thenAnswer(
+          (_) async => Future.value(),
+        );
+
+        final result = await authRepoImpl.signOut();
+        expect(result, equals(const Right<dynamic, void>(null)));
+
+        verify(() => authDataSource.signOut()).called(1);
+        verifyNoMoreInteractions(authDataSource);
+      },
+    );
+
+    test(
+      'Should call [AuthDatasource] and return Right<void>',
+      () async {
+        when(() => authDataSource.signOut()).thenThrow(
+          const AuthException(
+            message: 'Failed to sign out',
+            statusCode: 404,
+          ),
+        );
+
+        final result = await authRepoImpl.signOut();
+        expect(
+          result,
+          equals(
+            Left<AuthFailure, dynamic>(
+              AuthFailure(
+                message: 'Failed to sign out',
+                statusCode: 404,
+              ),
+            ),
+          ),
+        );
+
+        verify(() => authDataSource.signOut()).called(1);
+        verifyNoMoreInteractions(authDataSource);
+      },
+    );
+  });
+
   group('Update User', () {
     test('Should return [Right(null)] when successful', () async {
       when(
@@ -626,18 +675,20 @@ void main() {
           newData: 'Johnson',
           culprit: any(named: 'culprit'),
         ),
-      ).thenAnswer((_) async => tTestUser);
+      ).thenAnswer((_) async => tBuyerUser);
 
       final result = await authRepoImpl.updateUser(
         newData: 'Johnson',
         culprit: UpdateUserCulprit.name,
       );
 
-      expect(result, equals(Right<dynamic, BuyerModel>(tTestUser)));
+      expect(result, equals(Right<dynamic, BuyerModel>(tBuyerUser)));
 
       verify(
         () => authDataSource.updateUser(
-            newData: 'Johnson', culprit: UpdateUserCulprit.name,),
+          newData: 'Johnson',
+          culprit: UpdateUserCulprit.name,
+        ),
       ).called(1);
 
       verifyNoMoreInteractions(authDataSource);
@@ -685,11 +736,11 @@ void main() {
     test('Should return [Right(DataMap)] when operation is successful',
         () async {
       when(() => authDataSource.validateUser(token: any(named: 'token')))
-          .thenAnswer((_) async => tTestUser);
+          .thenAnswer((_) async => tBuyerUser);
 
       final result = await authRepoImpl.validateUser(token: tUserToken);
 
-      expect(result, equals(Right<dynamic, UserEntity>(tTestUser)));
+      expect(result, equals(Right<dynamic, UserEntity>(tBuyerUser)));
 
       verify(() => authDataSource.validateUser(token: tUserToken));
       verifyNoMoreInteractions(authDataSource);
@@ -776,8 +827,11 @@ void main() {
         ),
       );
 
-      verify(() => authDataSource.validateFarmerInvitationKey(
-          invitationKey: tInvitationKey,),);
+      verify(
+        () => authDataSource.validateFarmerInvitationKey(
+          invitationKey: tInvitationKey,
+        ),
+      );
       verifyNoMoreInteractions(authDataSource);
     });
   });

@@ -26,6 +26,7 @@ function reportError(e, res) {
 
     if (e.message == error.DUPLICATE_INVITATION_KEY) {
         res.status(status.DUPLICATE_INVITATION_KEY).json(e.message);
+        return;
     }
 
     res.status(500).json(e);

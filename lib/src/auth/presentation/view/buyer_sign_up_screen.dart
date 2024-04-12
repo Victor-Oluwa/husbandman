@@ -69,7 +69,6 @@ class _FarmerSignUpScreenState extends State<BuyerSignUpScreen> {
                     message: state.message,
                     context: context,
                   );
-                  log('Sign Up Error: ${state.message}');
                   return;
                 }
 

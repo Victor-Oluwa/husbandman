@@ -2,7 +2,9 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:husbandman/core/common/app/models/user/user_model.dart';
 import 'package:husbandman/core/common/strings/hbm_strings.dart';
 import 'package:husbandman/core/common/widgets/hbm_text_widget.dart';
 import 'package:husbandman/core/extensions/context_extension.dart';
@@ -11,16 +13,17 @@ import 'package:husbandman/core/res/fonts.dart';
 import 'package:husbandman/core/res/media_res.dart';
 import 'package:husbandman/core/services/route_names.dart';
 import 'package:husbandman/core/utils/constants.dart';
+import 'package:husbandman/core/utils/core_utils.dart';
 import 'package:husbandman/src/auth/presentation/bloc/auth_bloc.dart';
 
-class FarmerSignUpScreen extends StatefulWidget {
+class FarmerSignUpScreen extends ConsumerStatefulWidget {
   const FarmerSignUpScreen({super.key});
 
   @override
-  State<FarmerSignUpScreen> createState() => _FarmerSignUpScreenState();
+  ConsumerState<FarmerSignUpScreen> createState() => _FarmerSignUpScreenState();
 }
 
-class _FarmerSignUpScreenState extends State<FarmerSignUpScreen> {
+class _FarmerSignUpScreenState extends ConsumerState<FarmerSignUpScreen> {
   late TextEditingController _nameController;
   late TextEditingController _emailController;
   late TextEditingController _passwordController;
@@ -53,21 +56,66 @@ class _FarmerSignUpScreenState extends State<FarmerSignUpScreen> {
           child: SingleChildScrollView(
             child: BlocListener<AuthBloc, AuthState>(
               listener: (context, state) {
-                if(state is FarmerSigningUp){
+                if (state is FarmerSignedUp) {
+                  final user = state.user as UserModel;
+                  context
+                      .read<AuthBloc>()
+                      .add(SetUserEvent(user: user.toMap()));
+                } else if (state is AuthError) {
+                  CoreUtils.showSnackBar(
+                    message: state.message,
+                    context: context,
+                  );
+                  log('Farmer sign up error: ${state.message}');
+
+                }
+
+                if (state is UserSet) {
+                  context.read<AuthBloc>().add(
+                        CacheUserTokenEvent(token: state.user.token),
+                      );
+                } else if (state is AuthError) {
+                  CoreUtils.showSnackBar(
+                    message: state.message,
+                    context: context,
+                  );
+                  log('Set Farmer error: ${state.message}');
+
+
+                }
+
+                if (state is UserTokenCached) {
                   Navigator.pushNamedAndRemoveUntil(
                     context,
                     RouteNames.homePage,
-                        (route) => false,
+                    (route) => false,
                   );
+                } else if (state is AuthError) {
+                  CoreUtils.showSnackBar(
+                    message: state.message,
+                    context: context,
+                  );
+                  log('Cache Farmer error: ${state.message}');
                 }
               },
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  SvgPicture.asset(
-                    width: context.width * 1.0,
-                    alignment: Alignment.topCenter,
-                    MediaRes.happyFarmer,
+                  GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        _nameController.text = 'Rumen';
+                        _emailController.text = 'farmer@gmail.com';
+                        _passwordController.text = '123456789';
+                        _addressController.text = 'asdfghhhjkl';
+                        _invitationKeyController.text = 'key';
+                      });
+                    },
+                    child: SvgPicture.asset(
+                      width: context.width * 1.0,
+                      alignment: Alignment.topCenter,
+                      MediaRes.happyFarmer,
+                    ),
                   ),
                   Padding(
                     padding: EdgeInsets.only(left: sidePadding),
@@ -170,7 +218,6 @@ class _FarmerSignUpScreenState extends State<FarmerSignUpScreen> {
                                   }
 
                                   if (value.length < 7) {
-                                    log('message');
                                     return HBMStrings.passwordIsLessThanSeven;
                                   }
                                   return null;
@@ -280,10 +327,10 @@ class _FarmerSignUpScreenState extends State<FarmerSignUpScreen> {
                         minimumSize: MaterialStateProperty.all(
                           Size(context.width * 0.35, context.height * 0.06),
                         ),
-                        foregroundColor: MaterialStateProperty.all(
-                            Colors.white),
+                        foregroundColor:
+                            MaterialStateProperty.all(Colors.white),
                         backgroundColor:
-                        MaterialStateProperty.all(HBMColors.slateGray),
+                            MaterialStateProperty.all(HBMColors.slateGray),
                       ),
                       onPressed: () {
                         if (!formKey.currentState!.validate()) {
@@ -315,15 +362,15 @@ class _FarmerSignUpScreenState extends State<FarmerSignUpScreen> {
                         }
 
                         context.read<AuthBloc>().add(
-                          FarmerSignUpEvent(
-                            name: _nameController.text,
-                            email: _emailController.text,
-                            password: _passwordController.text,
-                            address: '',
-                            type: HBMStrings.admin,
-                            invitationKey: _invitationKeyController.text,
-                          ),
-                        );
+                              FarmerSignUpEvent(
+                                name: _nameController.text,
+                                email: _emailController.text,
+                                password: _passwordController.text,
+                                address: _addressController.text,
+                                type: HBMStrings.farmer,
+                                invitationKey: _invitationKeyController.text,
+                              ),
+                            );
                       },
                       child: HBMTextWidget(
                         data: HBMStrings.signUp,

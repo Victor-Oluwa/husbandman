@@ -36,7 +36,7 @@ class AuthRepoImpl implements AuthRepo {
     required String address,
   }) async {
     try {
-    final result = await _authDataSource.buyerSignUp(
+      final result = await _authDataSource.buyerSignUp(
         name: name,
         email: email,
         password: password,
@@ -62,8 +62,9 @@ class AuthRepoImpl implements AuthRepo {
   }
 
   @override
-  ResultFuture<void> cacheVerifiedInvitationToken(
-      {required String token,}) async {
+  ResultFuture<void> cacheVerifiedInvitationToken({
+    required String token,
+  }) async {
     try {
       final result =
           await _authDataSource.cacheVerifiedInvitationToken(token: token);
@@ -74,7 +75,7 @@ class AuthRepoImpl implements AuthRepo {
   }
 
   @override
-  ResultFuture<void> farmerSignUp({
+  ResultFuture<UserEntity> farmerSignUp({
     required String name,
     required String email,
     required String password,
@@ -83,7 +84,7 @@ class AuthRepoImpl implements AuthRepo {
     required String invitationKey,
   }) async {
     try {
-      await _authDataSource.farmerSignUp(
+    final result = await _authDataSource.farmerSignUp(
         name: name,
         email: email,
         password: password,
@@ -91,7 +92,7 @@ class AuthRepoImpl implements AuthRepo {
         type: type,
         invitationKey: invitationKey,
       );
-      return const Right(null);
+      return Right(result);
     } on AuthException catch (e) {
       return Left(
         AuthFailure.fromException(e),
@@ -164,6 +165,16 @@ class AuthRepoImpl implements AuthRepo {
       return Left(
         AuthFailure.fromException(e),
       );
+    }
+  }
+
+  @override
+  ResultFuture<void> signOut()async {
+    try {
+      final result = await _authDataSource.signOut();
+      return Right(result);
+    } on AuthException catch (e) {
+      return Left(AuthFailure.fromException(e));
     }
   }
 

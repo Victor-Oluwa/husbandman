@@ -1,9 +1,4 @@
-const bcryptjs = require("bcryptjs");
-const Buyer = require('../../../model/buyer');
-const Farmer = require('../../../model/farmer');
-const Admin = require('../../../model/admin');
 const error = require('../../../error');
-const status = require("../../../status");
 const InvitationKey = require("../../../model/invitation_key");
 
 async function findKey(key) {
