@@ -42,7 +42,6 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         },
         builder: (context, state) {
           if (state is CachingFirstTimer) {
-            log('Loading view');
             return const LoadingView();
           }
           log(state.toString());

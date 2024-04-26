@@ -27,6 +27,46 @@ class CacheFailure extends Failure {
   });
 }
 
+class CompressorFailure extends Failure {
+  CompressorFailure({
+    required super.message,
+    required super.statusCode,
+  });
+
+  CompressorFailure.fromException(CompressorException exception)
+      : this(
+          message: exception.message,
+          statusCode: exception.statusCode,
+        );
+}
+
+class CloudinaryFailure extends Failure {
+  CloudinaryFailure({
+    required super.message,
+    required super.statusCode,
+  });
+
+  CloudinaryFailure.fromException(CloudinaryException exception)
+      : this(
+    message: exception.message,
+    statusCode: exception.statusCode,
+  );
+}
+
+class FilePickerFailure extends Failure {
+  FilePickerFailure({
+    required super.message,
+    required super.statusCode,
+  });
+}
+
+class FirebaseFailure extends Failure {
+  FirebaseFailure({
+    required super.message,
+    required super.statusCode,
+  });
+}
+
 class AuthFailure extends Failure {
   AuthFailure({
     required super.message,
@@ -47,6 +87,19 @@ class AdminFailure extends Failure {
   });
 
   AdminFailure.fromException(AdminException exception)
+      : this(
+          message: exception.message,
+          statusCode: exception.statusCode,
+        );
+}
+
+class ProductManagerFailure extends Failure {
+  ProductManagerFailure({
+    required super.message,
+    required super.statusCode,
+  });
+
+  ProductManagerFailure.fromException(ProductManagerException exception)
       : this(
           message: exception.message,
           statusCode: exception.statusCode,

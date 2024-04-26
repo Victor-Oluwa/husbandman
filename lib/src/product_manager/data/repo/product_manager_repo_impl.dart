@@ -1,0 +1,222 @@
+import 'dart:io';
+import 'dart:typed_data';
+
+import 'package:dartz/dartz.dart';
+import 'package:husbandman/core/common/app/entities/product_entity.dart';
+import 'package:husbandman/core/common/app/models/product_model.dart';
+import 'package:husbandman/core/enums/set_product_type.dart';
+import 'package:husbandman/core/enums/update_product.dart';
+import 'package:husbandman/core/error/exceptions.dart';
+import 'package:husbandman/core/error/failure.dart';
+import 'package:husbandman/core/utils/typedef.dart';
+import 'package:husbandman/src/product_manager/data/datasource/product_manager_datasource.dart';
+import 'package:husbandman/src/product_manager/domain/repo/product_manager_repo.dart';
+
+class ProductManagerRepoImpl implements ProductManagerRepo {
+  ProductManagerRepoImpl(this._productManagerDatasource);
+
+  final ProductManagerDatasource _productManagerDatasource;
+
+  @override
+  ResultFuture<List<ProductEntity>> deleteProduct(String id) async {
+    try {
+      final result = await _productManagerDatasource.deleteProduct(id);
+      return Right(result);
+    } on ProductManagerException catch (e) {
+      return Left(ProductManagerFailure.fromException(e));
+    }
+  }
+
+  @override
+  ResultFuture<List<ProductEntity>> fetchProducts({
+    required int limit,
+    required int skip,
+  }) async {
+    try {
+      final result = await _productManagerDatasource.fetchProducts(
+        limit: limit,
+        skip: skip,
+      );
+      return Right(result);
+    } on ProductManagerException catch (e) {
+      return Left(
+        ProductManagerFailure(
+          message: e.message,
+          statusCode: e.statusCode,
+        ),
+      );
+    }
+  }
+
+  @override
+  ResultFuture<List<ProductEntity>> fetchProductsByCategory({
+    required String category,
+    required int limit,
+    required int skip,
+  }) async {
+    try {
+      final result = await _productManagerDatasource.fetchProductsByCategory(
+        category: category,
+        limit: limit,
+        skip: skip,
+      );
+      return Right(result);
+    } on ProductManagerException catch (e) {
+      return Left(ProductManagerFailure.fromException(e));
+    }
+  }
+
+  @override
+  ResultFuture<List<ProductEntity>> fetchFarmerProducts(
+    String farmerEmail,
+  ) async {
+    try {
+      final result =
+          await _productManagerDatasource.fetchFarmerProducts(farmerEmail);
+      return Right(result);
+    } on ProductManagerException catch (e) {
+      return Left(ProductManagerFailure.fromException(e));
+    }
+  }
+
+  @override
+  ResultFuture<List<String>> getProductImageUrl({
+    required List<Uint8List> compressedFile,
+  }) async {
+    try {
+      final result = await _productManagerDatasource.getProductImageUrl(
+        compressedFile: compressedFile,
+      );
+
+      return Right(result);
+    } on CloudinaryException catch (e) {
+      return Left(CloudinaryFailure.fromException(e));
+    }
+  }
+
+  @override
+  ResultFuture<ProductEntity> likeProduct(String id) async {
+    try {
+      final result = await _productManagerDatasource.likeProduct(id);
+      return Right(result);
+    } on ProductManagerException catch (e) {
+      return Left(ProductManagerFailure.fromException(e));
+    }
+  }
+
+  @override
+  ResultFuture<List<File>> pickProductImage() async {
+    try {
+      final result = await _productManagerDatasource.pickProductImage();
+      return Right(result);
+    } on ProductManagerException catch (e) {
+      return Left(ProductManagerFailure.fromException(e));
+    }
+  }
+
+  @override
+  ResultFuture<ProductEntity> rateProduct(String id) async {
+    try {
+      final result = await _productManagerDatasource.rateProduct(id);
+      return Right(result);
+    } on ProductManagerException catch (e) {
+      return Left(ProductManagerFailure.fromException(e));
+    }
+  }
+
+  @override
+  ResultFuture<List<ProductEntity>> searchProduct({
+    required String userId,
+    required String query,
+    required String searchBy,
+  }) async {
+    try {
+      final result = await _productManagerDatasource.searchProduct(
+        userId: userId,
+        query: query,
+        searchBy: searchBy,
+      );
+      return Right(result);
+    } on ProductManagerException catch (e) {
+      return Left(ProductManagerFailure.fromException(e));
+    }
+  }
+
+  @override
+  ResultFuture<ProductEntity> setSellerProduct(
+      {required SetProductType setProductType,
+      List<DataMap>? productMap,
+      List<ProductModel>? productObject}) async {
+    try {
+      final result = await _productManagerDatasource.setSellerProduct(
+        productMap: productMap,
+        productObject: productObject,
+        setProductType: setProductType,
+      );
+      return Right(result);
+    } on ProductManagerException catch (e) {
+      return Left(ProductManagerFailure.fromException(e));
+    }
+  }
+
+  @override
+  ResultFuture<ProductEntity> updateProduct({
+    required dynamic newData,
+    required UpdateProductCulprit culprit,
+  }) async {
+    try {
+      final result = await _productManagerDatasource.updateProduct(
+        newData: newData,
+        culprit: culprit,
+      );
+      return Right(result);
+    } on ProductManagerException catch (e) {
+      return Left(ProductManagerFailure.fromException(e));
+    }
+  }
+
+  @override
+  ResultFuture<ProductEntity> uploadProduct({
+    required String name,
+    required String video,
+    required List<String> image,
+    required String sellerName,
+    required String sellerEmail,
+    required bool available,
+    required int sold,
+    required int quantity,
+    required double price,
+    required String deliveryTime,
+    required String description,
+    required String measurement,
+    required bool alwaysAvailable,
+    required List<String> deliveryLocation,
+    required List<int> rating,
+    required int likes,
+  }) async {
+    try {
+      final result = await _productManagerDatasource.uploadProduct(
+        name: name,
+        video: video,
+        image: image,
+        sellerName: sellerName,
+        sellerEmail: sellerEmail,
+        available: available,
+        sold: sold,
+        quantity: quantity,
+        price: price,
+        deliveryTime: deliveryTime,
+        description: description,
+        measurement: measurement,
+        alwaysAvailable: alwaysAvailable,
+        deliveryLocation: deliveryLocation,
+        rating: rating,
+        likes: likes,
+      );
+
+      return Right(result);
+    } on ProductManagerException catch (e) {
+      return Left(ProductManagerFailure.fromException(e));
+    }
+  }
+}

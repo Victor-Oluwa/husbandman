@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'dart:developer';
 
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
 import 'package:husbandman/core/common/app/models/user/admin_model.dart';
@@ -255,6 +254,8 @@ class AuthDataSourceImpl implements AuthDataSource {
         }),
       );
       if (response.statusCode != 200 && response.statusCode != 201) {
+        log('Sign in response: ${response.statusCode}');
+
         throw AuthException(
           message: response.body,
           statusCode: response.statusCode,

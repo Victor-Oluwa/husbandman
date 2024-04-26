@@ -1,7 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
 import 'package:husbandman/core/common/app/storage/hbm_storage.dart';
-import 'package:husbandman/core/common/app/token-generator/token_generator.dart';
+import 'package:husbandman/core/common/app/public_methods/token-generator/token_generator.dart';
 import 'package:husbandman/core/services/shared_preference.dart';
 import 'package:husbandman/src/admin/data/datasource/admin_datasource.dart';
 import 'package:husbandman/src/admin/data/datasource/admin_datasource_impl.dart';

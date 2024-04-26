@@ -1,12 +1,19 @@
 {
-  "id": "empty.id",
+  "_id": "empty.id",
   "name": "empty.name",
   "video": "empty.video",
   "images": [],
-  "inCart": 0,
   "sold": 0,
   "quantity": 0,
   "price": 0.0,
   "deliveryTime": "delivery-time.empty",
-  "description": "description.empty"
+  "description": "description.empty",
+  "sellerName": "empty.sellerName",
+  "sellerEmail": "empty.sellerEmail",
+  "rating": [0],
+  "measurement": "empty.measurement",
+  "likes": 0,
+  "deliveryLocations": [],
+  "available": true,
+  "alwaysAvailable": false
 }

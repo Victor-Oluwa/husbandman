@@ -26,11 +26,12 @@ class UserNotifier extends StateNotifier<UserModel> {
           ),
         );
 
+  //TODO(): Test the changes made here 👇🏽
   void updateUserFromMap({required DataMap map}) {
-    state = FarmerModel.fromMap(map);
+    state = UserModel.fromMap(map);
   }
 
-  FarmerModel updateUserFromModel( FarmerModel farmer) {
+  UserModel updateUserFromModel( UserModel farmer) {
     return state = farmer;
 
   }

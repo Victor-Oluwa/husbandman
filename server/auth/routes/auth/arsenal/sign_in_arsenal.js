@@ -60,6 +60,7 @@ function reportError(e, res) {
 
     if (e.message == error.USER_DOES_NOT_EXIST) {
         res.status(status.USER_DOES_NOT_EXIST).json(e.message);
+        console.log('My bad: ' + e.message);
         return;
 
     }

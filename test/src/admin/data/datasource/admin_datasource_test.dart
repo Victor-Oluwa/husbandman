@@ -5,7 +5,7 @@ import 'package:http/http.dart' as http;
 import 'package:husbandman/core/common/app/models/invitation_token_model.dart';
 import 'package:husbandman/core/common/app/models/order_model.dart';
 import 'package:husbandman/core/common/app/models/user/user_model.dart';
-import 'package:husbandman/core/common/app/token-generator/token_generator.dart';
+import 'package:husbandman/core/common/app/public_methods/token-generator/token_generator.dart';
 import 'package:husbandman/core/enums/filter_user.dart';
 import 'package:husbandman/core/enums/search_user.dart';
 import 'package:husbandman/core/error/exceptions.dart';

@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:bloc/bloc.dart';
@@ -115,7 +116,10 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     );
 
     result.fold(
-      (l) => emit(AuthError(l.errorMessage)),
+      (l) {
+        emit(AuthError(l.errorMessage));
+        log('Error from blo: ${l.errorMessage}');
+      },
       (r) => emit(
         SignedIn(r),
       ),
@@ -123,7 +127,9 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   }
 
   Future<void> _signOutHandler(
-      SignOutEvent event, Emitter<AuthState> emit,) async {
+    SignOutEvent event,
+    Emitter<AuthState> emit,
+  ) async {
     final result = await _signOut();
 
     result.fold(
@@ -149,7 +155,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     );
 
     result.fold(
-      (l) => emit(AuthError(l.errorMessage)),
+      (l) => emit( AuthError(l.errorMessage)),
       (r) => emit(
         BuyerSignedUp(r),
       ),

@@ -5,3 +5,8 @@ false => Auth Page => Retrieve Token
                                                          Unvalidated => Sign In Screen
                       Token empty => Sign In Screen
 
+
+add new products
+delete products
+edit products details
+get image download URL

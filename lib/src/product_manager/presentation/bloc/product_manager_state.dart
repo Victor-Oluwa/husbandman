@@ -1,0 +1,131 @@
+part of 'product_manager_bloc.dart';
+
+abstract class ProductManagerState extends Equatable {
+  const ProductManagerState();
+
+  @override
+  List<Object> get props => [];
+}
+
+class ProductManagerInitial extends ProductManagerState {}
+
+class ProductManagerLoading extends ProductManagerState {
+  const ProductManagerLoading();
+}
+
+class ProductManagerFailure extends ProductManagerState {
+  const ProductManagerFailure(this.message);
+
+  final String message;
+
+  @override
+  List<String> get props => [message];
+}
+
+class ProductDeleted extends ProductManagerState {
+  const ProductDeleted(this.products);
+
+  final List<ProductEntity> products;
+
+  @override
+  List<List<ProductEntity>> get props => [products];
+}
+
+class FetchedFarmerProduct extends ProductManagerState {
+  const FetchedFarmerProduct(this.products);
+
+  final List<ProductEntity> products;
+
+  @override
+  List<List<ProductEntity>> get props => [products];
+}
+
+class FetchedProductByCategory extends ProductManagerState {
+  const FetchedProductByCategory(this.products);
+
+  final List<ProductEntity> products;
+
+  @override
+  List<List<ProductEntity>> get props => [products];
+}
+
+class FetchedProduct extends ProductManagerState {
+  const FetchedProduct(this.products);
+
+  final List<ProductEntity> products;
+
+  @override
+  List<List<ProductEntity>> get props => [products];
+}
+
+class GottenProductImageUrl extends ProductManagerState {
+  const GottenProductImageUrl(this.urls);
+
+  final List<String> urls;
+
+  @override
+  List<List<String>> get props => [urls];
+}
+
+class LikedProduct extends ProductManagerState {
+  const LikedProduct(this.product);
+
+  final ProductEntity product;
+
+  @override
+  List<ProductEntity> get props => [product];
+}
+
+class PickedProductImage extends ProductManagerState {
+  const PickedProductImage(this.files);
+
+  final List<File> files;
+
+  @override
+  List<List<File>> get props => [files];
+}
+
+class ProductRated extends ProductManagerState {
+  const ProductRated(this.product);
+
+  final ProductEntity product;
+
+  @override
+  List<ProductEntity> get props => [product];
+}
+
+class SearchComplete extends ProductManagerState {
+  const SearchComplete(this.products);
+
+  final List<ProductEntity> products;
+
+  @override
+  List<List<ProductEntity>> get props => [products];
+}
+
+class SetProduct extends ProductManagerState {
+  const SetProduct(this.product);
+
+  final ProductEntity product;
+
+  @override
+  List<ProductEntity> get props => [product];
+}
+
+class UpdateProduct extends ProductManagerState {
+  const UpdateProduct(this.product);
+
+  final ProductEntity product;
+
+  @override
+  List<ProductEntity> get props => [product];
+}
+
+class UploadProduct extends ProductManagerState {
+  const UploadProduct(this.product);
+
+  final ProductEntity product;
+
+  @override
+  List<ProductEntity> get props => [product];
+}

@@ -40,6 +40,71 @@ class CacheException extends Equatable implements Exception {
   List<dynamic> get props => [message, statusCode];
 }
 
+class CloudinaryException extends Equatable implements Exception {
+  final String message;
+  final int statusCode;
+
+  const CloudinaryException({
+    required this.message,
+    required this.statusCode,
+  });
+
+  @override
+  List<Object> get props => [message, statusCode];
+}
+
+class CompressorException extends Equatable implements Exception {
+  final String message;
+  final int statusCode;
+
+  const CompressorException({
+    required this.message,
+    required this.statusCode,
+  });
+
+  @override
+  List<Object> get props => [message, statusCode];
+}
+
+class FilePickerException extends Equatable implements Exception {
+  final String message;
+  final int statusCode;
+
+  const FilePickerException({
+    required this.message,
+    required this.statusCode,
+  });
+
+  @override
+  List<Object> get props => [message, statusCode];
+}
+
+class FirebaseException extends Equatable implements Exception {
+  final String message;
+  final int statusCode;
+
+  const FirebaseException({
+    required this.message,
+    required this.statusCode,
+  });
+
+  @override
+  List<Object> get props => [message, statusCode];
+}
+
+class ProductManagerException extends Equatable implements Exception {
+  const ProductManagerException({
+    required this.message,
+    required this.statusCode,
+  });
+
+  final String message;
+  final int statusCode;
+
+  @override
+  List<Object?> get props => [message, statusCode];
+}
+
 class ServerException extends Equatable implements Exception {
   final String message;
   final String statusCode;

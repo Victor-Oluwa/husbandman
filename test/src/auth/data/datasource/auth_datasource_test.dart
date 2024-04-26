@@ -281,7 +281,7 @@ void main() {
       'Should complete successfully when status code is [200] or [201]',
       () async {
         when(() => client.post(any(), body: any(named: 'body'))).thenAnswer(
-          (_) async =>  http.Response(
+          (_) async => http.Response(
             jsonEncode(tFarmerModelResponse.toMap()),
             200,
           ),

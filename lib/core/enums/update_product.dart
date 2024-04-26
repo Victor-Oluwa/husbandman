@@ -1,0 +1,15 @@
+enum UpdateProductCulprit{
+  name,
+  video,
+  image,
+  available,
+  sold,
+  quantity,
+  price,
+  deliveryTime,
+  description,
+  measurement,
+  alwaysAvailable,
+  deliveryLocations,
+  type,
+}

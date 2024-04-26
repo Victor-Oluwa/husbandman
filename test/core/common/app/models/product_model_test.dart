@@ -8,7 +8,7 @@ import 'package:husbandman/core/utils/typedef.dart';
 import '../../../../fixtures/fixtures_reader.dart';
 
 void main() {
-  const tProductModel = ProductModel.empty();
+  final tProductModel = ProductModel.empty();
   final tMap = jsonDecode(fixtures(folder: 'product', fileName: 'product.json'))
       as DataMap;
 

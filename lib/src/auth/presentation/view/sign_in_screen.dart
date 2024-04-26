@@ -95,7 +95,7 @@ class _FarmerSignUpScreenState extends ConsumerState<SignInScreen> {
                   GestureDetector(
                     onTap: () {
                       setState(() {
-                        _emailController.text = 'admin@gmail.com';
+                        _emailController.text = 'fidel1@gmail.com';
                         _passwordController.text = '123456789';
                       });
                     },
