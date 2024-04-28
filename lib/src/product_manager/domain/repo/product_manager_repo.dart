@@ -41,6 +41,18 @@ abstract class ProductManagerRepo {
     required String searchBy,
   });
 
+  ResultFuture<ProductEntity> setSellerProduct({
+    required SetProductType setProductType,
+    List<DataMap>? productMap,
+    List<ProductModel>? productObject,
+  });
+
+  ResultFuture<void> setGeneralProducts({
+    required SetProductType setProductType,
+    List<DataMap>? productMap,
+    List<ProductModel>? productObject,
+});
+
   ResultFuture<ProductEntity> updateProduct({
     required dynamic newData,
     required UpdateProductCulprit culprit,
@@ -63,11 +75,5 @@ abstract class ProductManagerRepo {
     required List<String> deliveryLocation,
     required List<int> rating,
     required int likes,
-  });
-
-  ResultFuture<ProductEntity> setSellerProduct({
-    required SetProductType setProductType,
-    List<DataMap>? productMap,
-    List<ProductModel>? productObject,
   });
 }

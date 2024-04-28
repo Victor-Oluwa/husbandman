@@ -47,6 +47,12 @@ abstract class ProductManagerDatasource {
     List<ProductModel>? productObject,
   });
 
+  Future<void> setGeneralProducts({
+    required SetProductType setProductType,
+    List<DataMap>? productMap,
+    List<ProductModel>? productObject,
+  });
+
   Future<ProductEntity> updateProduct({
     required dynamic newData,
     required UpdateProductCulprit culprit,

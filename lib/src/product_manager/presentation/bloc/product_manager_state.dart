@@ -103,8 +103,8 @@ class SearchComplete extends ProductManagerState {
   List<List<ProductEntity>> get props => [products];
 }
 
-class SetProduct extends ProductManagerState {
-  const SetProduct(this.product);
+class SellerProductSet extends ProductManagerState {
+  const SellerProductSet(this.product);
 
   final ProductEntity product;
 
@@ -112,8 +112,15 @@ class SetProduct extends ProductManagerState {
   List<ProductEntity> get props => [product];
 }
 
-class UpdateProduct extends ProductManagerState {
-  const UpdateProduct(this.product);
+class GeneralProductSet extends ProductManagerState {
+  const GeneralProductSet();
+
+  @override
+  List<ProductEntity> get props => [];
+}
+
+class ProductUpdated extends ProductManagerState {
+  const ProductUpdated(this.product);
 
   final ProductEntity product;
 
@@ -121,8 +128,8 @@ class UpdateProduct extends ProductManagerState {
   List<ProductEntity> get props => [product];
 }
 
-class UploadProduct extends ProductManagerState {
-  const UploadProduct(this.product);
+class ProductUploaded extends ProductManagerState {
+  const ProductUploaded(this.product);
 
   final ProductEntity product;
 

@@ -4,7 +4,7 @@ abstract class ProductManagerEvent extends Equatable {
   const ProductManagerEvent();
 }
 
-class DeleteProductEvent extends Equatable {
+class DeleteProductEvent extends ProductManagerEvent {
   const DeleteProductEvent(this.id);
 
   final String id;
@@ -13,7 +13,7 @@ class DeleteProductEvent extends Equatable {
   List<Object> get props => [id];
 }
 
-class FetchProductsEvent extends Equatable {
+class FetchProductsEvent extends ProductManagerEvent {
   const FetchProductsEvent({required this.limit, required this.skip});
 
   final int limit;
@@ -23,7 +23,7 @@ class FetchProductsEvent extends Equatable {
   List<Object> get props => [limit, skip];
 }
 
-class FetchProductsByCategoryEvent extends Equatable {
+class FetchProductsByCategoryEvent extends ProductManagerEvent {
   const FetchProductsByCategoryEvent({
     required this.category,
     required this.limit,
@@ -38,7 +38,7 @@ class FetchProductsByCategoryEvent extends Equatable {
   List<Object> get props => [category, limit, skip];
 }
 
-class FetchFarmerProductsEvent extends Equatable {
+class FetchFarmerProductsEvent extends ProductManagerEvent {
   const FetchFarmerProductsEvent(this.farmerEmail);
 
   final String farmerEmail;
@@ -47,7 +47,7 @@ class FetchFarmerProductsEvent extends Equatable {
   List<Object> get props => [farmerEmail];
 }
 
-class GetProductImageUrlEvent extends Equatable {
+class GetProductImageUrlEvent extends ProductManagerEvent {
   const GetProductImageUrlEvent(this.compressedFile);
 
   final List<Uint8List> compressedFile;
@@ -56,7 +56,7 @@ class GetProductImageUrlEvent extends Equatable {
   List<Object> get props => [compressedFile];
 }
 
-class LikeProductEvent extends Equatable {
+class LikeProductEvent extends ProductManagerEvent {
   const LikeProductEvent(this.id);
 
   final String id;
@@ -65,12 +65,12 @@ class LikeProductEvent extends Equatable {
   List<Object> get props => [id];
 }
 
-class PickProductImageEvent extends Equatable {
+class PickProductImageEvent extends ProductManagerEvent {
   @override
   List<Object> get props => [];
 }
 
-class RateProductEvent extends Equatable {
+class RateProductEvent extends ProductManagerEvent {
   const RateProductEvent(this.id);
 
   final String id;
@@ -79,7 +79,7 @@ class RateProductEvent extends Equatable {
   List<Object> get props => [id];
 }
 
-class SearchProductEvent extends Equatable {
+class SearchProductEvent extends ProductManagerEvent {
   const SearchProductEvent({
     required this.userId,
     required this.query,
@@ -94,7 +94,7 @@ class SearchProductEvent extends Equatable {
   List<Object> get props => [userId, query, searchBy];
 }
 
-class SetSellerProductEvent extends Equatable {
+class SetSellerProductEvent extends ProductManagerEvent {
   const SetSellerProductEvent({
     required this.setProductType,
     this.productMap,
@@ -109,7 +109,22 @@ class SetSellerProductEvent extends Equatable {
   List<Object> get props => [setProductType, productMap!, productObject!];
 }
 
-class UpdateProductEvent extends Equatable {
+class SetGeneralProductEvent extends ProductManagerEvent {
+  const SetGeneralProductEvent({
+    required this.setProductType,
+    this.productMap,
+    this.productObject,
+  });
+
+  final SetProductType setProductType;
+  final List<DataMap>? productMap;
+  final List<ProductModel>? productObject;
+
+  @override
+  List<Object> get props => [setProductType, productMap!, productObject!];
+}
+
+class UpdateProductEvent extends ProductManagerEvent {
   const UpdateProductEvent({
     required this.newData,
     required this.culprit,
@@ -122,7 +137,7 @@ class UpdateProductEvent extends Equatable {
   List<dynamic> get props => [newData, culprit];
 }
 
-class UploadProductEvent extends Equatable {
+class UploadProductEvent extends ProductManagerEvent {
   const UploadProductEvent({
     required this.name,
     required this.video,

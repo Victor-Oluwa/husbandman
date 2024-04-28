@@ -4,18 +4,18 @@ import 'package:husbandman/core/common/app/entities/product_entity.dart';
 import 'package:husbandman/core/enums/set_product_type.dart';
 import 'package:husbandman/core/error/failure.dart';
 import 'package:husbandman/src/product_manager/domain/repo/product_manager_repo.dart';
-import 'package:husbandman/src/product_manager/domain/usecase/set_product.dart';
+import 'package:husbandman/src/product_manager/domain/usecase/set_seller_product.dart';
 import 'package:mocktail/mocktail.dart';
 
 import 'Mocked/mock_product_manager_repo.dart';
 
 void main() {
   late ProductManagerRepo repo;
-  late SetProduct usecase;
+  late SetSellerProduct usecase;
 
   final tProductEntity = ProductEntity.empty();
 
-  final params = SetProductParams.empty();
+  final params = SetSellerProductParams.empty();
 
   final serverFailure = ServerFailure(
     message: 'Failed to set product',
@@ -26,7 +26,7 @@ void main() {
 
   setUp(() {
     repo = MockProductManagerRepo();
-    usecase = SetProduct(repo);
+    usecase = SetSellerProduct(repo);
   });
   group('Set Seller Product', () {
     test(

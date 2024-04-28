@@ -1,4 +1,4 @@
-const kBaseUrl = 'http://192.168.43.1:3000';
+const kBaseUrl = 'http://192.168.148.1:3000';
 const String kCloudinaryApiKey = '986773188828922';
 const String kCloudinaryApiSecret = 'jNkAnxCCWLdadVMvsKCxf61jKRU';
 const kCloudinaryUploadPreset ='cvyzrljr';

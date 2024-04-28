@@ -5,7 +5,10 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:husbandman/core/extensions/context_extension.dart';
 import 'package:husbandman/core/res/color.dart';
 import 'package:husbandman/core/res/fonts.dart';
-import 'package:husbandman/core/services/injection_container.dart';
+import 'package:husbandman/core/services/injection/admin/admin_injection.dart';
+import 'package:husbandman/core/services/injection/auth/auth_injection.dart';
+import 'package:husbandman/core/services/injection/onboarding/onboarding_injection.dart';
+import 'package:husbandman/core/services/injection/product_manager/product_manager_injection.dart';
 import 'package:husbandman/core/services/routes.dart';
 import 'package:husbandman/core/services/shared_preference.dart';
 
@@ -29,6 +32,7 @@ class MyApp extends ConsumerWidget {
         BlocProvider(create: (context) => ref.read(onboardingCubitProvider)),
         BlocProvider(create: (context) => ref.read(authBlocProvider)),
         BlocProvider(create: (context) => ref.read(adminBlocProvider)),
+        BlocProvider(create: (context)=> ref.read(productManagerBlocProvider)),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,

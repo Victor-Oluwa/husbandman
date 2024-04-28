@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
 import 'package:husbandman/core/common/app/entities/product_entity.dart';
 import 'package:husbandman/core/common/app/models/product_model.dart';
+import 'package:husbandman/core/common/app/provider/generalProductProvider.dart';
 import 'package:husbandman/core/common/app/provider/seller_products_provider.dart';
 import 'package:husbandman/core/common/app/public_methods/cloudinary_upload/cloudinary_upload.dart';
 import 'package:husbandman/core/common/app/public_methods/file-picker/file_picker.dart';
@@ -99,7 +100,6 @@ class ProductManagerDatasourceImpl implements ProductManagerDatasource {
       return List<DataMap>.from(jsonDecode(response.body) as List)
           .map(ProductModel.fromMap)
           .toList();
-
     } on ProductManagerException catch (e) {
       rethrow;
     } catch (e) {
@@ -112,7 +112,7 @@ class ProductManagerDatasourceImpl implements ProductManagerDatasource {
     required String category,
     required int limit,
     required int skip,
-  })async {
+  }) async {
     try {
       final response = await _client.post(
         Uri.parse('$kBaseUrl$kFetchProductsByCategoryEndpoint'),
@@ -136,7 +136,6 @@ class ProductManagerDatasourceImpl implements ProductManagerDatasource {
       return List<DataMap>.from(jsonDecode(response.body) as List)
           .map(ProductModel.fromMap)
           .toList();
-
     } on ProductManagerException catch (e) {
       rethrow;
     } catch (e) {
@@ -360,6 +359,76 @@ class ProductManagerDatasourceImpl implements ProductManagerDatasource {
       }
 
       return firstProduct;
+    } on ProductManagerException catch (e) {
+      rethrow;
+    } catch (e) {
+      throw ProductManagerException(message: e.toString(), statusCode: 500);
+    }
+  }
+
+  @override
+  Future<void> setGeneralProducts({
+    required SetProductType setProductType,
+    List<DataMap>? productMap,
+    List<ProductModel>? productObject,
+  }) async {
+    try {
+      if (productMap == null && productObject == null) {
+        throw const ProductManagerException(
+          message: 'Both product map and product object cannot be null',
+          statusCode: 404,
+        );
+      }
+      switch (setProductType) {
+        case SetProductType.renew:
+          if (productObject != null) {
+            _ref
+                .read(generalProductProvider.notifier)
+                .renewList(pProductList: productObject);
+          }
+
+          if (productMap != null) {
+            _ref
+                .read(generalProductProvider.notifier)
+                .renewList(mProductList: productMap);
+          }
+        case SetProductType.insertNew:
+          if (productObject != null) {
+            _ref
+                .read(generalProductProvider.notifier)
+                .addNewProduct(newProductModel: productObject);
+          }
+
+          if (productMap != null) {
+            _ref
+                .read(generalProductProvider.notifier)
+                .addNewProduct(newProductMap: productMap);
+          }
+        case SetProductType.remove:
+          if (productObject != null) {
+            _ref
+                .read(generalProductProvider.notifier)
+                .removeProduct(pScapegoat: productObject);
+          }
+
+          if (productMap != null) {
+            _ref
+                .read(generalProductProvider.notifier)
+                .removeProduct(mScapeGoat: productMap);
+          }
+        case SetProductType.replace:
+          if (productObject != null) {
+            _ref
+                .read(generalProductProvider.notifier)
+                .replaceProduct(pNewProduct: productObject);
+          }
+
+          if (productMap != null) {
+            _ref
+                .read(generalProductProvider.notifier)
+                .replaceProduct(mNewProduct: productMap);
+          }
+      }
     } on ProductManagerException catch (e) {
       rethrow;
     } catch (e) {

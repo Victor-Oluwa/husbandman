@@ -10,3 +10,114 @@ add new products
 delete products
 edit products details
 get image download URL
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// final sl = GetIt.instance;
+//
+// Future<void> init() async {
+//   final prefs = await SharedPreferences.getInstance();
+//   final client = http.Client();
+//   final storage = HBMStorage();
+//   sl
+//     ..registerLazySingleton(() => prefs)
+//     ..registerLazySingleton(() => client)
+//     ..registerLazySingleton(() => storage)
+//     ..registerFactory(
+//       () => OnboardingCubit(
+//         cacheFirstTimer: sl(),
+//         checkIfUserIsFirstTimer: sl(),
+//       ),
+//     )
+//     ..registerLazySingleton(() => CacheFirstTimer(sl()))
+//     ..registerLazySingleton(() => CheckIfUserIsFirstTimer(sl()))
+//     ..registerLazySingleton<OnboardingLocalDataSource>(
+//       () => OnboardingLocalDataSrcImpl(sl()),
+//     )
+//     ..registerSingleton<OnboardingRepo>(
+//       OnboardingRepoImpl(sl()),
+//     )
+//     ..registerFactory(
+//       () => AuthBloc(
+//         authenticateResetPasswordToken: sl(),
+//         signIn: sl(),
+//         farmerSignUp: sl(),
+//         buyerSignUp: sl(),
+//         cacheUserToken: sl(),
+//         cacheVerifiedInvitationToken: ,
+//         setUser: sl(),
+//         retrieveUserToken: sl(),
+//         validateUser: sl(),
+//         validateFarmerInvitationKey: sl(),
+//         resetPassword: sl(),
+//         sendResetPasswordToken: sl(),
+//         updateUser: sl(),
+//       ),
+//     )
+//     ..registerLazySingleton(
+//       () => AuthenticateResetPasswordToken(sl()),
+//     )
+//     ..registerLazySingleton(
+//       () => SignIn(sl()),
+//     )
+//     ..registerLazySingleton(
+//       () => FarmerSignUp(sl()),
+//     )
+//     ..registerLazySingleton(
+//       () => BuyerSignUp(sl()),
+//     )
+//     ..registerLazySingleton(
+//       () => CacheUserToken(sl()),
+//     )
+//     ..registerLazySingleton(
+//       () => SetUser(sl()),
+//     )
+//     ..registerLazySingleton(
+//       () => RetrieveUserToken(sl()),
+//     )
+//     ..registerLazySingleton(
+//       () => ValidateUser(sl()),
+//     )
+//     ..registerLazySingleton(
+//       () => ValidateFarmerInvitationKey(sl()),
+//     )
+//     ..registerLazySingleton(
+//       () => ResetPassword(sl()),
+//     )
+//     ..registerLazySingleton(
+//       () => SendResetPasswordToken(sl()),
+//     )
+//     ..registerLazySingleton(
+//       () => UpdateUser(sl()),
+//     );
+//   // ..registerSingleton<AuthDataSource>(AuthDataSourceImpl(sl(), sl(), _ref));
+// }

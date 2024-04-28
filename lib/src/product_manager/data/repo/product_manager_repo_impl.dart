@@ -146,7 +146,7 @@ class ProductManagerRepoImpl implements ProductManagerRepo {
   ResultFuture<ProductEntity> setSellerProduct(
       {required SetProductType setProductType,
       List<DataMap>? productMap,
-      List<ProductModel>? productObject}) async {
+      List<ProductModel>? productObject,}) async {
     try {
       final result = await _productManagerDatasource.setSellerProduct(
         productMap: productMap,
@@ -154,6 +154,23 @@ class ProductManagerRepoImpl implements ProductManagerRepo {
         setProductType: setProductType,
       );
       return Right(result);
+    } on ProductManagerException catch (e) {
+      return Left(ProductManagerFailure.fromException(e));
+    }
+  }
+
+  @override
+  ResultFuture<void> setGeneralProducts(
+      {required SetProductType setProductType,
+        List<DataMap>? productMap,
+        List<ProductModel>? productObject,})async {
+    try {
+      final result = await _productManagerDatasource.setGeneralProducts(
+        productMap: productMap,
+        productObject: productObject,
+        setProductType: setProductType,
+      );
+      return const Right(null);
     } on ProductManagerException catch (e) {
       return Left(ProductManagerFailure.fromException(e));
     }
