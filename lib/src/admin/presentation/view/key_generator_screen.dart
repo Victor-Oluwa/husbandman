@@ -17,7 +17,7 @@ class KeyGeneratorScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        backgroundColor: HBMColors.almond,
+        backgroundColor: HBMColors.coolGrey,
         body: Center(
           child: MultiBlocListener(
             listeners: [
@@ -68,7 +68,7 @@ class KeyGeneratorScreen extends StatelessWidget {
                         TextButton(
                           style: ButtonStyle(
                             backgroundColor:
-                                MaterialStateProperty.all(HBMColors.slateGray),
+                                MaterialStateProperty.all(HBMColors.charcoalGrey),
                           ),
                           onPressed: () {
                             context.read<AdminBloc>().add(
@@ -77,7 +77,7 @@ class KeyGeneratorScreen extends StatelessWidget {
                           },
                           child: HBMTextWidget(
                             data: 'Generate',
-                            color: HBMColors.almond,
+                            color: HBMColors.coolGrey,
                           ),
                         ),
                       ],
@@ -96,13 +96,13 @@ class KeyGeneratorScreen extends StatelessWidget {
                         }
                       },
                       child: Container(
-                        color: HBMColors.slateGray,
+                        color: HBMColors.charcoalGrey,
                         alignment: Alignment.center,
                         height: context.height * 0.07,
                         child: HBMTextWidget(
                           data:  'Save To Database'
                                ,
-                          color: HBMColors.almond,
+                          color: HBMColors.coolGrey,
                         ),
                       ),
                     ),

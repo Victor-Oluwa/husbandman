@@ -10,6 +10,8 @@ import 'package:husbandman/src/auth/presentation/view/sign_in_screen.dart';
 import 'package:husbandman/src/auth/presentation/view/user_verification_page.dart';
 import 'package:husbandman/src/auth/presentation/view/verify_invitation_key_screen.dart';
 import 'package:husbandman/src/onboarding/presentation/view/onboarding_screen.dart';
+import 'package:husbandman/src/product_manager/presentation/view/all_products_view.dart';
+import 'package:husbandman/src/profile/presentation/dashboard.dart';
 
 Route<dynamic> generateRoute(RouteSettings settings) {
   switch (settings.name) {
@@ -63,13 +65,19 @@ Route<dynamic> generateRoute(RouteSettings settings) {
 
     case RouteNames.homePage:
       return _pageBuilder(
-        (p0) => const HomeScreen(),
+        (p0) => const Dashboard(),
         settings: settings,
       );
 
     case RouteNames.adminHome:
       return _pageBuilder(
         (p0) => const KeyGeneratorScreen(),
+        settings: settings,
+      );
+
+    case RouteNames.allProducts:
+      return _pageBuilder(
+            (p0) => const HomeScreen(),
         settings: settings,
       );
 

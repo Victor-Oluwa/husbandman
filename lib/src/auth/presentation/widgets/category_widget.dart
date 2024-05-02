@@ -54,7 +54,7 @@ class CategoryWidget extends StatelessWidget {
           HBMTextWidget(
             data: content.name,
             fontFamily: HBMFonts.quicksandBold,
-            color: HBMColors.slateGray,
+            color: HBMColors.charcoalGrey,
             fontSize: context.width*0.03,
           )
         ],

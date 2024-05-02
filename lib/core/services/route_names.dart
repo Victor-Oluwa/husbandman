@@ -9,5 +9,6 @@ class RouteNames {
   static const verifyInvitationKey = 'verify-invitationKey-screen';
   static const homePage = 'home-page-screen';
   static const adminHome = 'admin-home-screen';
+  static const allProducts = 'all-products';
 
 }

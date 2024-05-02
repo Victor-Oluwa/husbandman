@@ -1,12 +1,13 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
+import 'package:husbandman/core/res/color.dart';
 
 class HBMTextWidget extends StatelessWidget {
   const HBMTextWidget({
     required this.data,
     super.key,
     this.fontSize,
-    this.color,
+    this.color = const Color(0xFF333333),
     this.fontFamily,
     this.fontStyle,
     this.fontWeight,

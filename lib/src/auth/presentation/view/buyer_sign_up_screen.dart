@@ -48,7 +48,7 @@ class _FarmerSignUpScreenState extends State<BuyerSignUpScreen> {
   Widget build(BuildContext context) {
     final sidePadding = context.width * 0.03;
     return Scaffold(
-      backgroundColor: HBMColors.almond,
+      backgroundColor: HBMColors.coolGrey,
       body: Center(
         child: Align(
           alignment: Alignment.topCenter,
@@ -255,7 +255,7 @@ class _FarmerSignUpScreenState extends State<BuyerSignUpScreen> {
                     children: [
                       Checkbox(
                         value: policyBoxChecked,
-                        activeColor: HBMColors.slateGray,
+                        activeColor: HBMColors.charcoalGrey,
                         checkColor: HBMColors.white,
                         onChanged: (value) {
                           setState(() {
@@ -315,7 +315,7 @@ class _FarmerSignUpScreenState extends State<BuyerSignUpScreen> {
                         foregroundColor:
                             MaterialStateProperty.all(Colors.white),
                         backgroundColor:
-                            MaterialStateProperty.all(HBMColors.slateGray),
+                            MaterialStateProperty.all(HBMColors.charcoalGrey),
                       ),
                       onPressed: () {
                         if (!formKey.currentState!.validate()) {

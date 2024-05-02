@@ -14,7 +14,7 @@ class AccountTypeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: HBMColors.almond,
+      backgroundColor: HBMColors.coolGrey,
       body: SafeArea(
         child: Center(
           child: Padding(

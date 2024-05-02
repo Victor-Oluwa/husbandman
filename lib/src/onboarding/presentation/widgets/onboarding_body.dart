@@ -41,8 +41,8 @@ class OnboardingBody extends StatelessWidget {
           ElevatedButton(
             onPressed: onNext,
             style: ElevatedButton.styleFrom(
-              backgroundColor: HBMColors.slateGray,
-              foregroundColor: HBMColors.almond,
+              backgroundColor: HBMColors.charcoalGrey,
+              foregroundColor: HBMColors.coolGrey,
             ),
             child: HBMTextWidget(data: pageContent.buttonText),
           ),

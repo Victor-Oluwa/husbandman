@@ -3,7 +3,7 @@ import 'package:husbandman/core/extensions/context_extension.dart';
 import 'package:husbandman/core/res/color.dart';
 import 'package:husbandman/core/res/fonts.dart';
 
-class HomeSearchBar extends StatelessWidget {
+class SearchField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -46,7 +46,7 @@ class HomeSearchBar extends StatelessWidget {
             fontWeight: FontWeight.w400,
             letterSpacing: 0.5,
           ),
-          prefixIcon: Icon(Icons.search, color: HBMColors.slateGray,),
+          prefixIcon: Icon(Icons.search, color: HBMColors.charcoalGrey,),
           prefixIconColor: Colors.black,
         ),
       ),

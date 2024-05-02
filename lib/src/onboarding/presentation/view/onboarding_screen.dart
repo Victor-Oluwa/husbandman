@@ -30,7 +30,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: HBMColors.almond,
+      backgroundColor: HBMColors.coolGrey,
       body: BlocConsumer<OnboardingCubit, OnboardingState>(
         listener: (context, state) {
           if (state is UserCached) {
@@ -91,7 +91,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                       curve: Curves.easeIn,
                     ),
                     effect: WormEffect(
-                      activeDotColor: HBMColors.slateGray,
+                      activeDotColor: HBMColors.charcoalGrey,
                       dotHeight: context.height * 0.02,
                     ),
                   ),

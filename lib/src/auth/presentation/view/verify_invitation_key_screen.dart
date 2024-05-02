@@ -15,7 +15,7 @@ class VerifyInvitationKeyScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      backgroundColor: HBMColors.almond,
+      backgroundColor: HBMColors.coolGrey,
       body: SafeArea(
         child: Center(
           child: BlocConsumer<AuthBloc, AuthState>(
@@ -58,7 +58,7 @@ class VerifyInvitationKeyScreen extends StatelessWidget {
                     cursorColor: HBMColors.white,
                     showFieldAsBox: true,
                     enabledBorderColor: HBMColors.white,
-                    focusedBorderColor: HBMColors.slateGray,
+                    focusedBorderColor: HBMColors.charcoalGrey,
                     onSubmit: (String key) {
                       context.read<AuthBloc>().add(
                             ValidateFarmerInvitationKeyEvent(

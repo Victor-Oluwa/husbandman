@@ -13,7 +13,7 @@ class CoreUtils {
       ..showSnackBar(
         SnackBar(
           behavior: SnackBarBehavior.floating,
-          backgroundColor: HBMColors.slateGray,
+          backgroundColor: HBMColors.charcoalGrey,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10),
           ),

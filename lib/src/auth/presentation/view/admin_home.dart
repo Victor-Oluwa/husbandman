@@ -8,7 +8,7 @@ class AdminHome extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: HBMColors.almond,
+      backgroundColor: HBMColors.coolGrey,
       body:const SafeArea(
           child: Center(
         child: HBMTextWidget(data: 'ADMIN HOME'),

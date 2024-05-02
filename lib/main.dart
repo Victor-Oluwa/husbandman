@@ -39,7 +39,7 @@ class MyApp extends ConsumerWidget {
         title: title,
         theme: ThemeData(
           visualDensity: VisualDensity.adaptivePlatformDensity,
-          primaryColor: HBMColors.almond,
+          primaryColor: HBMColors.coolGrey,
           textTheme: TextTheme(
             displayLarge: TextStyle(
               fontSize: context.width * 0.10,
@@ -62,14 +62,14 @@ class MyApp extends ConsumerWidget {
             ),
           ),
           colorScheme: ThemeData.light().colorScheme.copyWith(
-                secondary: HBMColors.slateGray,
-                primary: HBMColors.almond,
+                secondary: HBMColors.charcoalGrey,
+                primary: HBMColors.coolGrey,
               ),
         ),
         darkTheme: ThemeData(
           colorScheme: ThemeData.dark().colorScheme.copyWith(
-                secondary: HBMColors.almond,
-                primary: HBMColors.slateGray,
+                secondary: HBMColors.coolGrey,
+                primary: HBMColors.charcoalGrey,
               ),
           visualDensity: VisualDensity.adaptivePlatformDensity,
         ),

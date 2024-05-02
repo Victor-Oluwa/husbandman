@@ -39,7 +39,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       backdrop: Container(
         width: double.infinity,
         height: double.infinity,
-        decoration: BoxDecoration(color: HBMColors.slateGray),
+        decoration: BoxDecoration(color: HBMColors.charcoalGrey),
       ),
       controller: _advancedDrawerController,
       animationCurve: Curves.easeInOut,
@@ -82,7 +82,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         child: Center(
           child: Container(
             decoration: BoxDecoration(
-              color: HBMColors.almond,
+              color: HBMColors.coolGrey,
               borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(20),
                 topRight: Radius.circular(20),
@@ -100,7 +100,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   Padding(
                     padding:
                         EdgeInsets.symmetric(horizontal: horizontalPadding),
-                    child: HomeSearchBar(),
+                    child: SearchBar(),
                   ),
                   SizedBox(
                     height: context.height * 0.03,
@@ -189,7 +189,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                 height: context.height * 0.17,
                                 width: context.width * 0.30,
                                 decoration: BoxDecoration(
-                                  color: HBMColors.slateGray,
+                                  color: HBMColors.charcoalGrey,
                                   borderRadius: BorderRadius.circular(
                                       context.width * 0.03),
                                 ),
@@ -208,18 +208,18 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                         data: 'Abbys (1 bag)',
                                         fontFamily: HBMFonts.quicksandBold,
                                         fontSize: context.width * 0.05,
-                                        color: HBMColors.slateGray,
+                                        color: HBMColors.charcoalGrey,
                                         overflow: TextOverflow.ellipsis,
                                       ),
                                       HBMTextWidget(
                                         data: 'Mr Okon',
-                                        color: HBMColors.slateGray,
+                                        color: HBMColors.charcoalGrey,
                                         fontFamily: HBMFonts.quicksandNormal,
                                         fontSize: context.width * 0.04,
                                       ),
                                       HBMTextWidget(
                                         data: '2, Peace street, Ijeododo lagos',
-                                        color: HBMColors.slateGray,
+                                        color: HBMColors.charcoalGrey,
                                         fontFamily: HBMFonts.quicksandNormal,
                                         fontSize: context.width * 0.04,
                                         overflow: TextOverflow.ellipsis,
@@ -229,7 +229,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                       ),
                                       HBMTextWidget(
                                         data: '2 Bags | Organic',
-                                        color: HBMColors.slateGray,
+                                        color: HBMColors.charcoalGrey,
                                         fontFamily: HBMFonts.quicksandNormal,
                                         fontSize: context.width * 0.03,
                                         overflow: TextOverflow.ellipsis,
@@ -243,7 +243,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                 bottom: context.height * 0.01,
                                 child: HBMTextWidget(
                                   fontFamily: HBMFonts.quicksandBold,
-                                  color: HBMColors.slateGray,
+                                  color: HBMColors.charcoalGrey,
                                   data: '₦2000',
                                 ),
                               ),
@@ -273,8 +273,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         child: Container(
           // margin: ,
           child: ListTileTheme(
-            textColor: HBMColors.almond,
-            iconColor: HBMColors.almond,
+            textColor: HBMColors.coolGrey,
+            iconColor: HBMColors.coolGrey,
             horizontalTitleGap: context.width * 0.10,
             contentPadding: EdgeInsets.symmetric(
               horizontal: context.width * 0.08,

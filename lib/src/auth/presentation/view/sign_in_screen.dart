@@ -41,7 +41,7 @@ class _FarmerSignUpScreenState extends ConsumerState<SignInScreen> {
   Widget build(BuildContext context) {
     final sidePadding = context.width * 0.03;
     return Scaffold(
-      backgroundColor: HBMColors.almond,
+      backgroundColor: HBMColors.coolGrey,
       body: Center(
         child: Align(
           alignment: Alignment.topCenter,
@@ -207,7 +207,7 @@ class _FarmerSignUpScreenState extends ConsumerState<SignInScreen> {
                         foregroundColor:
                             MaterialStateProperty.all(Colors.white),
                         backgroundColor:
-                            MaterialStateProperty.all(HBMColors.slateGray),
+                            MaterialStateProperty.all(HBMColors.charcoalGrey),
                       ),
                       onPressed: () {
                         if (!formKey.currentState!.validate()) {
