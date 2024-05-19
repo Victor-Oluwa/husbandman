@@ -9,5 +9,7 @@ module.exports = {
     DUPLICATE_INVITATION_KEY: 999,
     JSON_WEB_TOKEN_ERROR: 110,
     NO_KEY_ASSIGNED: 112,
+    USED_KEY: 113,
+
 
 }

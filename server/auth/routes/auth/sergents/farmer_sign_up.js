@@ -11,9 +11,9 @@ const router = express.Router();
 router.post(endpoints.FARMER_SIGNUP, async (req, res) => {
 
     try {
-        const { name, email, password, address, type, invitationKey } = req.body;
+        const { name, email, password, address, invitationKey } = req.body;
 
-        console.log('Passed type: ' + type);
+        console.log('Passed Key: ' + invitationKey);
         await arsenal.checkIfUserAlreadyExist(email);
 
         let hashedPassword = await arsenal.hashPassword(password);
@@ -34,8 +34,6 @@ router.post(endpoints.FARMER_SIGNUP, async (req, res) => {
             email: email,
             password: hashedPassword,
             address: address,
-            type: type,
-            invitationKey: invitationKey,
 
         });
 
@@ -47,6 +45,7 @@ router.post(endpoints.FARMER_SIGNUP, async (req, res) => {
 
     } catch (error) {
         arsenal.reportError(error, res);
+        console.log(error);
     }
 
 

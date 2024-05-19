@@ -22,4 +22,16 @@ module.exports = {
     SEARCH_USER: '/admin/generate-invitation-token',
     SAVE_INVITATION_TOKEN: '/admin/save-token',
 
+    // Product Manager
+    UPLOAD_PRODUCT: '/product/upload',
+    DELETE_PRODUCT: '/farmer/product/delete',
+    FETCH_SELLER_PRODUCT: '/farmer/products',
+    GET_IMAGE_URL: '/product/image-url',
+    LIKE_PRODUCT: '/product/like',
+    RATE_PRODUCT: '/product/rate',
+    SEARCH_PRODUCT: '/product/search',
+    UPDATE_PRODUCT: '/product/update',
+    FETCH_ALL_PRODUCTS: '/product/all',
+    FETCH_PRODUCT_BY_CATEGORY: '/product/category/all',
+
 }

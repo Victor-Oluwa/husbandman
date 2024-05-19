@@ -10,4 +10,6 @@ class HBMColors {
   static Color black = Colors.black;
   static Color white = Colors.white;
   static Color  mediumGrey = const Color(0xFF666666);
+  static Color grey = Colors.grey;
+
 }

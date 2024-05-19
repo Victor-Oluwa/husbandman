@@ -80,6 +80,16 @@ function reportError(e, res) {
         return;
     }
 
+    if (e.message == error.USED_KEY) {
+        res.status(status.USED_KEY).json(e.message);
+        return;
+    }
+
+    if (e.message == error.INVALID_KEY) {
+        res.status(status.INVALID_KEY).json(e.message);
+        return;
+    }
+
     res.status(500).json(e);
 }
 

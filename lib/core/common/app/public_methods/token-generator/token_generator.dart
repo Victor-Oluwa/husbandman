@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'dart:developer' as dev;
 
 class TokenGenerator{
   final Random _random = Random();
@@ -8,9 +9,8 @@ class TokenGenerator{
     final randomNumber = _random.nextInt(9000000) + 10000000;
     // Get the current timestamp in milliseconds
     final timestamp = DateTime.now().millisecondsSinceEpoch;
-    // Combine the timestamp and random number, then take the last 7 digits
-    final token = (timestamp + randomNumber).toString().substring(0, 7);
-    return token;
+dev.log(randomNumber.toString());
+    return randomNumber.toString();
   }
 
 }

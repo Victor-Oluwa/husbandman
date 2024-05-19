@@ -260,7 +260,7 @@ class AdminDatasourceImpl implements AdminDatasource {
     try {
       final result = _tokenGenerator.generateToken();
 
-      if (result.length > 7 || result.length < 7) {
+      if (result.length > 8 || result.length < 8) {
         throw const AdminException(
           message: kInvalidTokenLength,
           statusCode: 400,

@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 final invitationKeyProvider =
@@ -10,6 +12,7 @@ class InvitationKeyNotifier extends StateNotifier<String> {
 
 void cacheInvitationToken({required String token}) {
      state = token;
-
+     log('Passed key: $token');
+     log('Cached key: $state');
   }
 }

@@ -10,11 +10,13 @@ import 'package:husbandman/core/utils/typedef.dart';
 abstract class ProductManagerRepo {
   const ProductManagerRepo();
 
+  ResultFuture<List<Uint8List?>> compressProductImage(List<File> images);
+
   ResultFuture<List<ProductEntity>> deleteProduct(String id);
 
   ResultFuture<List<ProductEntity>> fetchProducts({
     required int limit,
-    required int skip,
+    required List<String> fetched,
   });
 
   ResultFuture<List<ProductEntity>> fetchProductsByCategory({
@@ -26,7 +28,10 @@ abstract class ProductManagerRepo {
   ResultFuture<List<ProductEntity>> fetchFarmerProducts(String farmerEmail);
 
   ResultFuture<List<String>> getProductImageUrl({
-    required List<Uint8List> compressedFile,
+    required String sellerName,
+    required bool isByte,
+    List<Uint8List?>? compressedFile,
+    List<File>? file,
   });
 
   ResultFuture<ProductEntity> likeProduct(String id);

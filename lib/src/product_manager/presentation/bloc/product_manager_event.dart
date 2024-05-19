@@ -4,6 +4,15 @@ abstract class ProductManagerEvent extends Equatable {
   const ProductManagerEvent();
 }
 
+class CompressProductImagesEvent extends ProductManagerEvent {
+  const CompressProductImagesEvent(this.files);
+
+  final List<File> files;
+
+  @override
+  List<Object> get props => [files];
+}
+
 class DeleteProductEvent extends ProductManagerEvent {
   const DeleteProductEvent(this.id);
 
@@ -14,13 +23,13 @@ class DeleteProductEvent extends ProductManagerEvent {
 }
 
 class FetchProductsEvent extends ProductManagerEvent {
-  const FetchProductsEvent({required this.limit, required this.skip});
+  const FetchProductsEvent({required this.limit, required this.fetched});
 
   final int limit;
-  final int skip;
+  final List<String> fetched;
 
   @override
-  List<Object> get props => [limit, skip];
+  List<Object> get props => [limit, fetched];
 }
 
 class FetchProductsByCategoryEvent extends ProductManagerEvent {
@@ -48,12 +57,21 @@ class FetchFarmerProductsEvent extends ProductManagerEvent {
 }
 
 class GetProductImageUrlEvent extends ProductManagerEvent {
-  const GetProductImageUrlEvent(this.compressedFile);
+  const GetProductImageUrlEvent({
+    required this.sellerName,
+    required this.isByte,
+    this.compressedFile,
+    this.file,
+  });
 
-  final List<Uint8List> compressedFile;
+  final List<Uint8List?>? compressedFile;
+  final List<File>? file;
+  final String sellerName;
+  final bool isByte;
 
   @override
-  List<Object> get props => [compressedFile];
+  List<Object?> get props =>
+      isByte == true ? [compressedFile] : [file];
 }
 
 class LikeProductEvent extends ProductManagerEvent {

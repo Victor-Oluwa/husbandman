@@ -19,6 +19,7 @@ class CoreUtils {
           ),
           margin: EdgeInsets.all(context.width * 0.03),
           content: HBMTextWidget(
+            color: HBMColors.grey,
             data: message,
           ),
         ),

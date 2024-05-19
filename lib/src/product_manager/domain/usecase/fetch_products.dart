@@ -12,24 +12,24 @@ class FetchProducts
 
   @override
   ResultFuture<List<ProductEntity>> call(FetchProductsParams params) {
-    return _repo.fetchProducts(limit: params.limit, skip: params.skip);
+    return _repo.fetchProducts(limit: params.limit, fetched: params.fetched);
   }
 }
 
 class FetchProductsParams extends Equatable {
   const FetchProductsParams({
     required this.limit,
-    required this.skip,
+    required this.fetched,
   });
 
-  const FetchProductsParams.demo()
+   FetchProductsParams.demo()
       : this(
           limit: 20,
-          skip: 20,
+          fetched: [],
         );
 
   final int limit;
-  final int skip;
+  final List<String> fetched;
 
   @override
   List<Object> get props => [];

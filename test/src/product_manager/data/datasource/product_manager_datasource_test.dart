@@ -9,6 +9,7 @@ import 'package:husbandman/core/common/app/models/product_model.dart';
 import 'package:husbandman/core/common/app/provider/seller_products_provider.dart';
 import 'package:husbandman/core/common/app/public_methods/cloudinary_upload/cloudinary_upload.dart';
 import 'package:husbandman/core/common/app/public_methods/file-picker/file_picker.dart';
+import 'package:husbandman/core/common/app/public_methods/file_compressor/file_compressor.dart';
 import 'package:husbandman/core/enums/set_product_type.dart';
 import 'package:husbandman/core/enums/update_product.dart';
 import 'package:husbandman/core/enums/update_user.dart';
@@ -25,6 +26,8 @@ class MockCloudinaryUpload extends Mock implements CloudinaryUpload {}
 
 class MockFilePicker extends Mock implements PickFile {}
 
+class MockFileCompressor extends Mock implements FileCompressor {}
+
 class MockRiverpod extends Mock implements Ref {}
 
 void main() {
@@ -33,6 +36,7 @@ void main() {
   late ProductManagerDatasource datasource;
   late CloudinaryUpload cloudinaryUpload;
   late PickFile pickFile;
+  late FileCompressor compressor;
 
   const exceptionMessage = 'Something went wrong';
   const exceptionStatus = 500;
@@ -45,11 +49,13 @@ void main() {
     ref = MockRiverpod();
     cloudinaryUpload = MockCloudinaryUpload();
     pickFile = MockFilePicker();
+    compressor = MockFileCompressor();
     datasource = ProductManagerDatasourceImpl(
       client,
       ref,
       cloudinaryUpload,
       pickFile,
+      compressor,
     );
   });
 
@@ -57,6 +63,47 @@ void main() {
     registerFallbackValue(Uri());
     registerFallbackValue(SetProductType.renew);
     registerFallbackValue(UpdateUserCulprit.values);
+  });
+
+  group('Compress Product Image', () {
+    final uint8List1 = [
+      Uint8List.fromList([1, 2, 3, 4, 5])
+    ];
+    final tFiles = [File('image_path')];
+    test(
+      'Should call [FileCompressor]',
+      () async {
+        when(
+          () => compressor.compressFile(
+            any(),
+          ),
+        ).thenAnswer(
+          (_) async => uint8List1,
+        );
+
+        final result = await datasource.compressProductImage(tFiles);
+        expect(result, equals(uint8List1));
+
+        verify(() => compressor.compressFile(tFiles)).called(1);
+        verifyNoMoreInteractions(compressor);
+      },
+    );
+
+    test(
+      'Should throw [Product Manager Exception] if compression fails',
+      () async {
+        when(() => compressor.compressFile(any())).thenThrow(
+          const CompressorException(
+              message: 'Failed to compress', statusCode: 500),
+        );
+
+        final methodCall = datasource.compressProductImage;
+        expect(methodCall(tFiles), throwsA(isA<CompressorException>()));
+
+        verify(() => compressor.compressFile(tFiles)).called(1);
+        verifyNoMoreInteractions(compressor);
+      },
+    );
   });
 
   group('Delete Product', () {
@@ -133,7 +180,7 @@ void main() {
     final productsMap = [ProductModel.empty().toMap()];
     final productModel = [ProductModel.empty()];
 
-    const skip = 20;
+    const fetched = ['Hey'];
     const limit = 20;
     test(
       'Should call [Client] and return status code of [200] or [201] when successful',
@@ -148,7 +195,10 @@ void main() {
           (_) async => http.Response(jsonEncode(productsMap), 200),
         );
 
-        final result = await datasource.fetchProducts(limit: limit, skip: skip);
+        final result = await datasource.fetchProducts(
+          limit: limit,
+          fetched: fetched,
+        );
         expect(result, equals(productModel));
 
         verify(
@@ -158,7 +208,7 @@ void main() {
               'Content-Type': 'application/json; charset=UTF-8',
             },
             body: jsonEncode(
-              {'limit': limit, 'skip': skip},
+              {'limit': limit, 'fetched': fetched},
             ),
           ),
         ).called(1);
@@ -181,7 +231,7 @@ void main() {
 
         final methodCall = datasource.fetchProducts;
         expect(
-          methodCall(limit: limit, skip: skip),
+          methodCall(limit: limit, fetched: fetched),
           throwsA(productManagerException),
         );
 
@@ -192,7 +242,7 @@ void main() {
               'Content-Type': 'application/json; charset=UTF-8',
             },
             body: jsonEncode(
-              {'limit': limit, 'skip': skip},
+              {'limit': limit, 'fetched': fetched},
             ),
           ),
         ).called(1);
@@ -364,23 +414,31 @@ void main() {
       Uint8List.fromList([0, 2, 5, 7, 42, 255]),
     ];
     const imageUrls = ['image-url'];
+    const sellerName = 'seller name';
+    const isByte = true;
 
     test(
       'Should call [Cloudinary Upload return List<String> when successful]',
       () async {
         when(
-          () => cloudinaryUpload.uploadMultipleFile(
+          () => cloudinaryUpload.uploadImage(
             compressedFile: any(named: 'compressedFile'),
+            sellerName: any(named: 'sellerName'),
           ),
         ).thenAnswer((_) async => imageUrls);
 
         final result = await datasource.getProductImageUrl(
+          sellerName: sellerName,
           compressedFile: unit8List,
+          isByte: isByte,
         );
         expect(result, equals(imageUrls));
 
         verify(
-          () => cloudinaryUpload.uploadMultipleFile(compressedFile: unit8List),
+          () => cloudinaryUpload.uploadImage(
+            compressedFile: unit8List,
+            sellerName: sellerName,
+          ),
         ).called(1);
         verifyNoMoreInteractions(cloudinaryUpload);
       },
@@ -390,8 +448,9 @@ void main() {
       'Should call [Cloudinary Upload throw [CloudinaryException] when unsuccessful]',
       () async {
         when(
-          () => cloudinaryUpload.uploadMultipleFile(
+          () => cloudinaryUpload.uploadImage(
             compressedFile: any(named: 'compressedFile'),
+            sellerName: any(named: 'sellerName'),
           ),
         ).thenThrow(
           const CloudinaryException(
@@ -404,6 +463,8 @@ void main() {
         expect(
           methodCall(
             compressedFile: unit8List,
+            sellerName: sellerName,
+            isByte: isByte,
           ),
           throwsA(
             const CloudinaryException(
@@ -414,7 +475,10 @@ void main() {
         );
 
         verify(
-          () => cloudinaryUpload.uploadMultipleFile(compressedFile: unit8List),
+          () => cloudinaryUpload.uploadImage(
+            compressedFile: unit8List,
+            sellerName: sellerName,
+          ),
         ).called(1);
         verifyNoMoreInteractions(cloudinaryUpload);
       },

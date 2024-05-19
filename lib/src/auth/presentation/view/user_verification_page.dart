@@ -2,23 +2,30 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:husbandman/core/common/app/models/product_model.dart';
 import 'package:husbandman/core/common/app/models/user/user_model.dart';
+import 'package:husbandman/core/common/app/provider/user_provider.dart';
 import 'package:husbandman/core/common/strings/hbm_strings.dart';
 import 'package:husbandman/core/common/widgets/hbm_text_widget.dart';
+import 'package:husbandman/core/enums/set_product_type.dart';
+import 'package:husbandman/core/res/color.dart';
 import 'package:husbandman/core/services/route_names.dart';
 import 'package:husbandman/src/auth/presentation/bloc/auth_bloc.dart';
 import 'package:husbandman/src/onboarding/presentation/cubit/onboarding_cubit.dart';
+import 'package:husbandman/src/product_manager/presentation/bloc/product_manager_bloc.dart';
 
-class UserVerificationPage extends StatefulWidget {
+class UserVerificationPage extends ConsumerStatefulWidget {
   const UserVerificationPage({super.key});
 
   static const routeName = 'user-verification';
 
   @override
-  State<UserVerificationPage> createState() => _UserVerificationPageState();
+  ConsumerState<UserVerificationPage> createState() =>
+      _UserVerificationPageState();
 }
 
-class _UserVerificationPageState extends State<UserVerificationPage> {
+class _UserVerificationPageState extends ConsumerState<UserVerificationPage> {
   @override
   void initState() {
     //Checks if the user is using the app for the first time
@@ -43,7 +50,38 @@ class _UserVerificationPageState extends State<UserVerificationPage> {
               } else if (state is FirstTimerStatus && !state.isFirstTimer) {
                 // If user is not a first timer. User's token is retrieved for verification
                 context.read<AuthBloc>().add(RetrieveUserTokenEvent());
+              }
+            },
+          ),
+          BlocListener<ProductManagerBloc, ProductManagerState>(
+            listener: (context, state) {
+              if (state is FetchedProduct) {
+                final products = <ProductModel>[];
 
+                for (final element in state.products) {
+                  products.add(element as ProductModel);
+                }
+
+                context.read<ProductManagerBloc>().add(SetGeneralProductEvent(
+                      setProductType: SetProductType.renew,
+                      productObject: products,
+                    ));
+
+                log('Random products: $products');
+              }
+              if (state is GeneralProductSet) {
+                final user = ref.read(userProvider);
+                user.type == HBMStrings.admin
+                    ? Navigator.pushNamedAndRemoveUntil(
+                        context,
+                        RouteNames.adminHome,
+                        (route) => false,
+                      )
+                    : Navigator.pushNamedAndRemoveUntil(
+                        context,
+                        RouteNames.homePage,
+                        (route) => false,
+                      );
               }
             },
           ),
@@ -55,24 +93,23 @@ class _UserVerificationPageState extends State<UserVerificationPage> {
                 context
                     .read<AuthBloc>()
                     .add(ValidateUserEvent(token: state.token));
-              } else if (state is AuthError) {
-                ///If validation fails user is navigated to the Sign In screen
-                log('Validate error: $state');
-                Navigator.pushNamedAndRemoveUntil(
-                  context,
-                  RouteNames.signInScreen,
-                  (route) => false,
-                );
-                return;
               }
 
               if (state is UserValidated) {
                 //If the user token is valid. The user object is saved in the Riverpod state
                 final user = state.user as UserModel;
                 context.read<AuthBloc>().add(SetUserEvent(user: user.toMap()));
+              }
 
-              } else if (state is AuthError) {
-                log('Validate error ii: $state');
+              if (state is UserSet) {
+                // If the user object is saved successfully.User is navigated to the home screen
+                context.read<ProductManagerBloc>().add(
+                      const FetchProductsEvent(limit: 5, fetched: []),
+                    );
+              }
+
+              if (state is AuthError) {
+                log('Auth Error received');
                 Navigator.pushNamedAndRemoveUntil(
                   context,
                   RouteNames.signInScreen,
@@ -80,28 +117,11 @@ class _UserVerificationPageState extends State<UserVerificationPage> {
                 );
                 return;
               }
-
-              if (state is UserSet) {
-                // If the user object is saved successfully.User is navigated to the home screen
-                state.user.type == HBMStrings.admin
-                    ? Navigator.pushNamedAndRemoveUntil(
-                  context, RouteNames.adminHome, (route) => false,)
-                    :  Navigator.pushNamedAndRemoveUntil(
-                  context, RouteNames.homePage, (route) => false,);
-              }else if (state is AuthError) {
-                log('Set User error: $state');
-                Navigator.pushNamedAndRemoveUntil(
-                  context,
-                  RouteNames.signInScreen,
-                      (route) => false,
-                );
-                return;
-              }
             },
           ),
         ],
-        child: const Center(
-          child: HBMTextWidget(data: 'HBM Logo'),
+        child: Center(
+          child: HBMTextWidget(data: 'HBM Logo', color: HBMColors.black,),
         ),
       ),
     );

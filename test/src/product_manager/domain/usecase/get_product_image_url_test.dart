@@ -17,6 +17,8 @@ void main() {
     message: 'Failed to get url',
     statusCode: 500,
   );
+  const sellerName = 'sellerName';
+  const isByte = true;
 
   setUp(() {
     repo = MockProductManagerRepo();
@@ -28,8 +30,9 @@ void main() {
       () async {
         when(
           () => repo.getProductImageUrl(
-            compressedFile: any(named: 'compressedFile'),
-          ),
+              compressedFile: any(named: 'compressedFile'),
+              sellerName: any(named: 'sellerName'),
+              isByte: any(named: 'isByte')),
         ).thenAnswer(
           (_) async => const Right(
             tProductImageUrls,
@@ -47,6 +50,8 @@ void main() {
         verify(
           () => repo.getProductImageUrl(
             compressedFile: params.compressedFile,
+            sellerName: params.sellerName,
+            isByte: isByte,
           ),
         ).called(1);
         verifyNoMoreInteractions(repo);
@@ -59,6 +64,8 @@ void main() {
         when(
           () => repo.getProductImageUrl(
             compressedFile: any(named: 'compressedFile'),
+            sellerName: any(named: 'sellerName'),
+            isByte: any(named: 'isByte'),
           ),
         ).thenAnswer(
           (_) async => Left(
@@ -77,6 +84,8 @@ void main() {
         verify(
           () => repo.getProductImageUrl(
             compressedFile: params.compressedFile,
+            sellerName: params.sellerName,
+            isByte: isByte,
           ),
         ).called(1);
         verifyNoMoreInteractions(repo);

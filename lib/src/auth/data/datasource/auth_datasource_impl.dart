@@ -135,7 +135,8 @@ class AuthDataSourceImpl implements AuthDataSource {
     required String invitationKey,
   }) async {
     try {
-      log('Passed email: $email');
+      log('Passed key: ${ _ref.read(invitationKeyProvider)}');
+      log('55555555');
       final response = await _client.post(
         Uri.parse(
           '$kBaseUrl$kFarmerSignUpEndpoint',
@@ -149,7 +150,7 @@ class AuthDataSourceImpl implements AuthDataSource {
           'password': password,
           'address': address,
           'type': type,
-          'invitationKey': _ref.read(invitationKeyProvider).substring(1, 8),
+          'invitationKey': _ref.read(invitationKeyProvider),
         }),
       );
 
@@ -422,7 +423,7 @@ class AuthDataSourceImpl implements AuthDataSource {
           statusCode: response.statusCode,
         );
       }
-      return response.body;
+      return jsonDecode(response.body) as String;
     } on AuthException catch (_) {
       rethrow;
     } catch (e) {

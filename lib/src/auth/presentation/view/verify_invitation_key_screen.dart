@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_otp_text_field/flutter_otp_text_field.dart';
@@ -21,6 +23,7 @@ class VerifyInvitationKeyScreen extends StatelessWidget {
           child: BlocConsumer<AuthBloc, AuthState>(
             listener: (context, state) {
               if (state is FarmerInvitationKeyValidated) {
+                log('Verified key: ${state.invitationKey}');
                 context.read<AuthBloc>().add(
                       CacheVerifiedInvitationTokenEvent(
                           token: state.invitationKey),
@@ -53,11 +56,11 @@ class VerifyInvitationKeyScreen extends StatelessWidget {
                     height: context.width * 0.65,
                   ),
                   OtpTextField(
-                    numberOfFields: 7,
+                    numberOfFields: 8,
                     fieldWidth: context.width * 0.09,
                     cursorColor: HBMColors.white,
                     showFieldAsBox: true,
-                    enabledBorderColor: HBMColors.white,
+                    enabledBorderColor: HBMColors.mediumGrey,
                     focusedBorderColor: HBMColors.charcoalGrey,
                     onSubmit: (String key) {
                       context.read<AuthBloc>().add(

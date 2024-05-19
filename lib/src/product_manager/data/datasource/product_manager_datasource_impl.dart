@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
 import 'dart:typed_data';
 
@@ -6,10 +7,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
 import 'package:husbandman/core/common/app/entities/product_entity.dart';
 import 'package:husbandman/core/common/app/models/product_model.dart';
-import 'package:husbandman/core/common/app/provider/generalProductProvider.dart';
+import 'package:husbandman/core/common/app/provider/general_product_provider.dart';
+import 'package:husbandman/core/common/app/provider/picked_product_image_provider.dart';
 import 'package:husbandman/core/common/app/provider/seller_products_provider.dart';
+import 'package:husbandman/core/common/app/provider/user_provider.dart';
 import 'package:husbandman/core/common/app/public_methods/cloudinary_upload/cloudinary_upload.dart';
 import 'package:husbandman/core/common/app/public_methods/file-picker/file_picker.dart';
+import 'package:husbandman/core/common/app/public_methods/file_compressor/file_compressor.dart';
 import 'package:husbandman/core/enums/set_product_type.dart';
 import 'package:husbandman/core/enums/update_product.dart';
 import 'package:husbandman/core/error/exceptions.dart';
@@ -34,12 +38,29 @@ class ProductManagerDatasourceImpl implements ProductManagerDatasource {
     this._ref,
     this._cloudinaryUpload,
     this._pickFile,
+    this.compressor,
   );
 
   final http.Client _client;
   final CloudinaryUpload _cloudinaryUpload;
   final PickFile _pickFile;
+  final FileCompressor compressor;
   final Ref _ref;
+
+  @override
+  Future<List<Uint8List?>> compressProductImage(List<File> images) async {
+    try {
+      final result = await compressor.compressFile(images);
+      return result;
+    } on CompressorException catch (_) {
+      rethrow;
+    } catch (e) {
+      throw CompressorException(
+        message: e.toString(),
+        statusCode: 500,
+      );
+    }
+  }
 
   @override
   Future<List<ProductEntity>> deleteProduct(String id) async {
@@ -76,7 +97,7 @@ class ProductManagerDatasourceImpl implements ProductManagerDatasource {
   @override
   Future<List<ProductEntity>> fetchProducts({
     required int limit,
-    required int skip,
+    required List<String> fetched,
   }) async {
     try {
       final response = await _client.post(
@@ -86,7 +107,7 @@ class ProductManagerDatasourceImpl implements ProductManagerDatasource {
         },
         body: jsonEncode({
           'limit': limit,
-          'skip': skip,
+          'fetched': fetched,
         }),
       );
 
@@ -176,18 +197,49 @@ class ProductManagerDatasourceImpl implements ProductManagerDatasource {
 
   @override
   Future<List<String>> getProductImageUrl({
-    required List<Uint8List> compressedFile,
+    required String sellerName,
+    required bool isByte,
+    List<Uint8List?>? compressedFile,
+    List<File>? file,
   }) async {
     try {
-      final result = await _cloudinaryUpload.uploadMultipleFile(
-        compressedFile: compressedFile,
-      );
+      if (isByte && compressedFile == null) {
+        throw const CloudinaryException(
+          message: 'Compressed file cannot be null when isByte is set to true',
+          statusCode: 202,
+        );
+      }
+      if (!isByte && file == null) {
+        throw const CloudinaryException(
+          message: 'file cannot be null when isByte is set to false',
+          statusCode: 202,
+        );
+      }
 
-      return result;
+      if (file == null && compressedFile == null) {
+        throw const CloudinaryException(
+          message: 'Both "file" and "compressedFile" cannot be null together',
+          statusCode: 202,
+        );
+      }
+      if (isByte) {
+        return await _cloudinaryUpload.uploadImage(
+          compressedFile: compressedFile,
+          sellerName: sellerName,
+        );
+      } else {
+        return await _cloudinaryUpload.uploadImageAsFile(
+          file: file,
+          sellerName: sellerName,
+        );
+      }
     } on CloudinaryException catch (e) {
       rethrow;
     } catch (e) {
-      throw CloudinaryException(message: e.toString(), statusCode: 500);
+      throw CloudinaryException(
+        message: e.toString(),
+        statusCode: 500,
+      );
     }
   }
 
@@ -223,6 +275,9 @@ class ProductManagerDatasourceImpl implements ProductManagerDatasource {
   Future<List<File>> pickProductImage() async {
     try {
       final result = await _pickFile.pickMultiple();
+
+      _ref.read(pickedProductImageProvider.notifier).state = result;
+
       return result;
     } on FilePickerException catch (e) {
       rethrow;
@@ -490,29 +545,30 @@ class ProductManagerDatasourceImpl implements ProductManagerDatasource {
       required List<int> rating,
       required int likes}) async {
     try {
-      final response =
-          await _client.post(Uri.parse('$kBaseUrl$kUploadProductEndpoint'),
-              headers: {
-                'Content-Type': 'application/json; charset=UTF-8',
-              },
-              body: jsonEncode({
-                'name': name,
-                'video': video,
-                'image': image,
-                'sellerName': sellerName,
-                'sellerEmail': sellerEmail,
-                'available': available,
-                'sold': sold,
-                'quantity': quantity,
-                'price': price,
-                'deliveryTime': deliveryTime,
-                'description': description,
-                'measurement': measurement,
-                'alwaysAvailable': alwaysAvailable,
-                'deliveryLocation': deliveryLocation,
-                'rating': rating,
-                'likes': likes,
-              }));
+      final response = await _client.post(
+        Uri.parse('$kBaseUrl$kUploadProductEndpoint'),
+        headers: {
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode({
+          'name': name,
+          'video': video,
+          'image': image,
+          'sellerName': sellerName,
+          'sellerEmail': sellerEmail,
+          'available': available,
+          'sold': sold,
+          'quantity': quantity,
+          'price': price,
+          'deliveryTime': deliveryTime,
+          'description': description,
+          'measurement': measurement,
+          'alwaysAvailable': alwaysAvailable,
+          'deliveryLocation': deliveryLocation,
+          'rating': rating,
+          'likes': likes,
+        }),
+      );
 
       if (response.statusCode != 200 && response.statusCode != 201) {
         throw ProductManagerException(
@@ -520,6 +576,8 @@ class ProductManagerDatasourceImpl implements ProductManagerDatasource {
           statusCode: response.statusCode,
         );
       }
+
+      log('Printing response: ${response.body}');
 
       return ProductModel.fromMap(
         DataMap.from(jsonDecode(response.body) as DataMap),

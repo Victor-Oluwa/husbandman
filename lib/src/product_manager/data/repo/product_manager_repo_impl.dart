@@ -18,6 +18,17 @@ class ProductManagerRepoImpl implements ProductManagerRepo {
   final ProductManagerDatasource _productManagerDatasource;
 
   @override
+  ResultFuture<List<Uint8List?>> compressProductImage(List<File> images) async {
+    try {
+      final result =
+          await _productManagerDatasource.compressProductImage(images);
+      return Right(result);
+    } on CompressorException catch (e) {
+      return Left(CompressorFailure.fromException(e));
+    }
+  }
+
+  @override
   ResultFuture<List<ProductEntity>> deleteProduct(String id) async {
     try {
       final result = await _productManagerDatasource.deleteProduct(id);
@@ -30,12 +41,12 @@ class ProductManagerRepoImpl implements ProductManagerRepo {
   @override
   ResultFuture<List<ProductEntity>> fetchProducts({
     required int limit,
-    required int skip,
+    required List<String> fetched,
   }) async {
     try {
       final result = await _productManagerDatasource.fetchProducts(
         limit: limit,
-        skip: skip,
+        fetched: fetched,
       );
       return Right(result);
     } on ProductManagerException catch (e) {
@@ -81,11 +92,17 @@ class ProductManagerRepoImpl implements ProductManagerRepo {
 
   @override
   ResultFuture<List<String>> getProductImageUrl({
-    required List<Uint8List> compressedFile,
+    required String sellerName,
+    required bool isByte,
+    List<Uint8List?>? compressedFile,
+    List<File>? file,
   }) async {
     try {
       final result = await _productManagerDatasource.getProductImageUrl(
+        sellerName: sellerName,
+        isByte: isByte,
         compressedFile: compressedFile,
+        file: file,
       );
 
       return Right(result);
@@ -143,10 +160,11 @@ class ProductManagerRepoImpl implements ProductManagerRepo {
   }
 
   @override
-  ResultFuture<ProductEntity> setSellerProduct(
-      {required SetProductType setProductType,
-      List<DataMap>? productMap,
-      List<ProductModel>? productObject,}) async {
+  ResultFuture<ProductEntity> setSellerProduct({
+    required SetProductType setProductType,
+    List<DataMap>? productMap,
+    List<ProductModel>? productObject,
+  }) async {
     try {
       final result = await _productManagerDatasource.setSellerProduct(
         productMap: productMap,
@@ -160,12 +178,13 @@ class ProductManagerRepoImpl implements ProductManagerRepo {
   }
 
   @override
-  ResultFuture<void> setGeneralProducts(
-      {required SetProductType setProductType,
-        List<DataMap>? productMap,
-        List<ProductModel>? productObject,})async {
+  ResultFuture<void> setGeneralProducts({
+    required SetProductType setProductType,
+    List<DataMap>? productMap,
+    List<ProductModel>? productObject,
+  }) async {
     try {
-      final result = await _productManagerDatasource.setGeneralProducts(
+      await _productManagerDatasource.setGeneralProducts(
         productMap: productMap,
         productObject: productObject,
         setProductType: setProductType,

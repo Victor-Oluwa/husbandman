@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const constants = require('../constants');
 
 const invitationKeySchema = mongoose.Schema({
     ownerName: {
@@ -7,7 +8,7 @@ const invitationKeySchema = mongoose.Schema({
     },
     ownerEmail: {
         type: String,
-        default: 'hbmdemoemail@gmail.com',
+        default: constants.kDefaultTokenEmail,
     },
     ownerId: {
         type: String,

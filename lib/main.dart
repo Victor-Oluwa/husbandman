@@ -1,28 +1,40 @@
+// import 'package:cloudinary_url_gen/cloudinary.dart';
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:husbandman/core/common/widgets/hbm_text_widget.dart';
 import 'package:husbandman/core/extensions/context_extension.dart';
 import 'package:husbandman/core/res/color.dart';
 import 'package:husbandman/core/res/fonts.dart';
+import 'package:husbandman/core/res/media_res.dart';
 import 'package:husbandman/core/services/injection/admin/admin_injection.dart';
 import 'package:husbandman/core/services/injection/auth/auth_injection.dart';
 import 'package:husbandman/core/services/injection/onboarding/onboarding_injection.dart';
 import 'package:husbandman/core/services/injection/product_manager/product_manager_injection.dart';
 import 'package:husbandman/core/services/routes.dart';
 import 'package:husbandman/core/services/shared_preference.dart';
+import 'package:husbandman/core/utils/constants.dart';
+import 'package:cloudinary/cloudinary.dart';
+import 'package:lottie/lottie.dart';
+
+import 'core/common/app/public_methods/loading/loading_controller.dart';
+
+// import 'package:cloudinary_flutter/cloudinary_context.dart';
+// import 'package:cloudinary_flutter/cloudinary_object.dart';
+// import 'package:cloudinary_flutter/image/cld_image.dart';
 
 Future<void> main() async {
-  //WidgetsFlutterBinding is here because '
-  // ' there is at least one async operation in the block
   WidgetsFlutterBinding.ensureInitialized();
   await sharedPrefs.init();
-  runApp(const ProviderScope(child: MyApp()));
+  runApp(ProviderScope(child: MyApp(LoadingIndicatorController.instance)));
 }
 
 class MyApp extends ConsumerWidget {
-  const MyApp({super.key});
-
+  const MyApp(this.loadingIndicatorController, {super.key});
+  final LoadingIndicatorController loadingIndicatorController;
   static const String title = 'Husbandman';
 
   @override
@@ -32,7 +44,7 @@ class MyApp extends ConsumerWidget {
         BlocProvider(create: (context) => ref.read(onboardingCubitProvider)),
         BlocProvider(create: (context) => ref.read(authBlocProvider)),
         BlocProvider(create: (context) => ref.read(adminBlocProvider)),
-        BlocProvider(create: (context)=> ref.read(productManagerBlocProvider)),
+        BlocProvider(create: (context) => ref.read(productManagerBlocProvider)),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
@@ -75,6 +87,29 @@ class MyApp extends ConsumerWidget {
         ),
         themeMode: ThemeMode.light,
         onGenerateRoute: generateRoute,
+        builder: (context, child) {
+          return Stack(
+            children: [
+              child!,
+              ValueListenableBuilder<bool>(
+                valueListenable: LoadingIndicatorController.instance.isLoading,
+                builder: (context, isLoading, child) {
+                  log(isLoading.toString());
+                  if (isLoading) {
+                    return SizedBox(
+                      // color: Colors.transparent,
+                      child: Center(
+                        child: Lottie.asset(MediaRes.theBossHand),
+                      ),
+                    );
+                  } else {
+                    return const SizedBox.shrink();
+                  }
+                },
+              ),
+            ],
+          );
+        },
       ),
     );
   }

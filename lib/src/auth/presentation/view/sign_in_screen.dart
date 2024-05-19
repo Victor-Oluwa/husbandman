@@ -8,6 +8,7 @@ import 'package:husbandman/core/common/app/models/user/user_model.dart';
 import 'package:husbandman/core/common/app/provider/user_provider.dart';
 import 'package:husbandman/core/common/strings/hbm_strings.dart';
 import 'package:husbandman/core/common/widgets/hbm_text_widget.dart';
+import 'package:husbandman/core/common/widgets/snack_bar.dart';
 import 'package:husbandman/core/extensions/context_extension.dart';
 import 'package:husbandman/core/res/color.dart';
 import 'package:husbandman/core/res/fonts.dart';
@@ -53,40 +54,31 @@ class _FarmerSignUpScreenState extends ConsumerState<SignInScreen> {
                   context
                       .read<AuthBloc>()
                       .add(SetUserEvent(user: user.toMap()));
-                } else if (state is AuthError) {
-                  CoreUtils.showSnackBar(
-                    message: state.message,
-                    context: context,
-                  );
                 }
 
                 if (state is UserSet) {
                   context.read<AuthBloc>().add(
                         CacheUserTokenEvent(token: state.user.token),
                       );
-                }else if (state is AuthError){
-                  CoreUtils.showSnackBar(
-                    message: state.message,
-                    context: context,
-                  );
                 }
 
                 if (state is UserTokenCached) {
                   final user = ref.read(userProvider).type;
-                  user == HBMStrings.admin? Navigator.pushNamedAndRemoveUntil(
-                    context,
-                    RouteNames.adminHome,
-                    (route) => false,
-                  ): Navigator.pushNamedAndRemoveUntil(
-                    context,
-                    RouteNames.homePage,
-                        (route) => false,
-                  );
-                }else if (state is AuthError) {
-                  CoreUtils.showSnackBar(
-                    message: state.message,
-                    context: context,
-                  );
+                  user == HBMStrings.admin
+                      ? Navigator.pushNamedAndRemoveUntil(
+                          context,
+                          RouteNames.adminHome,
+                          (route) => false,
+                        )
+                      : Navigator.pushNamedAndRemoveUntil(
+                          context,
+                          RouteNames.homePage,
+                          (route) => false,
+                        );
+                }
+
+                if (state is AuthError) {
+                  HBMSnackBar.show(context: context, content: state.message);
                 }
               },
               child: Column(
@@ -229,9 +221,10 @@ class _FarmerSignUpScreenState extends ConsumerState<SignInScreen> {
                             );
                       },
                       child: HBMTextWidget(
-                        data: HBMStrings.signIn,
-                        fontFamily: HBMFonts.exo2,
-                      ),
+                          data: HBMStrings.signIn,
+                          fontFamily: HBMFonts.exo2,
+                          fontSize: context.width * 0.04,
+                          color: HBMColors.grey),
                     ),
                   ),
                 ],

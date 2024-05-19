@@ -10,11 +10,13 @@ import 'package:husbandman/core/utils/typedef.dart';
 abstract class ProductManagerDatasource {
   const ProductManagerDatasource();
 
+  Future<List<Uint8List?>> compressProductImage(List<File> images);
+
   Future<List<ProductEntity>> deleteProduct(String id);
 
   Future<List<ProductEntity>> fetchProducts({
     required int limit,
-    required int skip,
+    required List<String> fetched,
   });
 
   Future<List<ProductEntity>> fetchProductsByCategory({
@@ -26,7 +28,10 @@ abstract class ProductManagerDatasource {
   Future<List<ProductEntity>> fetchFarmerProducts(String farmerEmail);
 
   Future<List<String>> getProductImageUrl({
-    required List<Uint8List> compressedFile,
+    required String sellerName,
+    required bool isByte,
+    List<Uint8List?>? compressedFile,
+    List<File>? file,
   });
 
   Future<ProductEntity> likeProduct(String id);

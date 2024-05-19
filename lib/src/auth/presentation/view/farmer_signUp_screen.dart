@@ -335,8 +335,9 @@ class _FarmerSignUpScreenState extends ConsumerState<FarmerSignUpScreen> {
                       onPressed: () {
                         if (!formKey.currentState!.validate()) {
                           ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
+                             SnackBar(
                               content: HBMTextWidget(
+                                color: HBMColors.grey,
                                 data: HBMStrings
                                     .youNeedToAttendToAllFieldCorrectly,
                               ),
@@ -348,17 +349,20 @@ class _FarmerSignUpScreenState extends ConsumerState<FarmerSignUpScreen> {
                             duration: const Duration(seconds: 1),
                             curve: Curves.easeIn,
                           );
+                          return;
                         }
 
                         if (!policyBoxChecked) {
                           ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
+                             SnackBar(
                               content: HBMTextWidget(
+                                color: HBMColors.grey,
                                 data: HBMStrings
                                     .kindlyTickThePrivacyPolicyBoxBeforeProceeding,
                               ),
                             ),
                           );
+                          return;
                         }
 
                         context.read<AuthBloc>().add(
@@ -373,6 +377,8 @@ class _FarmerSignUpScreenState extends ConsumerState<FarmerSignUpScreen> {
                             );
                       },
                       child: HBMTextWidget(
+                        color: HBMColors.grey,
+                        fontSize: context.width*0.04,
                         data: HBMStrings.signUp,
                         fontFamily: HBMFonts.exo2,
                       ),

@@ -9,6 +9,7 @@ import 'package:husbandman/core/common/app/models/product_model.dart';
 import 'package:husbandman/core/enums/set_product_type.dart';
 import 'package:husbandman/core/enums/update_product.dart';
 import 'package:husbandman/core/utils/typedef.dart';
+import 'package:husbandman/src/product_manager/domain/usecase/compress_product_image.dart';
 import 'package:husbandman/src/product_manager/domain/usecase/delete_product.dart';
 import 'package:husbandman/src/product_manager/domain/usecase/fetch_farmer_products.dart';
 import 'package:husbandman/src/product_manager/domain/usecase/fetch_product_by_category.dart';
@@ -30,6 +31,7 @@ part 'product_manager_state.dart';
 class ProductManagerBloc
     extends Bloc<ProductManagerEvent, ProductManagerState> {
   ProductManagerBloc({
+    required CompressProductImage compressProductImage,
     required DeleteProduct deleteProduct,
     required FetchFarmerProduct fetchFarmerProduct,
     required FetchProductsByCategory fetchProductsByCategory,
@@ -43,7 +45,8 @@ class ProductManagerBloc
     required SetGeneralProducts setGeneralProducts,
     required UpdateProduct updateProduct,
     required UploadProduct uploadProduct,
-  })  : _deleteProduct = deleteProduct,
+  })  : _compressProductImage = compressProductImage,
+        _deleteProduct = deleteProduct,
         _fetchFarmerProduct = fetchFarmerProduct,
         _fetchProductsByCategory = fetchProductsByCategory,
         _fetchProducts = fetchProducts,
@@ -60,6 +63,8 @@ class ProductManagerBloc
     on<ProductManagerEvent>((event, emit) {
       emit(const ProductManagerLoading());
     });
+
+    on<CompressProductImagesEvent>(_compressProductImageHandler);
     on<DeleteProductEvent>(_deleteProductHandler);
     on<FetchFarmerProductsEvent>(_fetchFarmerProductHandler);
     on<FetchProductsByCategoryEvent>(_fetchProductsByCategoryHandler);
@@ -75,6 +80,7 @@ class ProductManagerBloc
     on<UploadProductEvent>(_uploadProductHandler);
   }
 
+  final CompressProductImage _compressProductImage;
   final DeleteProduct _deleteProduct;
   final FetchFarmerProduct _fetchFarmerProduct;
   final FetchProductsByCategory _fetchProductsByCategory;
@@ -88,6 +94,20 @@ class ProductManagerBloc
   final SetGeneralProducts _setGeneralProducts;
   final UpdateProduct _updateProduct;
   final UploadProduct _uploadProduct;
+
+  Future<void> _compressProductImageHandler(
+    CompressProductImagesEvent event,
+    Emitter<ProductManagerState> emit,
+  ) async {
+    final result = await _compressProductImage(event.files);
+
+    result.fold(
+      (l) => emit(ProductManagerFailure(l.errorMessage)),
+      (r) => emit(
+        CompressedImages(r),
+      ),
+    );
+  }
 
   Future<void> _deleteProductHandler(
     DeleteProductEvent event,
@@ -144,7 +164,7 @@ class ProductManagerBloc
     final result = await _fetchProducts(
       FetchProductsParams(
         limit: event.limit,
-        skip: event.skip,
+        fetched: event.fetched,
       ),
     );
 
@@ -161,7 +181,12 @@ class ProductManagerBloc
     Emitter<ProductManagerState> emit,
   ) async {
     final result = await _getProductImageUrl(
-      GetProductImageUrlParams(compressedFile: event.compressedFile),
+      GetProductImageUrlParams(
+        isByte:event.isByte,
+        sellerName: event.sellerName,
+        compressedFile: event.compressedFile,
+        file: event.file,
+      ),
     );
 
     result.fold(

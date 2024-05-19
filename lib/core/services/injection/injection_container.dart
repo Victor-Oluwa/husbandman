@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
 import 'package:husbandman/core/common/app/public_methods/cloudinary_upload/cloudinary_upload.dart';
 import 'package:husbandman/core/common/app/public_methods/file-picker/file_picker.dart';
+import 'package:husbandman/core/common/app/public_methods/file_compressor/file_compressor.dart';
 import 'package:husbandman/core/common/app/storage/hbm_storage.dart';
 import 'package:husbandman/core/common/app/public_methods/token-generator/token_generator.dart';
 import 'package:husbandman/core/services/shared_preference.dart';
@@ -41,5 +42,6 @@ final cloudinaryUploadProvider = Provider<CloudinaryUpload>(
 );
 
 final pickFileProvider = Provider<PickFile>((ref) => PickFile());
+final compressorProvider = Provider<FileCompressor>((ref) => FileCompressor());
 
 // Define other providers similarly...

@@ -3,6 +3,7 @@ import 'package:husbandman/core/services/injection/injection_container.dart';
 import 'package:husbandman/src/product_manager/data/datasource/product_manager_datasource_impl.dart';
 import 'package:husbandman/src/product_manager/data/repo/product_manager_repo_impl.dart';
 import 'package:husbandman/src/product_manager/domain/repo/product_manager_repo.dart';
+import 'package:husbandman/src/product_manager/domain/usecase/compress_product_image.dart';
 import 'package:husbandman/src/product_manager/domain/usecase/delete_product.dart';
 import 'package:husbandman/src/product_manager/domain/usecase/fetch_farmer_products.dart';
 import 'package:husbandman/src/product_manager/domain/usecase/fetch_product_by_category.dart';
@@ -21,6 +22,7 @@ import 'package:husbandman/src/product_manager/presentation/bloc/product_manager
 final productManagerBlocProvider = Provider<ProductManagerBloc>(
   (ref) {
     return ProductManagerBloc(
+      compressProductImage: ref.read(compressProductImageProvider),
       deleteProduct: ref.read(deleteProductProvider),
       fetchFarmerProduct: ref.read(fetchFarmerProductProvider),
       fetchProductsByCategory: ref.read(fetchProductsByCategoryProvider),
@@ -45,6 +47,7 @@ final productManagerDatasourceProvider = Provider<ProductManagerDatasourceImpl>(
       ref,
       ref.read(cloudinaryUploadProvider),
       ref.read(pickFileProvider),
+      ref.read(compressorProvider),
     );
   },
 );
@@ -53,6 +56,12 @@ final productManagerRepoProvider = Provider<ProductManagerRepo>(
   (ref) {
     return ProductManagerRepoImpl(ref.read(productManagerDatasourceProvider));
   },
+);
+
+final compressProductImageProvider = Provider<CompressProductImage>(
+  (ref) => CompressProductImage(
+    ref.read(productManagerRepoProvider),
+  ),
 );
 
 final deleteProductProvider = Provider<DeleteProduct>(

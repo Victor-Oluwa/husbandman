@@ -138,18 +138,24 @@ void main() {
   group('Get Product Image Url', () {
     final tImageUrl = ['img-urls'];
     final params = GetProductImageUrlParams.empty();
+    const sellerName = 'sellerName';
+    const isByte = true;
     test(
       'Should call [ProductManagerDatasource] and return [Right<ProductEntity>]',
       () async {
         when(
           () => datasource.getProductImageUrl(
             compressedFile: any(named: 'compressedFile'),
+            sellerName: any(named: 'sellerName'),
+            isByte: any(named: 'isByte'),
           ),
         ).thenAnswer(
           (_) async => tImageUrl,
         );
 
         final result = await productManagerRepoImpl.getProductImageUrl(
+          sellerName: sellerName,
+          isByte: isByte,
           compressedFile: params.compressedFile,
         );
 
@@ -163,6 +169,8 @@ void main() {
         verify(
           () => datasource.getProductImageUrl(
             compressedFile: params.compressedFile,
+            sellerName: sellerName,
+            isByte: isByte,
           ),
         );
         verifyNoMoreInteractions(datasource);
@@ -175,6 +183,8 @@ void main() {
         when(
           () => datasource.getProductImageUrl(
             compressedFile: any(named: 'compressedFile'),
+            sellerName: any(named: 'sellerName'),
+            isByte: any(named: 'isByte'),
           ),
         ).thenThrow(
           const CloudinaryException(
@@ -185,6 +195,8 @@ void main() {
 
         final result = await productManagerRepoImpl.getProductImageUrl(
           compressedFile: params.compressedFile,
+          sellerName: sellerName,
+          isByte: isByte,
         );
         expect(
           result,
@@ -201,6 +213,8 @@ void main() {
         verify(
           () => datasource.getProductImageUrl(
             compressedFile: params.compressedFile,
+            sellerName: sellerName,
+            isByte: isByte,
           ),
         );
         verifyNoMoreInteractions(datasource);

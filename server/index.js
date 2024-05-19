@@ -6,6 +6,7 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const authRouter = require('./auth/routes/auth/commander/auth');
 const adminRouter = require('./auth/routes/admin/commander/admin');
+const productManagerRouter = require('./auth/routes/product-manager/commander/product_manager');
 
 //IMPORTS FROM OTHER FILES
 
@@ -14,12 +15,10 @@ const app = express();
 
 //Middleware
 app.use(express.json());
-// app.use(cors(
-//     { origin: 'https://192.168.141.1:3000' }
-// ));
 app.use(cors());
 app.use(authRouter);
 app.use(adminRouter);
+app.use(productManagerRouter);
 
 //Connections
 mongoose.connect(process.env.MONGODB_URI, {

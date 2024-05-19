@@ -1,18 +1,23 @@
 import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_advanced_drawer/flutter_advanced_drawer.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:husbandman/core/common/app/models/product_model.dart';
+import 'package:husbandman/core/common/app/provider/fetched_products_provider.dart';
+import 'package:husbandman/core/common/app/provider/general_product_provider.dart';
 import 'package:husbandman/core/common/app/provider/user_provider.dart';
+import 'package:husbandman/core/common/app/public_methods/loading/loading_controller.dart';
 import 'package:husbandman/core/common/widgets/hbm_text_widget.dart';
 import 'package:husbandman/core/common/widgets/home_search_widget.dart';
+import 'package:husbandman/core/enums/set_product_type.dart';
 import 'package:husbandman/core/extensions/context_extension.dart';
 import 'package:husbandman/core/res/color.dart';
 import 'package:husbandman/core/res/fonts.dart';
 import 'package:husbandman/core/services/route_names.dart';
 import 'package:husbandman/src/auth/domain/entity/home_category_content.dart';
 import 'package:husbandman/src/auth/presentation/bloc/auth_bloc.dart';
+import 'package:husbandman/src/product_manager/presentation/bloc/product_manager_bloc.dart';
 
 import '../widgets/category_widget.dart';
 
@@ -25,11 +30,40 @@ class HomeScreen extends ConsumerStatefulWidget {
 
 class _HomeScreenState extends ConsumerState<HomeScreen> {
   final _advancedDrawerController = AdvancedDrawerController();
+  bool _isLoading = false;
+  final int _limit = 10;
 
   void _handleMenuButtonPressed() {
     // NOTICE: Manage Advanced Drawer state through the Controller.
     // _advancedDrawerController.value = AdvancedDrawerValue.visible();
     _advancedDrawerController.showDrawer();
+  }
+
+  Future<void> _fetchVideos() async {
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
+      context.read<ProductManagerBloc>().add(
+            FetchProductsEvent(
+              limit: _limit,
+              fetched: ref.read(fetchedProductsProvider),
+            ),
+          );
+    } catch (error) {
+      print('Failed to fetch videos: $error');
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
+
+  @override
+  void initState() {
+    _fetchVideos();
+    super.initState();
   }
 
   @override
@@ -67,23 +101,52 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   Scaffold buildBody(BuildContext context, double horizontalPadding) {
     return Scaffold(
       appBar: buildAppBar(context),
-      body: BlocListener<AuthBloc, AuthState>(
-        listener: (context, state) {
-          if (state is SignedOut) {
-            Navigator.pushNamedAndRemoveUntil(
-              context,
-              RouteNames.signInScreen,
-              (route) => false,
-            );
-          } else {
-            log(state.toString());
-          }
-        },
+      body: MultiBlocListener(
+        listeners: [
+          BlocListener<AuthBloc, AuthState>(
+            listener: (context, state) {
+              if (state is SignedOut) {
+                Navigator.pushNamedAndRemoveUntil(
+                  context,
+                  RouteNames.signInScreen,
+                  (route) => false,
+                );
+              }
+            },
+          ),
+          BlocListener<ProductManagerBloc, ProductManagerState>(
+            listener: (context, state) {
+              if (state is FetchedProduct) {
+                final products = <ProductModel>[];
+
+                for (final element in state.products) {
+                  products.add(element as ProductModel);
+                }
+
+                context.read<ProductManagerBloc>().add(
+                      SetGeneralProductEvent(
+                        setProductType: SetProductType.insertNew,
+                        productObject: products,
+                      ),
+                    );
+              }
+
+              if (state is GeneralProductSet) {
+                final fetchedProduct = ref.read(generalProductProvider);
+                ref.read(fetchedProductsProvider).addAll(
+                      fetchedProduct.map(
+                        (product) => product.id,
+                      ),
+                    );
+              }
+            },
+          ),
+        ],
         child: Center(
           child: Container(
             decoration: BoxDecoration(
               color: HBMColors.coolGrey,
-              borderRadius: BorderRadius.only(
+              borderRadius: const BorderRadius.only(
                 topLeft: Radius.circular(20),
                 topRight: Radius.circular(20),
               ),
@@ -100,7 +163,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   Padding(
                     padding:
                         EdgeInsets.symmetric(horizontal: horizontalPadding),
-                    child: SearchBar(),
+                    child: const SearchField(
+                      isElevated: true,
+                      hintText: 'Search anything...',
+                    ),
                   ),
                   SizedBox(
                     height: context.height * 0.03,
@@ -143,121 +209,139 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                       ],
                     ),
                   ),
-                  // SizedBox(
-                  //   height: context.height * 0.05,
-                  // ),
-                  Expanded(
-                    child: ListView.separated(
-                      itemCount: 7,
-                      padding: EdgeInsets.symmetric(
-                        horizontal: horizontalPadding,
-                      ),
-                      itemBuilder: (BuildContext context, index) {
-                        return Padding(
-                          padding: EdgeInsets.only(
-                            top: index == 0 ? context.height * 0.03 : 0,
-                          ),
-                          child: Stack(
-                            children: [
-                              Align(
-                                child: Container(
-                                  margin: EdgeInsets.only(
-                                    left: context.width * 0.06,
-                                    top: context.height * 0.01,
-                                  ),
-                                  height: context.height * 0.18,
-                                  width: context.width * 0.90,
-                                  decoration: BoxDecoration(
-                                    color: HBMColors.white,
-                                    borderRadius: BorderRadius.circular(
-                                        context.width * 0.05),
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: Colors.grey.withOpacity(0.5),
-                                        spreadRadius: 2,
-                                        blurRadius: 15,
-                                        offset: const Offset(
-                                          0,
-                                          3,
-                                        ), // Adjust the offset as needed
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                              Container(
-                                height: context.height * 0.17,
-                                width: context.width * 0.30,
-                                decoration: BoxDecoration(
-                                  color: HBMColors.charcoalGrey,
-                                  borderRadius: BorderRadius.circular(
-                                      context.width * 0.03),
-                                ),
-                              ),
-                              Positioned(
-                                right: context.width * 0.05,
-                                top: context.height * 0.03,
-                                child: SizedBox(
-                                  width: context.width * 0.50,
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      HBMTextWidget(
-                                        data: 'Abbys (1 bag)',
-                                        fontFamily: HBMFonts.quicksandBold,
-                                        fontSize: context.width * 0.05,
-                                        color: HBMColors.charcoalGrey,
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
-                                      HBMTextWidget(
-                                        data: 'Mr Okon',
-                                        color: HBMColors.charcoalGrey,
-                                        fontFamily: HBMFonts.quicksandNormal,
-                                        fontSize: context.width * 0.04,
-                                      ),
-                                      HBMTextWidget(
-                                        data: '2, Peace street, Ijeododo lagos',
-                                        color: HBMColors.charcoalGrey,
-                                        fontFamily: HBMFonts.quicksandNormal,
-                                        fontSize: context.width * 0.04,
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
-                                      SizedBox(
-                                        height: context.height * 0.01,
-                                      ),
-                                      HBMTextWidget(
-                                        data: '2 Bags | Organic',
-                                        color: HBMColors.charcoalGrey,
-                                        fontFamily: HBMFonts.quicksandNormal,
-                                        fontSize: context.width * 0.03,
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                              Positioned(
-                                right: context.width * 0.05,
-                                bottom: context.height * 0.01,
-                                child: HBMTextWidget(
-                                  fontFamily: HBMFonts.quicksandBold,
-                                  color: HBMColors.charcoalGrey,
-                                  data: '₦2000',
-                                ),
-                              ),
-                            ],
-                          ),
-                        );
+                  NotificationListener<ScrollNotification>(
+                      onNotification: (ScrollNotification scrollInfo) {
+                        if (!_isLoading &&
+                            scrollInfo.metrics.pixels ==
+                                scrollInfo.metrics.maxScrollExtent) {
+                          _fetchVideos();
+                          return true;
+                        }
+                        return false;
                       },
-                      separatorBuilder: (BuildContext context, int index) {
-                        return SizedBox(
-                          height: context.height * 0.04,
-                        );
-                      },
-                    ),
-                  ),
+                      child: Expanded(
+                        child: ListView.separated(
+                          itemCount: ref.read(generalProductProvider).length +
+                              (_isLoading ? 1 : 0),
+                          padding: EdgeInsets.symmetric(
+                            horizontal: horizontalPadding,
+                          ),
+                          itemBuilder: (BuildContext context, index) {
+                            final product =
+                                ref.read(generalProductProvider)[index];
+                            if (index == ref.read(generalProductProvider).length) {
+                              return Center(child: CircularProgressIndicator());
+                            }
+                            return Padding(
+                              padding: EdgeInsets.only(
+                                top: index == 0 ? context.height * 0.03 : 0,
+                              ),
+                              child: Stack(
+                                children: [
+                                  Align(
+                                    child: Container(
+                                      margin: EdgeInsets.only(
+                                        left: context.width * 0.06,
+                                        top: context.height * 0.01,
+                                      ),
+                                      height: context.height * 0.18,
+                                      width: context.width * 0.90,
+                                      decoration: BoxDecoration(
+                                        color: HBMColors.white,
+                                        borderRadius: BorderRadius.circular(
+                                            context.width * 0.05),
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color: Colors.grey.withOpacity(0.5),
+                                            spreadRadius: 2,
+                                            blurRadius: 15,
+                                            offset: const Offset(
+                                              0,
+                                              3,
+                                            ), // Adjust the offset as needed
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                  Container(
+                                    height: context.height * 0.17,
+                                    width: context.width * 0.30,
+                                    decoration: BoxDecoration(
+                                      color: HBMColors.charcoalGrey,
+                                      borderRadius: BorderRadius.circular(
+                                          context.width * 0.03),
+                                    ),
+                                    // child: Image.network(product.images[0]),
+                                  ),
+                                  Positioned(
+                                    right: context.width * 0.05,
+                                    top: context.height * 0.03,
+                                    child: SizedBox(
+                                      width: context.width * 0.50,
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          HBMTextWidget(
+                                            data: product.name,
+                                            fontFamily: HBMFonts.quicksandBold,
+                                            fontSize: context.width * 0.05,
+                                            color: HBMColors.charcoalGrey,
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                          HBMTextWidget(
+                                            data: product.sellerName,
+                                            color: HBMColors.charcoalGrey,
+                                            fontFamily:
+                                                HBMFonts.quicksandNormal,
+                                            fontSize: context.width * 0.04,
+                                          ),
+                                          HBMTextWidget(
+                                            data: product.description,
+                                            color: HBMColors.charcoalGrey,
+                                            fontFamily:
+                                                HBMFonts.quicksandNormal,
+                                            fontSize: context.width * 0.04,
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                          SizedBox(
+                                            height: context.height * 0.01,
+                                          ),
+                                          HBMTextWidget(
+                                            data: product.measurement,
+                                            color: HBMColors.charcoalGrey,
+                                            fontFamily:
+                                                HBMFonts.quicksandNormal,
+                                            fontSize: context.width * 0.03,
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                  Positioned(
+                                    right: context.width * 0.05,
+                                    bottom: context.height * 0.01,
+                                    child: HBMTextWidget(
+                                      fontFamily: HBMFonts.quicksandBold,
+                                      color: HBMColors.charcoalGrey,
+                                      data: product.price.toString(),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            );
+                          },
+                          separatorBuilder: (BuildContext context, int index) {
+                            return SizedBox(
+                              height: context.height * 0.04,
+                            );
+                          },
+                        ),
+                      )),
                 ],
               ),
             ),
@@ -273,7 +357,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         child: Container(
           // margin: ,
           child: ListTileTheme(
-            textColor: HBMColors.coolGrey,
+            textColor: HBMColors.mediumGrey,
+            tileColor: HBMColors.mediumGrey,
             iconColor: HBMColors.coolGrey,
             horizontalTitleGap: context.width * 0.10,
             contentPadding: EdgeInsets.symmetric(
@@ -294,10 +379,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     data: 'Home',
                     fontFamily: HBMFonts.quicksandNormal,
                     fontSize: context.width * 0.04,
+                    color: HBMColors.coolGrey,
                   ),
                 ),
                 ListTile(
-                  onTap: () {},
+                  onTap: () {
+                    Navigator.pushNamed(context, RouteNames.dashboard);
+                  },
                   leading: Icon(
                     Icons.dashboard,
                     size: context.width * 0.08,
@@ -306,6 +394,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     data: 'Dashboard',
                     fontFamily: HBMFonts.quicksandNormal,
                     fontSize: context.width * 0.04,
+                    color: HBMColors.coolGrey,
                   ),
                 ),
                 ListTile(
@@ -318,6 +407,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     data: 'Liked',
                     fontFamily: HBMFonts.quicksandNormal,
                     fontSize: context.width * 0.04,
+                    color: HBMColors.coolGrey,
                   ),
                 ),
 
@@ -331,6 +421,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     data: 'Customers',
                     fontFamily: HBMFonts.quicksandNormal,
                     fontSize: context.width * 0.04,
+                    color: HBMColors.coolGrey,
                   ),
                 ),
                 ListTile(
@@ -343,6 +434,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     data: 'History',
                     fontFamily: HBMFonts.quicksandNormal,
                     fontSize: context.width * 0.04,
+                    color: HBMColors.coolGrey,
                   ),
                 ),
                 ListTile(
@@ -355,11 +447,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     data: 'Settings',
                     fontFamily: HBMFonts.quicksandNormal,
                     fontSize: context.width * 0.04,
+                    color: HBMColors.coolGrey,
                   ),
                 ),
                 // Spacer(),
                 DefaultTextStyle(
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 12,
                     color: Colors.white54,
                   ),
@@ -367,6 +460,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     child: HBMTextWidget(
                       data: 'Terms of Service | Privacy Policy',
                       fontFamily: HBMFonts.quicksandNormal,
+                      color: HBMColors.coolGrey,
                     ),
                   ),
                 ),
@@ -381,23 +475,32 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   AppBar buildAppBar(BuildContext context) {
     return AppBar(
       elevation: 0,
-      backgroundColor: HBMColors.white,
       toolbarHeight: context.width * 0.20,
       centerTitle: true,
-      title: Column(
-        children: [
-          HBMTextWidget(
-            data: 'Welcome',
-            fontSize: context.width * 0.03,
-            fontFamily: HBMFonts.exoLight,
-            color: Colors.grey,
-          ),
-          HBMTextWidget(
-            data: ref.read(userProvider).name,
-            fontSize: context.width * 0.05,
-            fontFamily: HBMFonts.exoLight,
-          ),
-        ],
+      title: GestureDetector(
+        onTap: () {
+          log('message');
+          // context.read<AuthBloc>().add(const SignOutEvent());
+          LoadingIndicatorController.instance.show();
+        },
+        onDoubleTap: () {
+          LoadingIndicatorController.instance.hide();
+        },
+        child: Column(
+          children: [
+            HBMTextWidget(
+              data: 'Welcome',
+              fontSize: context.width * 0.03,
+              fontFamily: HBMFonts.exoLight,
+              color: Colors.grey,
+            ),
+            HBMTextWidget(
+              data: ref.read(userProvider).name,
+              fontSize: context.width * 0.05,
+              fontFamily: HBMFonts.exoLight,
+            ),
+          ],
+        ),
       ),
       leading: IconButton(
         onPressed: _handleMenuButtonPressed,

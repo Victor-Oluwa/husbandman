@@ -3,6 +3,9 @@ import 'package:husbandman/core/common/widgets/hbm_text_widget.dart';
 import 'package:husbandman/core/extensions/context_extension.dart';
 import 'package:husbandman/core/res/color.dart';
 import 'package:husbandman/core/res/fonts.dart';
+import 'package:husbandman/core/services/route_names.dart';
+import 'package:husbandman/src/product_manager/presentation/widget/all_products_category.dart';
+import 'package:husbandman/src/product_manager/presentation/widget/all_products_list.dart';
 
 class AllProducts extends StatelessWidget {
   const AllProducts({super.key});
@@ -15,32 +18,47 @@ class AllProducts extends StatelessWidget {
         backgroundColor: HBMColors.coolGrey,
         appBar: AppBar(
           backgroundColor: Colors.transparent,
-          centerTitle: true,
-          title: HBMTextWidget(data: 'Products'),
+          centerTitle: false,
+          title: HBMTextWidget(
+            data: 'Products',
+            fontSize: context.width * 0.06,
+          ),
           actions: [
-            Icon(
-              Icons.add,
-              size: context.width * 0.09,
-              color: HBMColors.charcoalGrey,
+            InkWell(
+              onTap: (){
+                Navigator.pushNamed(context, RouteNames.addProduct);
+              },
+              child: Padding(
+                padding: EdgeInsets.only(right: context.width*0.05),
+                child: Icon(
+                  Icons.add,
+                  size: context.width * 0.09,
+                  color: HBMColors.charcoalGrey,
+                ),
+              ),
             ),
           ],
           bottom: TabBar(
+            padding: EdgeInsets.symmetric(horizontal: context.width * 0.03),
             unselectedLabelColor: Colors.grey,
             labelColor: HBMColors.charcoalGrey,
             labelStyle: TextStyle(fontFamily: HBMFonts.quicksandBold),
-            unselectedLabelStyle:TextStyle(fontFamily: HBMFonts.quicksandBold),
-
-            tabs: [
-              Tab(text: 'All'),
+            unselectedLabelStyle: TextStyle(fontFamily: HBMFonts.quicksandBold),
+            dividerColor: Colors.grey,
+            // indicator: UnderlineTabIndicator(),
+            indicatorSize: TabBarIndicatorSize.tab,
+            indicatorColor: HBMColors.charcoalGrey,
+            tabs: const [
               Tab(text: 'Category'),
+              Tab(text: 'All'),
             ],
           ),
         ),
-        body: SafeArea(
+        body: const SafeArea(
           child: TabBarView(
             children: [
-              Center(child: Text('All Tab Content')),
-              Center(child: Text('Category Tab Content')),
+             AllProductsCategories(),
+              AllProductsList(),
             ],
           ),
         ),
@@ -48,3 +66,5 @@ class AllProducts extends StatelessWidget {
     );
   }
 }
+
+

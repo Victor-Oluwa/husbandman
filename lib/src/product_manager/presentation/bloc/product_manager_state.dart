@@ -31,6 +31,14 @@ class ProductDeleted extends ProductManagerState {
   List<List<ProductEntity>> get props => [products];
 }
 
+class CompressedImages extends ProductManagerState{
+  const CompressedImages(this.files);
+
+  final List<Uint8List?> files;
+
+  @override
+  List<List<Uint8List?>> get props => [files];
+}
 class FetchedFarmerProduct extends ProductManagerState {
   const FetchedFarmerProduct(this.products);
 

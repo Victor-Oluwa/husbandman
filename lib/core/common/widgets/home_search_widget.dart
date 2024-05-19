@@ -4,12 +4,15 @@ import 'package:husbandman/core/res/color.dart';
 import 'package:husbandman/core/res/fonts.dart';
 
 class SearchField extends StatelessWidget {
+  const SearchField({required this.isElevated, required this.hintText, super.key});
+final bool isElevated;
+final String hintText;
   @override
   Widget build(BuildContext context) {
     return Container(
       height: 45,
       width: double.infinity,
-      decoration: BoxDecoration(
+      decoration: isElevated? BoxDecoration(
         boxShadow: [
           BoxShadow(
             color: Colors.grey.withOpacity(0.5),
@@ -21,10 +24,10 @@ class SearchField extends StatelessWidget {
             ), // Adjust the offset as needed
           ),
         ],
-      ),
+      ): const BoxDecoration(),
       child: TextField(
         style: TextStyle(
-          color: const Color(0xff020202),
+          color: HBMColors.mediumGrey,
           fontSize: 20,
           fontWeight: FontWeight.w400,
           letterSpacing: 0.5,
@@ -32,13 +35,13 @@ class SearchField extends StatelessWidget {
         decoration: InputDecoration(
           filled: true,
           // fillColor: const Color(0xfff1f1f1),
-          fillColor: HBMColors.white,
+          fillColor: Colors.grey.shade50,
 
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(8),
             borderSide: BorderSide.none,
           ),
-          hintText: "Search anything...",
+          hintText: hintText,
           hintStyle: TextStyle(
             color: const Color(0xffb2b2b2),
             fontSize: context.width*0.04,
@@ -47,7 +50,7 @@ class SearchField extends StatelessWidget {
             letterSpacing: 0.5,
           ),
           prefixIcon: Icon(Icons.search, color: HBMColors.charcoalGrey,),
-          prefixIconColor: Colors.black,
+          prefixIconColor: HBMColors.charcoalGrey,
         ),
       ),
     );

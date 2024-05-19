@@ -15,13 +15,18 @@ class GeneralProductNotifier extends StateNotifier<List<ProductModel>> {
     List<ProductModel>? newProductModel,
   }) {
     if (newProductModel != null) {
-      state.insert(0, newProductModel.first);
+      state.addAll(newProductModel);
       return;
     }
 
     if (newProductMap != null) {
-      final newProduct = ProductModel.fromMap(newProductMap.first);
-      state.insert(0, newProduct);
+      final products = <ProductModel>[];
+
+      for (final element in newProductMap) {
+        final newProduct = ProductModel.fromMap(element);
+        products.add(newProduct);
+      }
+      state.addAll(products);
       return;
     }
     return;
