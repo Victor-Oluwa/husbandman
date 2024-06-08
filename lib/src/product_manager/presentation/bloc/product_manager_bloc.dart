@@ -145,7 +145,7 @@ class ProductManagerBloc
       FetchProductsByCategoryParams(
         category: event.category,
         limit: event.limit,
-        skip: event.skip,
+        fetched: event.fetched,
       ),
     );
 

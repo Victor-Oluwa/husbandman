@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'dart:developer';
-
+import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
 import 'package:husbandman/core/common/app/models/user/admin_model.dart';
@@ -52,9 +52,12 @@ class AuthDataSourceImpl implements AuthDataSource {
       }
       return jsonDecode(response.body) as bool;
     } on AuthException catch (_) {
+      log('Authenticate reset password error');
       rethrow;
     } catch (e) {
+      log('Authenticate reset password error');
       throw AuthException(message: e.toString(), statusCode: 500);
+    }finally{
     }
   }
 
@@ -94,12 +97,16 @@ class AuthDataSourceImpl implements AuthDataSource {
       final buyerModel = BuyerModel.fromMap(responseMap);
       return buyerModel;
     } on AuthException catch (_) {
+      log('Buyer signUp error');
       rethrow;
     } catch (e) {
+      log('Buyer signUp error');
+
       throw AuthException(
         message: e.toString(),
         statusCode: 505,
       );
+    }finally{
     }
   }
 
@@ -108,7 +115,9 @@ class AuthDataSourceImpl implements AuthDataSource {
     try {
       await _storage.writeData(key: kAuthToken, value: token);
     } catch (e) {
+      log('Cache user error');
       throw AuthException(message: e.toString(), statusCode: 500);
+    }finally{
     }
   }
 
@@ -119,9 +128,12 @@ class AuthDataSourceImpl implements AuthDataSource {
           .read(invitationKeyProvider.notifier)
           .cacheInvitationToken(token: token);
     } on AuthException catch (_) {
+      log('Cache Invitation error');
       rethrow;
     } catch (e) {
+      log('Cache Invitation error');
       throw AuthException(message: e.toString(), statusCode: 500);
+    }finally{
     }
   }
 
@@ -167,9 +179,12 @@ class AuthDataSourceImpl implements AuthDataSource {
       return farmerModel;
 
     } on AuthException catch (_) {
+      log('Farmer signUp error');
       rethrow;
     } catch (e) {
+      log('Farmer signUp error');
       throw AuthException(message: e.toString(), statusCode: 500);
+    }finally{
     }
   }
 
@@ -180,7 +195,9 @@ class AuthDataSourceImpl implements AuthDataSource {
       log('Retrieved token: $result');
       return result ?? 'Returned null';
     } catch (e) {
+      log('Retrieve user token error');
       throw AuthException(message: e.toString(), statusCode: 400);
+    }finally{
     }
   }
 
@@ -199,8 +216,10 @@ class AuthDataSourceImpl implements AuthDataSource {
         );
       }
     } on AuthException {
+      log('Reset password error');
       rethrow;
     } catch (e) {
+      log('Reset password error');
       throw AuthException(message: e.toString(), statusCode: 400);
     }
   }
@@ -213,7 +232,9 @@ class AuthDataSourceImpl implements AuthDataSource {
 
       return userModel;
     } catch (e) {
+      log('Set user error');
       throw AuthException(message: e.toString(), statusCode: 100);
+    }finally{
     }
   }
 
@@ -232,9 +253,12 @@ class AuthDataSourceImpl implements AuthDataSource {
         );
       }
     } on AuthException catch (_) {
+      log('Send reset password token error');
       rethrow;
     } catch (e) {
+      log('Send reset password token error');
       throw AuthException(message: e.toString(), statusCode: 500);
+    }finally{
     }
   }
 
@@ -285,9 +309,12 @@ class AuthDataSourceImpl implements AuthDataSource {
           );
       }
     } on AuthException catch (_) {
+      log('Sign in error');
       rethrow;
     } catch (e) {
+      log('Sign in error');
       throw AuthException(message: e.toString(), statusCode: 400);
+    }finally{
     }
   }
 
@@ -297,9 +324,12 @@ class AuthDataSourceImpl implements AuthDataSource {
       final result = _storage.deleteData(key: kAuthToken);
       return result;
     } on AuthException catch (_) {
+      log('Sign out error');
       rethrow;
     } catch (e) {
+      log('Sign out error');
       throw AuthException(message: e.toString(), statusCode: 505);
+    }finally{
     }
   }
 
@@ -326,6 +356,8 @@ class AuthDataSourceImpl implements AuthDataSource {
           statusCode: response.statusCode,
         );
       }
+      _client.close();
+
       final userModel = UserModel.fromMap(jsonDecode(response.body) as DataMap);
 
       switch (userModel.type) {
@@ -348,47 +380,47 @@ class AuthDataSourceImpl implements AuthDataSource {
           );
       }
     } on AuthException catch (_) {
+      log('Update user error');
       rethrow;
     } catch (e) {
+      log('Update user error');
       throw AuthException(message: e.toString(), statusCode: 400);
+    }finally{
     }
   }
 
   @override
   Future<UserModel> validateUser({required String token}) async {
     try {
-      final response = await _client.post(
-        Uri.parse('$kBaseUrl$kValidateUserEndpoint'),
-        headers: {
-          'Content-Type': 'application/json; charset=UTF-8',
-          kAuthToken: token,
-        },
-        body: jsonEncode({
+      final response = await Dio().post<Map<String, dynamic>>(
+        '$kBaseUrl$kValidateUserEndpoint',
+        data: jsonEncode({
           'token': token,
         }),
+        options: Options(
+          headers: {
+            'Content-Type': 'application/json; charset=UTF-8',
+            kAuthToken: token,
+          },
+        ),
       );
 
       if (response.statusCode != 200 && response.statusCode != 201) {
         throw AuthException(
-          message: response.body,
-          statusCode: response.statusCode,
+          message: response.data.toString(),
+          statusCode: response.statusCode!,
         );
       }
-      final userModel = UserModel.fromMap(jsonDecode(response.body) as DataMap);
+
+      final userModel = UserModel.fromMap(response.data!);
 
       switch (userModel.type) {
         case 'Farmer':
-          final farmerModel =
-          FarmerModel.fromMap(jsonDecode(response.body) as DataMap);
-          return farmerModel;
+          return FarmerModel.fromMap(response.data!);
         case 'Buyer':
-          final buyerModel =
-          BuyerModel.fromMap(jsonDecode(response.body) as DataMap);
-          return buyerModel;
+          return BuyerModel.fromMap(response.data!);
         case 'Admin':
-          final adminModel =
-          AdminModel.fromMap(jsonDecode(response.body) as DataMap);
-          return adminModel;
+          return AdminModel.fromMap(response.data!);
         default:
           throw const AuthException(
             message: kInvalidUserType,
@@ -396,11 +428,65 @@ class AuthDataSourceImpl implements AuthDataSource {
           );
       }
     } on AuthException catch (_) {
+      log('Validate user error');
       rethrow;
     } catch (e) {
+      log('Validate user error: $e');
       throw AuthException(message: e.toString(), statusCode: 600);
     }
   }
+
+  // Future<UserModel> validateUser({required String token}) async {
+  //   try {
+  //     final response = await _client.post(
+  //       Uri.parse('$kBaseUrl$kValidateUserEndpoint'),
+  //       headers: {
+  //         'Content-Type': 'application/json; charset=UTF-8',
+  //         kAuthToken: token,
+  //       },
+  //       body: jsonEncode({
+  //         'token': token,
+  //       }),
+  //     );
+  //
+  //     if (response.statusCode != 200 && response.statusCode != 201) {
+  //       throw AuthException(
+  //         message: response.body,
+  //         statusCode: response.statusCode,
+  //       );
+  //     }
+  //     final userModel = UserModel.fromMap(jsonDecode(response.body) as DataMap);
+  //
+  //     switch (userModel.type) {
+  //       case 'Farmer':
+  //         final farmerModel =
+  //         FarmerModel.fromMap(jsonDecode(response.body) as DataMap);
+  //         return farmerModel;
+  //       case 'Buyer':
+  //         final buyerModel =
+  //         BuyerModel.fromMap(jsonDecode(response.body) as DataMap);
+  //         return buyerModel;
+  //       case 'Admin':
+  //         final adminModel =
+  //         AdminModel.fromMap(jsonDecode(response.body) as DataMap);
+  //         return adminModel;
+  //       default:
+  //         throw const AuthException(
+  //           message: kInvalidUserType,
+  //           statusCode: 401,
+  //         );
+  //     }
+  //
+  //   } on AuthException catch (_) {
+  //     log('Validate user error');
+  //     rethrow;
+  //   } catch (e) {
+  //     log('Validate user error');
+  //     throw AuthException(message: e.toString(), statusCode: 600);
+  //   }finally{
+  //
+  //   }
+  // }
 
   @override
   Future<String> validateFarmerInvitationKey({
@@ -425,9 +511,12 @@ class AuthDataSourceImpl implements AuthDataSource {
       }
       return jsonDecode(response.body) as String;
     } on AuthException catch (_) {
+      log('Validate Farmer Invitation Key');
       rethrow;
     } catch (e) {
+      log('Validate Farmer Invitation Key');
       throw AuthException(message: e.toString(), statusCode: 400);
+    }finally{
     }
   }
 }

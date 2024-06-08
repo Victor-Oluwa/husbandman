@@ -7,8 +7,8 @@ import 'package:husbandman/core/services/route_names.dart';
 import 'package:husbandman/src/product_manager/presentation/widget/all_products_category.dart';
 import 'package:husbandman/src/product_manager/presentation/widget/all_products_list.dart';
 
-class AllProducts extends StatelessWidget {
-  const AllProducts({super.key});
+class SellerProductView extends StatelessWidget {
+  const SellerProductView({super.key});
 
   @override
   Widget build(BuildContext context) {

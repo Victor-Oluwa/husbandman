@@ -32,6 +32,6 @@ module.exports = {
     SEARCH_PRODUCT: '/product/search',
     UPDATE_PRODUCT: '/product/update',
     FETCH_ALL_PRODUCTS: '/product/all',
-    FETCH_PRODUCT_BY_CATEGORY: '/product/category/all',
+    FETCH_PRODUCT_BY_CATEGORY: '/product/category',
 
 }

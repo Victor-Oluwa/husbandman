@@ -36,15 +36,15 @@ class FetchProductsByCategoryEvent extends ProductManagerEvent {
   const FetchProductsByCategoryEvent({
     required this.category,
     required this.limit,
-    required this.skip,
+    required this.fetched,
   });
 
   final String category;
   final int limit;
-  final int skip;
+  final List<String> fetched;
 
   @override
-  List<Object> get props => [category, limit, skip];
+  List<Object> get props => [category, limit, fetched];
 }
 
 class FetchFarmerProductsEvent extends ProductManagerEvent {

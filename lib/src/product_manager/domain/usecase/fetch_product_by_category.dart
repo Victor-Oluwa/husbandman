@@ -15,7 +15,7 @@ class FetchProductsByCategory extends UseCaseWithParams<List<ProductEntity>,
     return _repo.fetchProductsByCategory(
       category: params.category,
       limit: params.limit,
-      skip: params.skip,
+      fetched: params.fetched,
     );
   }
 }
@@ -24,12 +24,12 @@ class FetchProductsByCategoryParams extends Equatable {
   const FetchProductsByCategoryParams({
     required this.category,
     required this.limit,
-    required this.skip,
+    required this.fetched,
   });
 
   final String category;
   final int limit;
-  final int skip;
+  final List<String> fetched;
 
   @override
   List<Object> get props => [];

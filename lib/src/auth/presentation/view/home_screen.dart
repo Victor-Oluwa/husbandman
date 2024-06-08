@@ -15,6 +15,8 @@ import 'package:husbandman/core/extensions/context_extension.dart';
 import 'package:husbandman/core/res/color.dart';
 import 'package:husbandman/core/res/fonts.dart';
 import 'package:husbandman/core/services/route_names.dart';
+import 'package:husbandman/core/utils/constants.dart';
+import 'package:husbandman/core/widgets/product_listing_widget.dart';
 import 'package:husbandman/src/auth/domain/entity/home_category_content.dart';
 import 'package:husbandman/src/auth/presentation/bloc/auth_bloc.dart';
 import 'package:husbandman/src/product_manager/presentation/bloc/product_manager_bloc.dart';
@@ -30,40 +32,57 @@ class HomeScreen extends ConsumerStatefulWidget {
 
 class _HomeScreenState extends ConsumerState<HomeScreen> {
   final _advancedDrawerController = AdvancedDrawerController();
+  final ScrollController _scrollController = ScrollController();
   bool _isLoading = false;
-  final int _limit = 10;
+
+  void _scrollListener() {
+    if (_scrollController.position.pixels ==
+        _scrollController.position.maxScrollExtent) {
+      log('Reached the end of the list');
+      fetchProducts();
+    }
+  }
+
+  Future<void> fetchProducts() async {
+    final fetchedProduct = ref
+        .read(generalProductProvider)
+        .map(
+          (product) => product.id,
+        )
+        .toList();
+
+    context.read<ProductManagerBloc>().add(
+          FetchProductsEvent(
+            limit: 5,
+            fetched: fetchedProduct,
+          ),
+        );
+
+    setState(() {
+      _isLoading = false;
+    });
+  }
+
+  @override
+  void initState() {
+    fetchProducts();
+    _scrollController.addListener(_scrollListener);
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _scrollController
+      ..removeListener(_scrollListener)
+      ..dispose();
+    _advancedDrawerController.dispose();
+    super.dispose();
+  }
 
   void _handleMenuButtonPressed() {
     // NOTICE: Manage Advanced Drawer state through the Controller.
     // _advancedDrawerController.value = AdvancedDrawerValue.visible();
     _advancedDrawerController.showDrawer();
-  }
-
-  Future<void> _fetchVideos() async {
-    setState(() {
-      _isLoading = true;
-    });
-
-    try {
-      context.read<ProductManagerBloc>().add(
-            FetchProductsEvent(
-              limit: _limit,
-              fetched: ref.read(fetchedProductsProvider),
-            ),
-          );
-    } catch (error) {
-      print('Failed to fetch videos: $error');
-    } finally {
-      setState(() {
-        _isLoading = false;
-      });
-    }
-  }
-
-  @override
-  void initState() {
-    _fetchVideos();
-    super.initState();
   }
 
   @override
@@ -99,6 +118,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   }
 
   Scaffold buildBody(BuildContext context, double horizontalPadding) {
+    final allProducts = ref.watch(generalProductProvider);
+
     return Scaffold(
       appBar: buildAppBar(context),
       body: MultiBlocListener(
@@ -117,6 +138,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           BlocListener<ProductManagerBloc, ProductManagerState>(
             listener: (context, state) {
               if (state is FetchedProduct) {
+                log('product fetched from home');
                 final products = <ProductModel>[];
 
                 for (final element in state.products) {
@@ -131,221 +153,186 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     );
               }
 
-              if (state is GeneralProductSet) {
-                final fetchedProduct = ref.read(generalProductProvider);
-                ref.read(fetchedProductsProvider).addAll(
-                      fetchedProduct.map(
-                        (product) => product.id,
-                      ),
-                    );
+              if (state is ProductManagerFailure) {
+                log('An error occurred: ${state.message}');
               }
             },
           ),
         ],
-        child: Center(
-          child: Container(
-            decoration: BoxDecoration(
-              color: HBMColors.coolGrey,
-              borderRadius: const BorderRadius.only(
-                topLeft: Radius.circular(20),
-                topRight: Radius.circular(20),
-              ),
-            ),
-            child: GestureDetector(
-              onTap: () {
-                // context.read<AuthBloc>().add(const SignOutEvent());
-              },
-              child: Column(
-                children: [
-                  SizedBox(
-                    height: context.height * 0.03,
-                  ),
-                  Padding(
-                    padding:
-                        EdgeInsets.symmetric(horizontal: horizontalPadding),
-                    child: const SearchField(
-                      isElevated: true,
-                      hintText: 'Search anything...',
+        child: BlocBuilder<ProductManagerBloc, ProductManagerState>(
+          builder: (context, state) {
+            return BlocBuilder<AuthBloc, AuthState>(
+              builder: (context, state) {
+                return Center(
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: HBMColors.coolGrey,
+                      borderRadius: const BorderRadius.only(
+                        topLeft: Radius.circular(20),
+                        topRight: Radius.circular(20),
+                      ),
                     ),
-                  ),
-                  SizedBox(
-                    height: context.height * 0.03,
-                  ),
-                  SizedBox(
-                    height: context.height * 0.15,
-                    child: ListView(
-                      scrollDirection: Axis.horizontal,
-                      children: [
-                        CategoryWidget(
-                          content: const HomeCategoryContent.grain(),
-                          color: HBMColors.white,
-                          leftPadding: context.width * 0.06,
-                          onTap: () {},
-                        ),
-                        CategoryWidget(
-                          content: const HomeCategoryContent.herbs(),
-                          color: HBMColors.white,
-                          leftPadding: 0,
-                          onTap: () {},
-                        ),
-                        CategoryWidget(
-                          content: const HomeCategoryContent.powdered(),
-                          color: HBMColors.white,
-                          leftPadding: 0,
-                          onTap: () {},
-                        ),
-                        CategoryWidget(
-                          content: const HomeCategoryContent.vegetables(),
-                          color: HBMColors.white,
-                          leftPadding: 0,
-                          onTap: () {},
-                        ),
-                        CategoryWidget(
-                          content: const HomeCategoryContent.tools(),
-                          color: HBMColors.white,
-                          leftPadding: 0,
-                          onTap: () {},
-                        ),
-                      ],
-                    ),
-                  ),
-                  NotificationListener<ScrollNotification>(
-                      onNotification: (ScrollNotification scrollInfo) {
-                        if (!_isLoading &&
-                            scrollInfo.metrics.pixels ==
-                                scrollInfo.metrics.maxScrollExtent) {
-                          _fetchVideos();
-                          return true;
-                        }
-                        return false;
+                    child: GestureDetector(
+                      onTap: () {
+                        // context.read<AuthBloc>().add(const SignOutEvent());
                       },
-                      child: Expanded(
-                        child: ListView.separated(
-                          itemCount: ref.read(generalProductProvider).length +
-                              (_isLoading ? 1 : 0),
-                          padding: EdgeInsets.symmetric(
-                            horizontal: horizontalPadding,
+                      child: Column(
+                        children: [
+                          SizedBox(
+                            height: context.height * 0.03,
                           ),
-                          itemBuilder: (BuildContext context, index) {
-                            final product =
-                                ref.read(generalProductProvider)[index];
-                            if (index == ref.read(generalProductProvider).length) {
-                              return Center(child: CircularProgressIndicator());
-                            }
-                            return Padding(
-                              padding: EdgeInsets.only(
-                                top: index == 0 ? context.height * 0.03 : 0,
+                          Padding(
+                            padding: EdgeInsets.symmetric(
+                                horizontal: horizontalPadding),
+                            child: const SearchField(
+                              isElevated: true,
+                              hintText: 'Search anything...',
+                            ),
+                          ),
+                          SizedBox(
+                            height: context.height * 0.03,
+                          ),
+                          SizedBox(
+                            height: context.height * 0.15,
+                            child: ListView(
+                              scrollDirection: Axis.horizontal,
+                              children: [
+                                CategoryWidget(
+                                  content: const HomeCategoryContent.all(),
+                                  color: HBMColors.white,
+                                  leftPadding: context.width * 0.06,
+                                  onTap: () {
+                                    Navigator.pushNamed(
+                                      context,
+                                      RouteNames.productViewByCategory,
+                                      arguments:
+                                          const HomeCategoryContent.all().name,
+                                    );
+                                  },
+                                ),
+                                CategoryWidget(
+                                  content: const HomeCategoryContent.grain(),
+                                  color: HBMColors.white,
+                                  leftPadding: 0,
+                                  onTap: () {
+                                    Navigator.pushNamed(
+                                      context,
+                                      RouteNames.productViewByCategory,
+                                      arguments:
+                                          const HomeCategoryContent.grain()
+                                              .name,
+                                    );
+                                  },
+                                ),
+                                CategoryWidget(
+                                  content: const HomeCategoryContent.herbs(),
+                                  color: HBMColors.white,
+                                  leftPadding: 0,
+                                  onTap: () {
+                                    Navigator.pushNamed(
+                                      context,
+                                      RouteNames.productViewByCategory,
+                                      arguments:
+                                          const HomeCategoryContent.herbs()
+                                              .name,
+                                    );
+                                  },
+                                ),
+                                CategoryWidget(
+                                  content: const HomeCategoryContent.powdered(),
+                                  color: HBMColors.white,
+                                  leftPadding: 0,
+                                  onTap: () {
+                                    Navigator.pushNamed(
+                                      context,
+                                      RouteNames.productViewByCategory,
+                                      arguments:
+                                          const HomeCategoryContent.powdered()
+                                              .name,
+                                    );
+                                  },
+                                ),
+                                CategoryWidget(
+                                  content:
+                                      const HomeCategoryContent.vegetables(),
+                                  color: HBMColors.white,
+                                  leftPadding: 0,
+                                  onTap: () {
+                                    Navigator.pushNamed(
+                                      context,
+                                      RouteNames.productViewByCategory,
+                                      arguments:
+                                          const HomeCategoryContent.vegetables()
+                                              .name,
+                                    );
+                                  },
+                                ),
+                                CategoryWidget(
+                                  content: const HomeCategoryContent.tools(),
+                                  color: HBMColors.white,
+                                  leftPadding: 0,
+                                  onTap: () {
+                                    Navigator.pushNamed(
+                                      context,
+                                      RouteNames.productViewByCategory,
+                                      arguments:
+                                          const HomeCategoryContent.tools()
+                                              .name,
+                                    );
+                                  },
+                                ),
+                              ],
+                            ),
+                          ),
+                          Expanded(
+                            child: ListView.separated(
+                              itemCount: allProducts.length,
+                              controller: _scrollController,
+                              padding: EdgeInsets.symmetric(
+                                horizontal: horizontalPadding,
                               ),
-                              child: Stack(
-                                children: [
-                                  Align(
-                                    child: Container(
-                                      margin: EdgeInsets.only(
-                                        left: context.width * 0.06,
-                                        top: context.height * 0.01,
-                                      ),
-                                      height: context.height * 0.18,
-                                      width: context.width * 0.90,
-                                      decoration: BoxDecoration(
-                                        color: HBMColors.white,
-                                        borderRadius: BorderRadius.circular(
-                                            context.width * 0.05),
-                                        boxShadow: [
-                                          BoxShadow(
-                                            color: Colors.grey.withOpacity(0.5),
-                                            spreadRadius: 2,
-                                            blurRadius: 15,
-                                            offset: const Offset(
-                                              0,
-                                              3,
-                                            ), // Adjust the offset as needed
-                                          ),
-                                        ],
-                                      ),
+                              itemBuilder: (BuildContext context, index) {
+                                final product = allProducts[index];
+
+                                if (index == allProducts.length) {
+                                  return _isLoading
+                                      ? const Center(
+                                          child: CircularProgressIndicator())
+                                      : const SizedBox.shrink();
+                                }
+                                return GestureDetector(
+                                  onTap: () {
+                                    Navigator.pushNamed(
+                                      context,
+                                      RouteNames.productDetails,
+                                      arguments: product,
+                                    );
+                                  },
+                                  child: Hero(
+                                    tag: index,
+                                    child: ProductListingWidget(
+                                      product: product,
+                                      index: index,
                                     ),
                                   ),
-                                  Container(
-                                    height: context.height * 0.17,
-                                    width: context.width * 0.30,
-                                    decoration: BoxDecoration(
-                                      color: HBMColors.charcoalGrey,
-                                      borderRadius: BorderRadius.circular(
-                                          context.width * 0.03),
-                                    ),
-                                    // child: Image.network(product.images[0]),
-                                  ),
-                                  Positioned(
-                                    right: context.width * 0.05,
-                                    top: context.height * 0.03,
-                                    child: SizedBox(
-                                      width: context.width * 0.50,
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          HBMTextWidget(
-                                            data: product.name,
-                                            fontFamily: HBMFonts.quicksandBold,
-                                            fontSize: context.width * 0.05,
-                                            color: HBMColors.charcoalGrey,
-                                            overflow: TextOverflow.ellipsis,
-                                          ),
-                                          HBMTextWidget(
-                                            data: product.sellerName,
-                                            color: HBMColors.charcoalGrey,
-                                            fontFamily:
-                                                HBMFonts.quicksandNormal,
-                                            fontSize: context.width * 0.04,
-                                          ),
-                                          HBMTextWidget(
-                                            data: product.description,
-                                            color: HBMColors.charcoalGrey,
-                                            fontFamily:
-                                                HBMFonts.quicksandNormal,
-                                            fontSize: context.width * 0.04,
-                                            overflow: TextOverflow.ellipsis,
-                                          ),
-                                          SizedBox(
-                                            height: context.height * 0.01,
-                                          ),
-                                          HBMTextWidget(
-                                            data: product.measurement,
-                                            color: HBMColors.charcoalGrey,
-                                            fontFamily:
-                                                HBMFonts.quicksandNormal,
-                                            fontSize: context.width * 0.03,
-                                            overflow: TextOverflow.ellipsis,
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                  Positioned(
-                                    right: context.width * 0.05,
-                                    bottom: context.height * 0.01,
-                                    child: HBMTextWidget(
-                                      fontFamily: HBMFonts.quicksandBold,
-                                      color: HBMColors.charcoalGrey,
-                                      data: product.price.toString(),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            );
-                          },
-                          separatorBuilder: (BuildContext context, int index) {
-                            return SizedBox(
-                              height: context.height * 0.04,
-                            );
-                          },
-                        ),
-                      )),
-                ],
-              ),
-            ),
-          ),
+                                );
+                              },
+                              separatorBuilder:
+                                  (BuildContext context, int index) {
+                                return SizedBox(
+                                  height: context.height * 0.04,
+                                );
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                );
+              },
+            );
+          },
         ),
       ),
     );
@@ -398,13 +385,15 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   ),
                 ),
                 ListTile(
-                  onTap: () {},
+                  onTap: () {
+                    Navigator.pushNamed(context, RouteNames.buyerProfile);
+                  },
                   leading: Icon(
-                    Icons.favorite,
+                    Icons.person_2,
                     size: context.width * 0.08,
                   ),
                   title: HBMTextWidget(
-                    data: 'Liked',
+                    data: 'Profile',
                     fontFamily: HBMFonts.quicksandNormal,
                     fontSize: context.width * 0.04,
                     color: HBMColors.coolGrey,
@@ -479,9 +468,22 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       centerTitle: true,
       title: GestureDetector(
         onTap: () {
-          log('message');
-          // context.read<AuthBloc>().add(const SignOutEvent());
-          LoadingIndicatorController.instance.show();
+          final fetchedProduct = ref
+              .watch(generalProductProvider)
+              .map(
+                (product) => product.id,
+              )
+              .toList();
+          // log('message');
+          // LoadingIndicatorController.instance.show();
+          log('Tapped');
+          context.read<ProductManagerBloc>().add(
+                FetchProductsEvent(
+                  limit: 1,
+                  fetched: fetchedProduct,
+                ),
+              );
+          // setState(() {});
         },
         onDoubleTap: () {
           LoadingIndicatorController.instance.hide();

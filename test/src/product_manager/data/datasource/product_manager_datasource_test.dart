@@ -255,7 +255,7 @@ void main() {
     final productsMap = [ProductModel.empty().toMap()];
     final productModel = [ProductModel.empty()];
 
-    const skip = 20;
+    const fetched = ['empty.fetched'];
     const limit = 20;
     const category = 'Rice';
     test(
@@ -273,7 +273,7 @@ void main() {
 
         final result = await datasource.fetchProductsByCategory(
           limit: limit,
-          skip: skip,
+          fetched: fetched,
           category: category,
         );
         expect(result, equals(productModel));
@@ -287,7 +287,7 @@ void main() {
             body: jsonEncode(
               {
                 'limit': limit,
-                'skip': skip,
+                'fetched': fetched,
                 'category': category,
               },
             ),
@@ -312,7 +312,7 @@ void main() {
 
         final methodCall = datasource.fetchProductsByCategory;
         expect(
-          methodCall(category: category, limit: limit, skip: skip),
+          methodCall(category: category, limit: limit, fetched: fetched),
           throwsA(productManagerException),
         );
 
@@ -325,7 +325,7 @@ void main() {
             body: jsonEncode(
               {
                 'limit': limit,
-                'skip': skip,
+                'fetched': fetched,
                 'category': category,
               },
             ),

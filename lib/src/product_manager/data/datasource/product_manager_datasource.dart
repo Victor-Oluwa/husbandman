@@ -22,7 +22,7 @@ abstract class ProductManagerDatasource {
   Future<List<ProductEntity>> fetchProductsByCategory({
     required String category,
     required int limit,
-    required int skip,
+    required List<String> fetched,
   });
 
   Future<List<ProductEntity>> fetchFarmerProducts(String farmerEmail);

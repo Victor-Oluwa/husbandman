@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:husbandman/core/common/app/models/user/user_model.dart';
+import 'package:husbandman/core/common/app/public_methods/loading/loading_controller.dart';
 import 'package:husbandman/core/common/strings/hbm_strings.dart';
 import 'package:husbandman/core/common/widgets/hbm_text_widget.dart';
 import 'package:husbandman/core/extensions/context_extension.dart';
@@ -57,32 +58,19 @@ class _FarmerSignUpScreenState extends State<BuyerSignUpScreen> {
               listener: (context, state) {
                 if (state is BuyerSignedUp) {
                   final user = state.user as UserModel;
-
                   context.read<AuthBloc>().add(
                         SetUserEvent(
                           user: user.toMap(),
                         ),
                       );
                   return;
-                } else if (state is AuthError) {
-                  CoreUtils.showSnackBar(
-                    message: state.message,
-                    context: context,
-                  );
-                  return;
                 }
 
                 if (state is UserSet) {
+                  LoadingIndicatorController.instance.hide();
                   context.read<AuthBloc>().add(
                         CacheUserTokenEvent(token: state.user.token),
                       );
-                  return;
-                } else if (state is AuthError) {
-                  CoreUtils.showSnackBar(
-                    message: state.message,
-                    context: context,
-                  );
-                  log('Set User Error: ${state.message}');
                   return;
                 }
 
@@ -92,6 +80,15 @@ class _FarmerSignUpScreenState extends State<BuyerSignUpScreen> {
                     RouteNames.homePage,
                         (route) => false,
                   );
+                }
+
+                if (state is AuthError) {
+                  LoadingIndicatorController.instance.hide();
+                  CoreUtils.showSnackBar(
+                    message: state.message,
+                    context: context,
+                  );
+                  return;
                 }
               },
               child: Column(
@@ -318,6 +315,7 @@ class _FarmerSignUpScreenState extends State<BuyerSignUpScreen> {
                             MaterialStateProperty.all(HBMColors.charcoalGrey),
                       ),
                       onPressed: () {
+                        LoadingIndicatorController.instance.show();
                         if (!formKey.currentState!.validate()) {
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(

@@ -4,6 +4,8 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:husbandman/core/common/app/models/product_model.dart';
+import 'package:husbandman/core/common/app/provider/general_product_provider.dart';
 import 'package:husbandman/core/common/app/provider/picked_product_image_provider.dart';
 import 'package:husbandman/core/common/app/provider/product_image_uploaded_notifier.dart';
 import 'package:husbandman/core/common/app/provider/product_image_url_provider.dart';
@@ -12,6 +14,7 @@ import 'package:husbandman/core/common/app/provider/user_provider.dart';
 import 'package:husbandman/core/common/app/public_methods/loading/loading_controller.dart';
 import 'package:husbandman/core/common/widgets/hbm_text_widget.dart';
 import 'package:husbandman/core/common/widgets/snack_bar.dart';
+import 'package:husbandman/core/enums/set_product_type.dart';
 import 'package:husbandman/core/extensions/context_extension.dart';
 import 'package:husbandman/core/res/color.dart';
 import 'package:husbandman/core/res/fonts.dart';
@@ -124,6 +127,8 @@ class _UploadProductViewState extends ConsumerState<UploadProductView> {
           _deliveryLocationsController.clear();
 
           LoadingIndicatorController.instance.hide();
+
+          log('Set products: ${ref.watch(generalProductProvider).length}');
         }
 
         if (state is ProductManagerFailure) {
@@ -410,7 +415,8 @@ class _UploadProductViewState extends ConsumerState<UploadProductView> {
                                 }
                               : null,
                           style: TextButton.styleFrom(
-                            fixedSize: Size(context.width*0.90, context.height*0.07),
+                            fixedSize: Size(
+                                context.width * 0.90, context.height * 0.07),
                             backgroundColor: HBMColors.mediumGrey,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(15),

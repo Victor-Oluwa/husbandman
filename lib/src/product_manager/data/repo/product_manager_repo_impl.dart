@@ -63,13 +63,13 @@ class ProductManagerRepoImpl implements ProductManagerRepo {
   ResultFuture<List<ProductEntity>> fetchProductsByCategory({
     required String category,
     required int limit,
-    required int skip,
+    required List<String> fetched,
   }) async {
     try {
       final result = await _productManagerDatasource.fetchProductsByCategory(
         category: category,
         limit: limit,
-        skip: skip,
+        fetched: fetched,
       );
       return Right(result);
     } on ProductManagerException catch (e) {

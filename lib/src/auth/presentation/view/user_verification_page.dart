@@ -28,6 +28,7 @@ class UserVerificationPage extends ConsumerStatefulWidget {
 class _UserVerificationPageState extends ConsumerState<UserVerificationPage> {
   @override
   void initState() {
+    log('User Verification init state here.');
     //Checks if the user is using the app for the first time
     context.read<OnboardingCubit>().checkIfUserIsFirstTimer();
     super.initState();
@@ -41,7 +42,7 @@ class _UserVerificationPageState extends ConsumerState<UserVerificationPage> {
           BlocListener<OnboardingCubit, OnboardingState>(
             listener: (context, state) {
               if (state is FirstTimerStatus && state.isFirstTimer) {
-                //If user is firs timer. They are navigated to Onboarding
+                //If user is first timer. They are navigated to Onboarding
                 Navigator.pushNamedAndRemoveUntil(
                   context,
                   RouteNames.onboardingScreen,
@@ -53,38 +54,27 @@ class _UserVerificationPageState extends ConsumerState<UserVerificationPage> {
               }
             },
           ),
-          BlocListener<ProductManagerBloc, ProductManagerState>(
-            listener: (context, state) {
-              if (state is FetchedProduct) {
-                final products = <ProductModel>[];
-
-                for (final element in state.products) {
-                  products.add(element as ProductModel);
-                }
-
-                context.read<ProductManagerBloc>().add(SetGeneralProductEvent(
-                      setProductType: SetProductType.renew,
-                      productObject: products,
-                    ));
-
-                log('Random products: $products');
-              }
-              if (state is GeneralProductSet) {
-                final user = ref.read(userProvider);
-                user.type == HBMStrings.admin
-                    ? Navigator.pushNamedAndRemoveUntil(
-                        context,
-                        RouteNames.adminHome,
-                        (route) => false,
-                      )
-                    : Navigator.pushNamedAndRemoveUntil(
-                        context,
-                        RouteNames.homePage,
-                        (route) => false,
-                      );
-              }
-            },
-          ),
+          // BlocListener<ProductManagerBloc, ProductManagerState>(
+          //   listener: (context, state) {
+          //     if (state is FetchedProduct) {
+          //       final products = <ProductModel>[];
+          //
+          //       for (final element in state.products) {
+          //         products.add(element as ProductModel);
+          //       }
+          //
+          //       context.read<ProductManagerBloc>().add(SetGeneralProductEvent(
+          //             setProductType: SetProductType.renew,
+          //             productObject: products,
+          //           ));
+          //
+          //       log('Random products: $products');
+          //     }
+          //     if (state is GeneralProductSet) {
+          //
+          //     }
+          //   },
+          // ),
           BlocListener<AuthBloc, AuthState>(
             listener: (context, state) {
               if (state is UserTokenRetrieved) {
@@ -96,20 +86,32 @@ class _UserVerificationPageState extends ConsumerState<UserVerificationPage> {
               }
 
               if (state is UserValidated) {
+                log('User validated');
                 //If the user token is valid. The user object is saved in the Riverpod state
                 final user = state.user as UserModel;
                 context.read<AuthBloc>().add(SetUserEvent(user: user.toMap()));
               }
 
               if (state is UserSet) {
+                log('User Set');
                 // If the user object is saved successfully.User is navigated to the home screen
-                context.read<ProductManagerBloc>().add(
-                      const FetchProductsEvent(limit: 5, fetched: []),
-                    );
+                final user = ref.read(userProvider);
+                user.type == HBMStrings.admin
+                    ? Navigator.pushNamedAndRemoveUntil(
+                  context,
+                  RouteNames.adminHome,
+                      (route) => false,
+                )
+                    : Navigator.pushNamedAndRemoveUntil(
+                  context,
+                  RouteNames.homePage,
+                      (route) => false,
+                );
+                return;
               }
 
               if (state is AuthError) {
-                log('Auth Error received');
+                log('Auth Error received: ${state.message}');
                 Navigator.pushNamedAndRemoveUntil(
                   context,
                   RouteNames.signInScreen,

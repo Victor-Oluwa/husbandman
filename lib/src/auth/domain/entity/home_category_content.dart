@@ -8,6 +8,11 @@ const HomeCategoryContent({
     required this.icon,
   });
 
+const HomeCategoryContent.all():this(
+  name: 'All',
+  icon: '',
+);
+
 const HomeCategoryContent.grain():this(
   name: 'Grains',
   icon: '',

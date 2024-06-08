@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 import 'dart:typed_data';
+import 'package:dio/dio.dart';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
@@ -30,7 +31,7 @@ const kSearchProductEndpoint = '/product/search';
 const kUpdateProductEndpoint = '/product/update';
 const kUploadProductEndpoint = '/product/upload';
 const kFetchProductsEndpoint = '/product/all';
-const kFetchProductsByCategoryEndpoint = '/product/category/all';
+const kFetchProductsByCategoryEndpoint = '/product/category';
 
 class ProductManagerDatasourceImpl implements ProductManagerDatasource {
   const ProductManagerDatasourceImpl(
@@ -100,69 +101,167 @@ class ProductManagerDatasourceImpl implements ProductManagerDatasource {
     required List<String> fetched,
   }) async {
     try {
-      final response = await _client.post(
-        Uri.parse('$kBaseUrl$kFetchProductsEndpoint'),
-        headers: {
-          'Content-Type': 'application/json; charset=UTF-8',
-        },
-        body: jsonEncode({
+      final response = await Dio().post<List<dynamic>>(
+        '$kBaseUrl$kFetchProductsEndpoint',
+        data: jsonEncode({
           'limit': limit,
           'fetched': fetched,
         }),
-      );
+        options: Options(
+          headers: {
+            'Content-Type': 'application/json; charset=UTF-8',
+          },
+        ),
+      ).timeout(const Duration(seconds: 30));
 
       if (response.statusCode != 200 && response.statusCode != 201) {
         throw ProductManagerException(
-          message: response.body,
-          statusCode: response.statusCode,
+          message: response.data.toString(),
+          statusCode: response.statusCode!,
         );
       }
 
-      return List<DataMap>.from(jsonDecode(response.body) as List)
-          .map(ProductModel.fromMap)
+      // return List<DataMap>.from(jsonDecode(response.body) as List)
+      //         .map(ProductModel.fromMap)
+      //         .toList();
+
+      return (response.data! as List)
+          .map((data) => ProductModel.fromMap(data as Map<String, dynamic>))
           .toList();
     } on ProductManagerException catch (e) {
+      log('Fetch product error: ${e.message}');
       rethrow;
     } catch (e) {
+      log('Fetch product error: $e');
       throw ProductManagerException(message: e.toString(), statusCode: 500);
     }
   }
+  // Future<List<ProductEntity>> fetchProducts({
+  //   required int limit,
+  //   required List<String> fetched,
+  // }) async {
+  //   try {
+  //     final response = await _client.post(
+  //       Uri.parse('$kBaseUrl$kFetchProductsEndpoint'),
+  //       headers: {
+  //         'Content-Type': 'application/json; charset=UTF-8',
+  //       },
+  //       body: jsonEncode({
+  //         'limit': limit,
+  //         'fetched': fetched,
+  //       }),
+  //     ).timeout(const Duration(seconds: 30));
+  //
+  //     if (response.statusCode != 200 && response.statusCode != 201) {
+  //       throw ProductManagerException(
+  //         message: response.body,
+  //         statusCode: response.statusCode,
+  //       );
+  //     }
+  //
+  //     return List<DataMap>.from(jsonDecode(response.body) as List)
+  //         .map(ProductModel.fromMap)
+  //         .toList();
+  //   }
+  //   on ProductManagerException catch (e) {
+  //     log('Fetch product error');
+  //     rethrow;
+  //   }
+  //   catch (e) {
+  //     log('Fetch product error');
+  //     throw ProductManagerException(message: e.toString(), statusCode: 500);
+  //   }
+  // }
 
   @override
   Future<List<ProductEntity>> fetchProductsByCategory({
     required String category,
     required int limit,
-    required int skip,
+    required List<String> fetched,
   }) async {
     try {
-      final response = await _client.post(
-        Uri.parse('$kBaseUrl$kFetchProductsByCategoryEndpoint'),
-        headers: {
-          'Content-Type': 'application/json; charset=UTF-8',
-        },
-        body: jsonEncode({
+      log('Check 1');
+
+      final response = await Dio().post<List<dynamic>>(
+        '$kBaseUrl$kFetchProductsByCategoryEndpoint',
+        data: {
           'limit': limit,
-          'skip': skip,
+          'fetched': fetched,
           'category': category,
-        }),
+        },
+        options: Options(
+          headers: {
+            'Content-Type': 'application/json; charset=UTF-8',
+          },
+        ),
       );
+
+      log('Check 2');
 
       if (response.statusCode != 200 && response.statusCode != 201) {
         throw ProductManagerException(
-          message: response.body,
-          statusCode: response.statusCode,
+          message: response.data.toString(),
+          statusCode: response.statusCode!,
         );
       }
 
-      return List<DataMap>.from(jsonDecode(response.body) as List)
+      return List<DataMap>.from(response.data!)
           .map(ProductModel.fromMap)
           .toList();
-    } on ProductManagerException catch (e) {
-      rethrow;
+    } on DioException catch (e) {
+      if (e.response != null) {
+        throw ProductManagerException(
+          message: e.response!.data.toString(),
+          statusCode: e.response!.statusCode!,
+        );
+      } else {
+        throw ProductManagerException(
+          message: e.message ?? '',
+          statusCode: 500,
+        );
+      }
     } catch (e) {
       throw ProductManagerException(message: e.toString(), statusCode: 500);
     }
   }
+
+  // Future<List<ProductEntity>> fetchProductsByCategory({
+  //   required String category,
+  //   required int limit,
+  //   required List<String> fetched,
+  // }) async {
+  //   try {
+  //     log('Check 1');
+  //     final response = await _client.post(
+  //       Uri.parse('$kBaseUrl$kFetchProductsByCategoryEndpoint'),
+  //       headers: {
+  //         'Content-Type': 'application/json; charset=UTF-8',
+  //       },
+  //       body: jsonEncode({
+  //         'limit': limit,
+  //         'fetched': fetched,
+  //         'category': category,
+  //       }),
+  //     );
+  //
+  //     log('Check 2');
+  //
+  //     if (response.statusCode != 200 && response.statusCode != 201) {
+  //       throw ProductManagerException(
+  //         message: response.body,
+  //         statusCode: response.statusCode,
+  //       );
+  //     }
+  //
+  //     return List<DataMap>.from(jsonDecode(response.body) as List)
+  //         .map(ProductModel.fromMap)
+  //         .toList();
+  //   } on ProductManagerException catch (e) {
+  //     rethrow;
+  //   } catch (e) {
+  //     throw ProductManagerException(message: e.toString(), statusCode: 500);
+  //   }
+  // }
 
   @override
   Future<List<ProductEntity>> fetchFarmerProducts(String farmerEmail) async {

@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:husbandman/core/common/app/models/product_model.dart';
 import 'package:husbandman/core/utils/typedef.dart';
@@ -27,6 +29,7 @@ class GeneralProductNotifier extends StateNotifier<List<ProductModel>> {
         products.add(newProduct);
       }
       state.addAll(products);
+      log('Provider length: ${state.length}');
       return;
     }
     return;

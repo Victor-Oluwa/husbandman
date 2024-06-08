@@ -22,7 +22,7 @@ abstract class ProductManagerRepo {
   ResultFuture<List<ProductEntity>> fetchProductsByCategory({
     required String category,
     required int limit,
-    required int skip,
+    required List<String> fetched,
   });
 
   ResultFuture<List<ProductEntity>> fetchFarmerProducts(String farmerEmail);

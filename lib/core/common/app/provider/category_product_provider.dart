@@ -1,32 +1,46 @@
+import 'dart:developer';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:husbandman/core/common/app/models/product_model.dart';
 import 'package:husbandman/core/utils/typedef.dart';
 
-final productProvider =
-StateNotifierProvider<ProductNotifier, List<ProductModel>>(
-      (ref) => ProductNotifier(),
+final categoryProductProvider =
+StateNotifierProvider<CategoryProductNotifier, List<ProductModel>>(
+      (ref) => CategoryProductNotifier(),
 );
 
-class ProductNotifier extends StateNotifier<List<ProductModel>> {
-  ProductNotifier() : super(<ProductModel>[]);
+class CategoryProductNotifier extends StateNotifier<List<ProductModel>> {
+  CategoryProductNotifier() : super(<ProductModel>[]);
 
-  void addNewProduct({DataMap? newProductMap, ProductModel? newProductModel}) {
+  void addNewProduct({
+    List<DataMap>? newProductMap,
+    List<ProductModel>? newProductModel,
+  }) {
     if (newProductModel != null) {
-      state.insert(0, newProductModel);
+      state.addAll(newProductModel);
       return;
     }
 
     if (newProductMap != null) {
-      final newProduct = ProductModel.fromMap(newProductMap);
-      state.insert(0, newProduct);
+      final products = <ProductModel>[];
+
+      for (final element in newProductMap) {
+        final newProduct = ProductModel.fromMap(element);
+        products.add(newProduct);
+      }
+      state.addAll(products);
+      log('Provider length: ${state.length}');
       return;
     }
     return;
   }
 
-  void removeProduct({ProductModel? pScapegoat, DataMap? mScapeGoat}) {
+  void removeProduct({
+    List<ProductModel>? pScapegoat,
+    List<DataMap>? mScapeGoat,
+  }) {
     if (pScapegoat != null) {
-      final index = state.indexOf(pScapegoat);
+      final index = state.indexOf(pScapegoat.first);
       if (index != -1) {
         state.removeAt(index);
       }
@@ -34,7 +48,7 @@ class ProductNotifier extends StateNotifier<List<ProductModel>> {
     }
 
     if (mScapeGoat != null) {
-      final scapegoat = ProductModel.fromMap(mScapeGoat);
+      final scapegoat = ProductModel.fromMap(mScapeGoat.first);
       final index = state.indexOf(scapegoat);
       if (index != -1) {
         state.removeAt(index);
@@ -44,20 +58,24 @@ class ProductNotifier extends StateNotifier<List<ProductModel>> {
     return;
   }
 
-  void replaceProduct({ProductModel? pNewProduct, DataMap? mNewProduct}) {
+  void replaceProduct({
+    List<ProductModel>? pNewProduct,
+    List<DataMap>? mNewProduct,
+  }) {
     if (pNewProduct != null) {
-      final index = state.indexWhere((product) => product.id == pNewProduct.id);
+      final index =
+      state.indexWhere((product) => product.id == pNewProduct.first.id);
 
       if (index != -1) {
         state
           ..removeAt(index)
-          ..insert(index, pNewProduct);
+          ..insert(index, pNewProduct.first);
       }
       return;
     }
 
     if (mNewProduct != null) {
-      final newProduct = ProductModel.fromMap(mNewProduct);
+      final newProduct = ProductModel.fromMap(mNewProduct.first);
       final index = state.indexWhere((product) => product.id == newProduct.id);
 
       if (index != -1) {
@@ -88,3 +106,4 @@ class ProductNotifier extends StateNotifier<List<ProductModel>> {
     return;
   }
 }
+

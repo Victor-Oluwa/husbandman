@@ -85,7 +85,7 @@ class Dashboard extends StatelessWidget {
               ),
               GestureDetector(
                 onTap: () {
-                  Navigator.pushNamed(context, RouteNames.allProducts);
+                  Navigator.pushNamed(context, RouteNames.sellerProducts);
                 },
                 child: SizedBox(
                   height: context.height * 0.22,
