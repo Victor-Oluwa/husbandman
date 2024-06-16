@@ -1,104 +1,167 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:husbandman/core/common/app/models/cart/cart_model.dart';
 import 'package:husbandman/core/common/app/provider/general_product_provider.dart';
 import 'package:husbandman/core/common/app/provider/category_product_provider.dart';
+import 'package:husbandman/core/common/app/provider/user_provider.dart';
 import 'package:husbandman/core/common/widgets/hbm_text_widget.dart';
+import 'package:husbandman/core/common/widgets/snack_bar.dart';
+import 'package:husbandman/core/enums/set_cart_type.dart';
 import 'package:husbandman/core/extensions/context_extension.dart';
 import 'package:husbandman/core/res/color.dart';
 import 'package:husbandman/core/res/fonts.dart';
+import 'package:husbandman/src/cart/presentation/bloc/cart_bloc.dart';
+import 'package:husbandman/src/product_manager/presentation/bloc/product_manager_bloc.dart';
 
-class CartView extends ConsumerWidget {
+class CartView extends ConsumerStatefulWidget {
   const CartView({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return Scaffold(
-      backgroundColor: HBMColors.coolGrey,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        title: HBMTextWidget(data: 'In Cart'),
-      ),
-      body: Padding(
-        padding: EdgeInsets.only(
-          left: context.width * 0.05,
-          right: context.width * 0.05,
-        ),
-        child: Column(
-          children: [
-            Expanded(
-              child: ListView(
+  ConsumerState<CartView> createState() => _CartViewState();
+}
+
+class _CartViewState extends ConsumerState<CartView> {
+  @override
+  void initState() {
+    final user = ref.read(userProvider).id;
+    context.read<CartBloc>().add(FetchCartEvent(ownerId: user));
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocListener<ProductManagerBloc, ProductManagerState>(
+      listener: (context, state) {
+        if (state is CartSet) {
+          log('Cart set successfully');
+        }
+
+        if (state is ProductManagerError) {
+          HBMSnackBar.show(
+            context: context,
+            content: 'Something went wrong. Try again later',
+          );
+        }
+      },
+      child: BlocConsumer<CartBloc, CartState>(
+        listener: (context, state) {
+          if (state is FetchedCart) {
+            log('Fetched cart..');
+            final cart = state.cart as CartModel;
+            context.read<CartBloc>().add(
+                  SetCartEvent(
+                    setCartType: SetCartType.updateCart,
+                    pNewCartModel: cart,
+                  ),
+                );
+          }
+
+          if (state is CartError) {
+            HBMSnackBar.show(
+              context: context,
+              content: 'Something went wrong. Try again later',
+            );
+          }
+        },
+        builder: (context, state) {
+          return Scaffold(
+            backgroundColor: HBMColors.coolGrey,
+            appBar: AppBar(
+              backgroundColor: Colors.transparent,
+              elevation: 0,
+              title: const HBMTextWidget(data: 'In Cart'),
+            ),
+            body: Padding(
+              padding: EdgeInsets.only(
+                left: context.width * 0.05,
+                right: context.width * 0.05,
+              ),
+              child: Column(
                 children: [
-                  CartItem(
-                    imageUrl: ref.read(generalProductProvider)[0].images[0],
-                    title: 'Flower Pots for Living Room',
-                    seller: 'The Decor Circle',
-                    price: '₹8,500.00',
-                    quantity: 1,
+                  Expanded(
+                    child: ListView(
+                      children: [
+                        CartItem(
+                          imageUrl:
+                              ref.read(generalProductProvider)[0].images[0],
+                          title: 'Flower Pots for Living Room',
+                          seller: 'The Decor Circle',
+                          price: '₹8,500.00',
+                          quantity: 1,
+                        ),
+                        CartItem(
+                          imageUrl:
+                              ref.read(generalProductProvider)[0].images[0],
+                          title: 'Flower Pots for Living Room',
+                          seller: 'The Decor Circle',
+                          price: '₹8,500.00',
+                          quantity: 1,
+                        ),
+                        CartItem(
+                          imageUrl:
+                              ref.read(generalProductProvider)[0].images[0],
+                          title: 'Flower Pots for Living Room',
+                          seller: 'The Decor Circle',
+                          price: '₹8,500.00',
+                          quantity: 1,
+                        ),
+                        CartItem(
+                          imageUrl:
+                              ref.read(generalProductProvider)[0].images[0],
+                          title: 'Flower Pots for Living Room',
+                          seller: 'The Decor Circle',
+                          price: '₹8,500.00',
+                          quantity: 1,
+                        ),
+                      ],
+                    ),
                   ),
-                  CartItem(
-                    imageUrl: ref.read(generalProductProvider)[0].images[0],
-                    title: 'Flower Pots for Living Room',
-                    seller: 'The Decor Circle',
-                    price: '₹8,500.00',
-                    quantity: 1,
+                  OrderSummary(
+                    items: [
+                      OrderItem(
+                          name: 'Flower Pots for Living Room',
+                          quantity: 1,
+                          price: '₦8,500'),
+                      OrderItem(
+                          name: 'Decorative Wall Mirror',
+                          quantity: 1,
+                          price: '₦2,150'),
+                      OrderItem(
+                          name: 'Corsica - Wall Clock',
+                          quantity: 1,
+                          price: '₹479'),
+                    ],
+                    total: '₦11,129',
                   ),
-                  CartItem(
-                    imageUrl: ref.read(generalProductProvider)[0].images[0],
-                    title: 'Flower Pots for Living Room',
-                    seller: 'The Decor Circle',
-                    price: '₹8,500.00',
-                    quantity: 1,
-                  ),
-                  CartItem(
-                    imageUrl: ref.read(generalProductProvider)[0].images[0],
-                    title: 'Flower Pots for Living Room',
-                    seller: 'The Decor Circle',
-                    price: '₹8,500.00',
-                    quantity: 1,
+                  SizedBox(height: 16),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      TextButton(
+                        onPressed: () {},
+                        child: HBMTextWidget(
+                          data: 'Continue Shopping',
+                          color: HBMColors.charcoalGrey,
+                        ),
+                      ),
+                      ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: HBMColors.charcoalGrey,
+                        ),
+                        onPressed: () {},
+                        child: HBMTextWidget(
+                            data: 'CHECKOUT', color: HBMColors.coolGrey),
+                      ),
+                    ],
                   ),
                 ],
               ),
             ),
-            OrderSummary(
-              items: [
-                OrderItem(
-                    name: 'Flower Pots for Living Room',
-                    quantity: 1,
-                    price: '₦8,500'),
-                OrderItem(
-                    name: 'Decorative Wall Mirror',
-                    quantity: 1,
-                    price: '₦2,150'),
-                OrderItem(
-                    name: 'Corsica - Wall Clock', quantity: 1, price: '₹479'),
-              ],
-              total: '₦11,129',
-            ),
-            SizedBox(height: 16),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                TextButton(
-                  onPressed: () {},
-                  child: HBMTextWidget(
-                    data: 'Continue Shopping',
-                    color: HBMColors.charcoalGrey,
-                  ),
-                ),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: HBMColors.charcoalGrey,
-                  ),
-                  onPressed: () {},
-                  child: HBMTextWidget(
-                      data: 'CHECKOUT', color: HBMColors.coolGrey),
-                ),
-              ],
-            ),
-          ],
-        ),
+          );
+        },
       ),
     );
   }

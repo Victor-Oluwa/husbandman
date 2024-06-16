@@ -13,13 +13,22 @@ class ProductManagerLoading extends ProductManagerState {
   const ProductManagerLoading();
 }
 
-class ProductManagerFailure extends ProductManagerState {
-  const ProductManagerFailure(this.message);
+class ProductManagerError extends ProductManagerState {
+  const ProductManagerError(this.message);
 
   final String message;
 
   @override
   List<String> get props => [message];
+}
+
+class ProductAddedToCart extends ProductManagerState {
+ const ProductAddedToCart({required this.cart});
+
+  final CartEntity cart;
+
+  @override
+  List<CartEntity> get props => [cart];
 }
 
 class ProductDeleted extends ProductManagerState {

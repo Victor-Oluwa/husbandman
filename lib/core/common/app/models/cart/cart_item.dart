@@ -1,0 +1,58 @@
+class CartItem {
+  CartItem({
+    required this.id,
+    required this.productId,
+    required this.productName,
+    required this.productPrice,
+    required this.productQuantity,
+    required this.sellerName,
+    required this.sellerId,
+    required this.deliveryDate,
+  });
+
+  CartItem.empty():this(
+    id: '',
+    deliveryDate: '',
+    productId: '',
+    productName: '',
+    productPrice:0,
+    productQuantity: 0,
+    sellerId: '',
+    sellerName: '',
+  );
+
+  factory CartItem.fromMap(Map<String, dynamic> map) {
+    return CartItem(
+      id: map['_id'] as String ?? '',
+      productId: map['productId'] as String ?? '',
+      productName: map['productName'] as String ?? '',
+      productPrice: map['productPrice'] as double ?? 0,
+      productQuantity: map['productQuantity'] as int ?? 0,
+      sellerName: map['sellerName'] as String ?? '',
+      sellerId: map['sellerId'] as String ?? '',
+      deliveryDate: map['deliveryDate'] as String ?? '',
+    );
+  }
+
+  final String id;
+  final String productId;
+  final String productName;
+  final double productPrice;
+  final int productQuantity;
+  final String sellerName;
+  final String sellerId;
+  final String deliveryDate;
+
+  Map<String, dynamic> toMap() {
+    return {
+      '_id':id,
+      'productId': productId,
+      'productName': productName,
+      'productPrice': productPrice,
+      'productQuantity': productQuantity,
+      'sellerName': sellerName,
+      'sellerId': sellerId,
+      'deliveryDate': deliveryDate,
+    };
+  }
+}

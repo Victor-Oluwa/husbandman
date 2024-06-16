@@ -3,6 +3,7 @@ import 'package:husbandman/core/services/injection/injection_container.dart';
 import 'package:husbandman/src/product_manager/data/datasource/product_manager_datasource_impl.dart';
 import 'package:husbandman/src/product_manager/data/repo/product_manager_repo_impl.dart';
 import 'package:husbandman/src/product_manager/domain/repo/product_manager_repo.dart';
+import 'package:husbandman/src/product_manager/domain/usecase/add_product_to_cart.dart';
 import 'package:husbandman/src/product_manager/domain/usecase/compress_product_image.dart';
 import 'package:husbandman/src/product_manager/domain/usecase/delete_product.dart';
 import 'package:husbandman/src/product_manager/domain/usecase/fetch_farmer_products.dart';
@@ -36,6 +37,7 @@ final productManagerBlocProvider = Provider<ProductManagerBloc>(
       setGeneralProducts: ref.read(setGeneralProductsProvider),
       updateProduct: ref.read(updateProductProvider),
       uploadProduct: ref.read(uploadProductProvider),
+      addProductToCart: ref.read(addProductToCartProvider),
     );
   },
 );
@@ -141,3 +143,7 @@ final uploadProductProvider = Provider<UploadProduct>(
     return UploadProduct(ref.read(productManagerRepoProvider));
   },
 );
+
+final addProductToCartProvider = Provider<AddProductToCart>((ref){
+  return AddProductToCart(repo: ref.read(productManagerRepoProvider));
+},);

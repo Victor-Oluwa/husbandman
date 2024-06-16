@@ -20,6 +20,19 @@ abstract class Failure extends Equatable {
   List<dynamic> get props => [message, statusCode];
 }
 
+class CartFailure extends Failure {
+  CartFailure({
+    required super.message,
+    required super.statusCode,
+  });
+
+  CartFailure.fromException(CartException exception)
+      : this(
+          message: exception.message,
+          statusCode: exception.statusCode,
+        );
+}
+
 class CacheFailure extends Failure {
   CacheFailure({
     required super.message,
@@ -48,9 +61,9 @@ class CloudinaryFailure extends Failure {
 
   CloudinaryFailure.fromException(CloudinaryException exception)
       : this(
-    message: exception.message,
-    statusCode: exception.statusCode,
-  );
+          message: exception.message,
+          statusCode: exception.statusCode,
+        );
 }
 
 class FilePickerFailure extends Failure {

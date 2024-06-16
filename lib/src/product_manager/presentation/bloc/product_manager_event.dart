@@ -13,6 +13,21 @@ class CompressProductImagesEvent extends ProductManagerEvent {
   List<Object> get props => [files];
 }
 
+class AddProductToCartEvent extends ProductManagerEvent {
+  const AddProductToCartEvent({
+    required this.productId,
+    required this.quantity,
+    required this.cartOwnerId,
+  });
+
+  final String productId;
+  final int quantity;
+  final String cartOwnerId;
+
+  @override
+  List<dynamic> get props => [productId, quantity];
+}
+
 class DeleteProductEvent extends ProductManagerEvent {
   const DeleteProductEvent(this.id);
 
@@ -70,8 +85,7 @@ class GetProductImageUrlEvent extends ProductManagerEvent {
   final bool isByte;
 
   @override
-  List<Object?> get props =>
-      isByte == true ? [compressedFile] : [file];
+  List<Object?> get props => isByte == true ? [compressedFile] : [file];
 }
 
 class LikeProductEvent extends ProductManagerEvent {

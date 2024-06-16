@@ -8,6 +8,9 @@ const jwt = require('jsonwebtoken');
 async function getToken(req) {
     // console.log('Hahha' + process.env.AUTH_TOKEN_KEY)
     const token = req.header(process.env.AUTH_TOKEN_KEY);
+    if (!token) {
+        throw new Error(error.BAD_TOKEN);
+    }
     return token;
 
 }

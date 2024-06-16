@@ -404,6 +404,7 @@ class AuthDataSourceImpl implements AuthDataSource {
           },
         ),
       );
+      log('Res response: ${response.data}');
 
       if (response.statusCode != 200 && response.statusCode != 201) {
         throw AuthException(
@@ -428,7 +429,6 @@ class AuthDataSourceImpl implements AuthDataSource {
           );
       }
     } on AuthException catch (_) {
-      log('Validate user error');
       rethrow;
     } catch (e) {
       log('Validate user error: $e');

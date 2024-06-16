@@ -10,7 +10,7 @@ import 'package:husbandman/src/auth/presentation/view/home_screen.dart';
 import 'package:husbandman/src/auth/presentation/view/sign_in_screen.dart';
 import 'package:husbandman/src/auth/presentation/view/user_verification_page.dart';
 import 'package:husbandman/src/auth/presentation/view/verify_invitation_key_screen.dart';
-import 'package:husbandman/src/cart/presentation/cart_view.dart';
+import 'package:husbandman/src/cart/presentation/views/cart_view.dart';
 import 'package:husbandman/src/onboarding/presentation/view/onboarding_screen.dart';
 import 'package:husbandman/src/product_manager/presentation/view/product_details.dart';
 import 'package:husbandman/src/product_manager/presentation/view/product_view_by_category.dart';

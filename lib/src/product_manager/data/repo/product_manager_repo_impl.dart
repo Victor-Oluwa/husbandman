@@ -2,6 +2,7 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:dartz/dartz.dart';
+import 'package:husbandman/core/common/app/entities/cart_entity.dart';
 import 'package:husbandman/core/common/app/entities/product_entity.dart';
 import 'package:husbandman/core/common/app/models/product_model.dart';
 import 'package:husbandman/core/enums/set_product_type.dart';
@@ -16,6 +17,24 @@ class ProductManagerRepoImpl implements ProductManagerRepo {
   ProductManagerRepoImpl(this._productManagerDatasource);
 
   final ProductManagerDatasource _productManagerDatasource;
+
+  @override
+  ResultFuture<CartEntity> addProductToCart({
+    required String productId,
+    required int quantity,
+    required String cartOwnerId,
+  }) async {
+    try {
+      final result = await _productManagerDatasource.addProductToCart(
+        productId: productId,
+        quantity: quantity,
+        cartOwnerId: cartOwnerId,
+      );
+      return Right(result);
+    } on ProductManagerException catch (e) {
+      return Left(ProductManagerFailure.fromException(e));
+    }
+  }
 
   @override
   ResultFuture<List<Uint8List?>> compressProductImage(List<File> images) async {

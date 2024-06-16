@@ -6,6 +6,8 @@ const router = express.Router();
 
 
 router.post(endpoints.VALIDATE_USER, authMW, async (req, res) => {
+    console.log('1');
+
 
     try {
         const token = await arsenal.getToken(req);

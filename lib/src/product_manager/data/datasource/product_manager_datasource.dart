@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:husbandman/core/common/app/entities/cart_entity.dart';
 import 'package:husbandman/core/common/app/entities/product_entity.dart';
 import 'package:husbandman/core/common/app/models/product_model.dart';
 import 'package:husbandman/core/enums/set_product_type.dart';
@@ -9,6 +10,12 @@ import 'package:husbandman/core/utils/typedef.dart';
 
 abstract class ProductManagerDatasource {
   const ProductManagerDatasource();
+
+  Future<CartEntity> addProductToCart({
+    required String productId,
+    required int quantity,
+    required String cartOwnerId,
+  });
 
   Future<List<Uint8List?>> compressProductImage(List<File> images);
 

@@ -33,5 +33,18 @@ module.exports = {
     UPDATE_PRODUCT: '/product/update',
     FETCH_ALL_PRODUCTS: '/product/all',
     FETCH_PRODUCT_BY_CATEGORY: '/product/category',
+    ADD_PRODUCT_TO_CART: '/product/add-to-cart',
+
+    //Cart
+    FETCH_CART: '/cart/fetch-all',
+    UPDATE_ITEM_QUANTITY: '/cart/update',
+    DELETE_CART_ITEM: '/cart/items/deleteOne',
+    DELETE_CART: '/cart/delete',
 
 }
+
+
+
+
+
+

@@ -131,7 +131,7 @@ class _UploadProductViewState extends ConsumerState<UploadProductView> {
           log('Set products: ${ref.watch(generalProductProvider).length}');
         }
 
-        if (state is ProductManagerFailure) {
+        if (state is ProductManagerError) {
           LoadingIndicatorController.instance.hide();
           HBMSnackBar.show(
             context: context,

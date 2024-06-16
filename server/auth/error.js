@@ -11,5 +11,9 @@ module.exports = {
     DUPLICATE_INVITATION_KEY: 'This key already exist',
     JSON_WEB_TOKEN_ERROR: 'Json web token failed',
     USED_KEY: 'The provided key has been used',
+    PRODUCT_ALREADY_IN_CART: 'Product is already in cart. Visit cart to increase quantity if needed',
+    PRODUCT_NOT_AVAILABLE: 'This product is not available. Why not buy something else',
+    PRODUCT_OUT_OF_STOCK: 'This product is out of stock',
+    PRODUCT_DOES_NOT_EXIST: 'This product does not exist',
 
 }

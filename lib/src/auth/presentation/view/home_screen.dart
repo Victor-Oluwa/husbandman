@@ -153,7 +153,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     );
               }
 
-              if (state is ProductManagerFailure) {
+              if (state is ProductManagerError) {
                 log('An error occurred: ${state.message}');
               }
             },

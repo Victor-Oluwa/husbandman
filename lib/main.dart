@@ -12,6 +12,7 @@ import 'package:husbandman/core/res/fonts.dart';
 import 'package:husbandman/core/res/media_res.dart';
 import 'package:husbandman/core/services/injection/admin/admin_injection.dart';
 import 'package:husbandman/core/services/injection/auth/auth_injection.dart';
+import 'package:husbandman/core/services/injection/cart/cart_injection.dart';
 import 'package:husbandman/core/services/injection/onboarding/onboarding_injection.dart';
 import 'package:husbandman/core/services/injection/product_manager/product_manager_injection.dart';
 import 'package:husbandman/core/services/routes.dart';
@@ -22,10 +23,6 @@ import 'package:lottie/lottie.dart';
 
 import 'core/common/app/public_methods/loading/loading_controller.dart';
 
-// import 'package:cloudinary_flutter/cloudinary_context.dart';
-// import 'package:cloudinary_flutter/cloudinary_object.dart';
-// import 'package:cloudinary_flutter/image/cld_image.dart';
-
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await sharedPrefs.init();
@@ -34,6 +31,7 @@ Future<void> main() async {
 
 class MyApp extends ConsumerWidget {
   const MyApp(this.loadingIndicatorController, {super.key});
+
   final LoadingIndicatorController loadingIndicatorController;
   static const String title = 'Husbandman';
 
@@ -45,6 +43,7 @@ class MyApp extends ConsumerWidget {
         BlocProvider(create: (context) => ref.read(authBlocProvider)),
         BlocProvider(create: (context) => ref.read(adminBlocProvider)),
         BlocProvider(create: (context) => ref.read(productManagerBlocProvider)),
+        BlocProvider(create: (context) => ref.read(cartBlocProvider)),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,

@@ -4,11 +4,14 @@ import 'dart:typed_data';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:husbandman/core/common/app/entities/cart_entity.dart';
 import 'package:husbandman/core/common/app/entities/product_entity.dart';
+import 'package:husbandman/core/common/app/models/cart/cart_item.dart';
 import 'package:husbandman/core/common/app/models/product_model.dart';
 import 'package:husbandman/core/enums/set_product_type.dart';
 import 'package:husbandman/core/enums/update_product.dart';
 import 'package:husbandman/core/utils/typedef.dart';
+import 'package:husbandman/src/product_manager/domain/usecase/add_product_to_cart.dart';
 import 'package:husbandman/src/product_manager/domain/usecase/compress_product_image.dart';
 import 'package:husbandman/src/product_manager/domain/usecase/delete_product.dart';
 import 'package:husbandman/src/product_manager/domain/usecase/fetch_farmer_products.dart';
@@ -30,22 +33,23 @@ part 'product_manager_state.dart';
 
 class ProductManagerBloc
     extends Bloc<ProductManagerEvent, ProductManagerState> {
-  ProductManagerBloc({
-    required CompressProductImage compressProductImage,
-    required DeleteProduct deleteProduct,
-    required FetchFarmerProduct fetchFarmerProduct,
-    required FetchProductsByCategory fetchProductsByCategory,
-    required FetchProducts fetchProducts,
-    required GetProductImageUrl getProductImageUrl,
-    required LikeProduct likeProduct,
-    required PickProductImage pickProductImage,
-    required RateProduct rateProduct,
-    required SearchProduct searchProduct,
-    required SetSellerProduct setSellerProduct,
-    required SetGeneralProducts setGeneralProducts,
-    required UpdateProduct updateProduct,
-    required UploadProduct uploadProduct,
-  })  : _compressProductImage = compressProductImage,
+  ProductManagerBloc(
+      {required CompressProductImage compressProductImage,
+      required DeleteProduct deleteProduct,
+      required FetchFarmerProduct fetchFarmerProduct,
+      required FetchProductsByCategory fetchProductsByCategory,
+      required FetchProducts fetchProducts,
+      required GetProductImageUrl getProductImageUrl,
+      required LikeProduct likeProduct,
+      required PickProductImage pickProductImage,
+      required RateProduct rateProduct,
+      required SearchProduct searchProduct,
+      required SetSellerProduct setSellerProduct,
+      required SetGeneralProducts setGeneralProducts,
+      required UpdateProduct updateProduct,
+      required UploadProduct uploadProduct,
+      required AddProductToCart addProductToCart})
+      : _compressProductImage = compressProductImage,
         _deleteProduct = deleteProduct,
         _fetchFarmerProduct = fetchFarmerProduct,
         _fetchProductsByCategory = fetchProductsByCategory,
@@ -59,6 +63,7 @@ class ProductManagerBloc
         _setGeneralProducts = setGeneralProducts,
         _updateProduct = updateProduct,
         _uploadProduct = uploadProduct,
+        _addProductToCart = addProductToCart,
         super(ProductManagerInitial()) {
     on<ProductManagerEvent>((event, emit) {
       emit(const ProductManagerLoading());
@@ -78,6 +83,7 @@ class ProductManagerBloc
     on<SetGeneralProductEvent>(_setGeneralProductHandler);
     on<UpdateProductEvent>(_updateProductHandler);
     on<UploadProductEvent>(_uploadProductHandler);
+    on<AddProductToCartEvent>(_addProductToCartHandler);
   }
 
   final CompressProductImage _compressProductImage;
@@ -94,6 +100,7 @@ class ProductManagerBloc
   final SetGeneralProducts _setGeneralProducts;
   final UpdateProduct _updateProduct;
   final UploadProduct _uploadProduct;
+  final AddProductToCart _addProductToCart;
 
   Future<void> _compressProductImageHandler(
     CompressProductImagesEvent event,
@@ -102,7 +109,7 @@ class ProductManagerBloc
     final result = await _compressProductImage(event.files);
 
     result.fold(
-      (l) => emit(ProductManagerFailure(l.errorMessage)),
+      (l) => emit(ProductManagerError(l.errorMessage)),
       (r) => emit(
         CompressedImages(r),
       ),
@@ -116,7 +123,7 @@ class ProductManagerBloc
     final result = await _deleteProduct(event.id);
 
     result.fold(
-      (l) => emit(ProductManagerFailure(l.errorMessage)),
+      (l) => emit(ProductManagerError(l.errorMessage)),
       (r) => emit(
         ProductDeleted(r),
       ),
@@ -130,7 +137,7 @@ class ProductManagerBloc
     final result = await _fetchFarmerProduct(event.farmerEmail);
 
     result.fold(
-      (l) => emit(ProductManagerFailure(l.errorMessage)),
+      (l) => emit(ProductManagerError(l.errorMessage)),
       (r) => emit(
         FetchedFarmerProduct(r),
       ),
@@ -150,7 +157,7 @@ class ProductManagerBloc
     );
 
     result.fold(
-      (l) => emit(ProductManagerFailure(l.errorMessage)),
+      (l) => emit(ProductManagerError(l.errorMessage)),
       (r) => emit(
         FetchedProductByCategory(r),
       ),
@@ -169,7 +176,7 @@ class ProductManagerBloc
     );
 
     result.fold(
-      (l) => emit(ProductManagerFailure(l.errorMessage)),
+      (l) => emit(ProductManagerError(l.errorMessage)),
       (r) => emit(
         FetchedProduct(r),
       ),
@@ -182,7 +189,7 @@ class ProductManagerBloc
   ) async {
     final result = await _getProductImageUrl(
       GetProductImageUrlParams(
-        isByte:event.isByte,
+        isByte: event.isByte,
         sellerName: event.sellerName,
         compressedFile: event.compressedFile,
         file: event.file,
@@ -190,7 +197,7 @@ class ProductManagerBloc
     );
 
     result.fold(
-      (l) => emit(ProductManagerFailure(l.errorMessage)),
+      (l) => emit(ProductManagerError(l.errorMessage)),
       (r) => emit(
         GottenProductImageUrl(r),
       ),
@@ -204,7 +211,7 @@ class ProductManagerBloc
     final result = await _likeProduct(event.id);
 
     result.fold(
-      (l) => emit(ProductManagerFailure(l.errorMessage)),
+      (l) => emit(ProductManagerError(l.errorMessage)),
       (r) => emit(
         LikedProduct(r),
       ),
@@ -218,7 +225,7 @@ class ProductManagerBloc
     final result = await _pickProductImage();
 
     result.fold(
-      (l) => emit(ProductManagerFailure(l.errorMessage)),
+      (l) => emit(ProductManagerError(l.errorMessage)),
       (r) => emit(PickedProductImage(r)),
     );
   }
@@ -230,7 +237,7 @@ class ProductManagerBloc
     final result = await _rateProduct(event.id);
 
     result.fold(
-      (l) => emit(ProductManagerFailure(l.errorMessage)),
+      (l) => emit(ProductManagerError(l.errorMessage)),
       (r) => emit(
         ProductRated(r),
       ),
@@ -250,7 +257,7 @@ class ProductManagerBloc
     );
 
     result.fold(
-      (l) => emit(ProductManagerFailure(l.errorMessage)),
+      (l) => emit(ProductManagerError(l.errorMessage)),
       (r) => emit(
         SearchComplete(r),
       ),
@@ -270,7 +277,7 @@ class ProductManagerBloc
     );
 
     result.fold(
-      (l) => emit(ProductManagerFailure(l.errorMessage)),
+      (l) => emit(ProductManagerError(l.errorMessage)),
       (r) => emit(
         SellerProductSet(r),
       ),
@@ -290,7 +297,7 @@ class ProductManagerBloc
     );
 
     result.fold(
-      (l) => emit(ProductManagerFailure(l.errorMessage)),
+      (l) => emit(ProductManagerError(l.errorMessage)),
       (_) => emit(
         const GeneralProductSet(),
       ),
@@ -309,9 +316,26 @@ class ProductManagerBloc
     );
 
     result.fold(
-      (l) => emit(ProductManagerFailure(l.errorMessage)),
+      (l) => emit(ProductManagerError(l.errorMessage)),
       (r) => emit(
         ProductUpdated(r),
+      ),
+    );
+  }
+
+  Future<void> _addProductToCartHandler(
+      AddProductToCartEvent event, Emitter<ProductManagerState> emit) async {
+    final result = await _addProductToCart(
+      AddProductToCartParams(
+        productId: event.productId,
+        quantity: event.quantity,
+        cartOwnerId: event.cartOwnerId,
+      ),
+    );
+    result.fold(
+      (l) => emit(ProductManagerError(l.errorMessage)),
+      (r) => emit(
+        ProductAddedToCart(cart: r),
       ),
     );
   }
@@ -342,7 +366,7 @@ class ProductManagerBloc
     );
 
     result.fold(
-      (l) => emit(ProductManagerFailure(l.errorMessage)),
+      (l) => emit(ProductManagerError(l.errorMessage)),
       (r) => emit(
         ProductUploaded(r),
       ),

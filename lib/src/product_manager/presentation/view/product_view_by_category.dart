@@ -141,7 +141,7 @@ class _ProductViewByCategoryState extends ConsumerState<ProductViewByCategory> {
           // );
         }
 
-        if (state is ProductManagerFailure) {
+        if (state is ProductManagerError) {
           log('An error occurred: ${state.message}');
         }
       },
