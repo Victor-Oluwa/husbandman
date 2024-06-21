@@ -15,5 +15,7 @@ module.exports = {
     PRODUCT_NOT_AVAILABLE: 'This product is not available. Why not buy something else',
     PRODUCT_OUT_OF_STOCK: 'This product is out of stock',
     PRODUCT_DOES_NOT_EXIST: 'This product does not exist',
+    USER_CART_NOT_FOUND: 'User cart was not found',
+    FAILED_TO_FIND_CART_ITEM: 'Failed to find item in cart',
 
 }

@@ -8,9 +8,12 @@ import 'package:husbandman/core/common/app/provider/category_product_provider.da
 import 'package:husbandman/core/common/app/provider/general_product_provider.dart';
 import 'package:husbandman/core/common/widgets/hbm_text_widget.dart';
 import 'package:husbandman/core/common/widgets/home_search_widget.dart';
+import 'package:husbandman/core/common/widgets/snack_bar.dart';
 import 'package:husbandman/core/enums/set_product_type.dart';
 import 'package:husbandman/core/extensions/context_extension.dart';
+import 'package:husbandman/core/services/injection/product_manager/product_manager_injection.dart';
 import 'package:husbandman/core/services/route_names.dart';
+import 'package:husbandman/core/utils/core_utils.dart';
 import 'package:husbandman/core/widgets/product_listing_widget.dart';
 import 'package:husbandman/src/auth/domain/entity/home_category_content.dart';
 import 'package:husbandman/src/product_manager/presentation/bloc/product_manager_bloc.dart';
@@ -26,6 +29,7 @@ class ProductViewByCategory extends ConsumerStatefulWidget {
 }
 
 class _ProductViewByCategoryState extends ConsumerState<ProductViewByCategory> {
+  late ProductManagerBloc productManagerBloc;
   final ScrollController _scrollController = ScrollController();
   bool _isLoading = false;
 
@@ -36,7 +40,7 @@ class _ProductViewByCategoryState extends ConsumerState<ProductViewByCategory> {
 
       if (widget.category == const HomeCategoryContent.all().name) {
         fetchProducts();
-      }else{
+      } else {
         fetchProductsByCategory();
       }
     }
@@ -49,34 +53,40 @@ class _ProductViewByCategoryState extends ConsumerState<ProductViewByCategory> {
           (product) => product.id,
         )
         .toList();
-
-    context.read<ProductManagerBloc>().add(
-          FetchProductsByCategoryEvent(
-            category: widget.category,
-            limit: 5,
-            fetched: fetchedProduct,
-          ),
-        );
+    CoreUtils.hbmLogTerminal(
+        message:
+            'fetchProductsByCategory called; Items already in category product provider $fetchedProduct',
+        fromClass: 'ProductViewByCategory');
+    productManagerBloc.add(
+      FetchProductsByCategoryEvent(
+        category: widget.category,
+        limit: 5,
+        fetched: fetchedProduct,
+      ),
+    );
 
     setState(() {
       _isLoading = false;
     });
+
+    // productManagerBloc.
   }
 
   Future<void> fetchProducts() async {
-    final fetchedProduct = ref
-        .read(generalProductProvider)
-        .map(
-          (product) => product.id,
-        )
-        .toList();
+    final fetchedProduct =
+        ref.read(generalProductProvider).map((product) => product.id).toList();
 
-    context.read<ProductManagerBloc>().add(
-          FetchProductsEvent(
-            limit: 2,
-            fetched: fetchedProduct,
-          ),
-        );
+    CoreUtils.hbmLogTerminal(
+        message:
+            'fetchProducts called; Items already in general product provider $fetchedProduct',
+        fromClass: 'ProductViewByCategory');
+
+    productManagerBloc.add(
+      FetchProductsEvent(
+        limit: 2,
+        fetched: fetchedProduct,
+      ),
+    );
 
     setState(() {
       _isLoading = false;
@@ -85,17 +95,18 @@ class _ProductViewByCategoryState extends ConsumerState<ProductViewByCategory> {
 
   @override
   void didChangeDependencies() {
+    super.didChangeDependencies();
+    productManagerBloc = ref.read(productManagerBlocProvider);
     ref.invalidate(categoryProductProvider);
 
-    if(widget.category != const HomeCategoryContent.all().name){
+    if (widget.category != const HomeCategoryContent.all().name) {
       fetchProductsByCategory();
     }
-    super.didChangeDependencies();
   }
 
   @override
   void initState() {
-
+    productManagerBloc = ref.read(productManagerBlocProvider);
     _scrollController.addListener(_scrollListener);
     super.initState();
   }
@@ -105,6 +116,7 @@ class _ProductViewByCategoryState extends ConsumerState<ProductViewByCategory> {
     _scrollController
       ..removeListener(_scrollListener)
       ..dispose();
+    productManagerBloc.close();
     super.dispose();
   }
 
@@ -112,117 +124,142 @@ class _ProductViewByCategoryState extends ConsumerState<ProductViewByCategory> {
   Widget build(BuildContext context) {
     final allProducts = ref.watch(generalProductProvider);
     final categoryProduct = ref.watch(categoryProductProvider);
-
-    return BlocConsumer<ProductManagerBloc, ProductManagerState>(
-      listener: (context, state) {
-        if (state is FetchedProductByCategory) {
-          log('Category product fetched');
-
-          for(var i = 0; i< state.products.length; i++){
-            log('${state.products[i].type}: Name: ${state.products[i].name}');
-
-          }
-          final products = <ProductModel>[];
-
-          for (final element in state.products) {
-            products.add(element as ProductModel);
-          }
-          if(products.isNotEmpty){
-            ref.read(categoryProductProvider.notifier).addNewProduct(
-             newProductModel: products,
-            );
-          }
-
-          // context.read<ProductManagerBloc>().add(
-          //   SetGeneralProductEvent(
-          //     setProductType: SetProductType.insertNew,
-          //     productObject: products,
-          //   ),
-          // );
-        }
-
-        if (state is ProductManagerError) {
-          log('An error occurred: ${state.message}');
-        }
-      },
-      builder: (context, state) {
-        return Scaffold(
-          appBar: AppBar(
-            title: HBMTextWidget(
-              data: widget.category,
-            ),
+    return BlocProvider(
+      create: (context) => ref.read(productManagerBlocProvider),
+      child: Scaffold(
+        appBar: AppBar(
+          title: HBMTextWidget(
+            data: widget.category,
           ),
-          body: SafeArea(
-            child: Center(
-              child: Stack(
-                children: [
-                  Column(
-                    children: [
-                      Expanded(
-                        child: Padding(
-                          padding: EdgeInsets.only(top: context.height * 0.06),
-                          child: ListView.separated(
-                            controller: _scrollController,
-                            itemBuilder: (context, index) {
-                              return Padding(
-                                padding: EdgeInsets.symmetric(
-                                    horizontal: context.width * 0.05,
-                                    vertical: context.height * 0.01),
-                                child: GestureDetector(
-                                  onTap:(){
-                                    Navigator.pushNamed(
-                                      context,
-                                      RouteNames.productDetails,
-                                      arguments: widget.category ==
-                                          const HomeCategoryContent.all().name
-                                          ? allProducts[index]
-                                          : categoryProduct[index],
-                                    );
-                                  },
-                                  child: Hero(
-                                    tag: index,
-                                    child: ProductListingWidget(
-                                      product: widget.category ==
-                                          const HomeCategoryContent.all().name
-                                          ? allProducts[index]
-                                          : categoryProduct[index],
-                                      index: index,
+        ),
+        body: BlocConsumer<ProductManagerBloc, ProductManagerState>(
+          listener: (context, state) {
+            if (state is FetchedProduct) {
+              for (var i = 0; i < state.products.length; i++) {
+                CoreUtils.hbmLogTerminal(
+                  message:
+                  'Category product was fetched: ${state.products[i].type}: Name: ${state.products[i].name}',
+                  fromClass: 'ProductViewByCategory',
+                );
+              }
+
+              final products = <ProductModel>[];
+
+              for (final element in state.products) {
+                products.add(element as ProductModel);
+              }
+
+              context.read<ProductManagerBloc>().add(
+                    SetGeneralProductEvent(
+                      setProductType: SetProductType.insertNew,
+                      productObject: products,
+                    ),
+                  );
+            }
+
+            if (state is FetchedProductByCategory) {
+              for (var i = 0; i < state.products.length; i++) {
+                CoreUtils.hbmLogTerminal(
+                  message:
+                      'Category product was fetched: ${state.products[i].type}: Name: ${state.products[i].name}',
+                  fromClass: 'ProductViewByCategory',
+                );
+              }
+              final products = <ProductModel>[];
+
+              for (final element in state.products) {
+                products.add(element as ProductModel);
+              }
+
+              if (products.isNotEmpty) {
+                ref.read(categoryProductProvider.notifier).addNewProduct(
+                      newProductModel: products,
+                    );
+              }
+            }
+
+            // TODO: Create function for setCategoryProduct
+
+            if (state is ProductManagerError) {
+              log('Error log from ProductViewByCategory class: An error occurred: ${state.message}');
+            }
+          },
+          builder: (context, state) {
+            return SafeArea(
+              child: Center(
+                child: Stack(
+                  children: [
+                    Column(
+                      children: [
+                        Expanded(
+                          child: Padding(
+                            padding:
+                                EdgeInsets.only(top: context.height * 0.06),
+                            child: ListView.separated(
+                              controller: _scrollController,
+                              itemCount: widget.category ==
+                                      const HomeCategoryContent.all().name
+                                  ? allProducts.length
+                                  : categoryProduct.length,
+                              itemBuilder: (context, index) {
+                                return Padding(
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: context.width * 0.05,
+                                      vertical: context.height * 0.01),
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      Navigator.pushNamed(
+                                        context,
+                                        RouteNames.productDetails,
+                                        arguments: widget.category ==
+                                                const HomeCategoryContent.all()
+                                                    .name
+                                            ? allProducts[index]
+                                            : categoryProduct[index],
+                                      );
+                                    },
+                                    child: Hero(
+                                      tag: index,
+                                      child: ProductListingWidget(
+                                        product: widget.category ==
+                                                const HomeCategoryContent.all()
+                                                    .name
+                                            ? allProducts[index]
+                                            : categoryProduct[index],
+                                        index: index,
+                                      ),
                                     ),
                                   ),
-                                ),
-                              );
-                            },
-                            separatorBuilder: (context, index) {
-                              return const Divider();
-                            },
-                            itemCount: widget.category ==
-                                   const HomeCategoryContent.all().name
-                                ? allProducts.length
-                                : categoryProduct.length,
+                                );
+                              },
+                              separatorBuilder: (context, index) {
+                                return const Divider();
+                              },
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    Align(
+                      alignment: Alignment.topCenter,
+                      child: Padding(
+                        padding: EdgeInsets.only(top: context.height * 0.02),
+                        child: SizedBox(
+                          width: context.width * 0.90,
+                          child: const SearchField(
+                            isElevated: true,
+                            hintText: 'Search',
                           ),
                         ),
                       ),
-                    ],
-                  ),
-                  Align(
-                    alignment: Alignment.topCenter,
-                    child: Padding(
-                      padding: EdgeInsets.only(top: context.height * 0.02),
-                      child: SizedBox(
-                        width: context.width * 0.90,
-                        child: const SearchField(
-                          isElevated: true,
-                          hintText: 'Search',
-                        ),
-                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-          ),
-        );
-      },
+            );
+          },
+        ),
+      ),
     );
   }
 }

@@ -20,14 +20,15 @@ class CartSet extends CartState {
 class UpdatedItemQuantity extends CartState {
   const UpdatedItemQuantity({required this.cartItem});
 
-  final CartItem cartItem;
+  final CartEntity cartItem;
 
   @override
   List<Object> get props => [cartItem];
 }
 
 class DeletedCartItem extends CartState {
-  const DeletedCartItem();
+  const DeletedCartItem({required this.cart});
+  final CartEntity cart;
 }
 
 class DeletedCart extends CartState {

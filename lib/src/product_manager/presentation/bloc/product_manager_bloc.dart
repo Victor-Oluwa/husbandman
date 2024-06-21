@@ -17,6 +17,7 @@ import 'package:husbandman/src/product_manager/domain/usecase/delete_product.dar
 import 'package:husbandman/src/product_manager/domain/usecase/fetch_farmer_products.dart';
 import 'package:husbandman/src/product_manager/domain/usecase/fetch_product_by_category.dart';
 import 'package:husbandman/src/product_manager/domain/usecase/fetch_products.dart';
+import 'package:husbandman/src/product_manager/domain/usecase/get_img_url_from_supa_base.dart';
 import 'package:husbandman/src/product_manager/domain/usecase/get_product_image_url.dart';
 import 'package:husbandman/src/product_manager/domain/usecase/like_product.dart';
 import 'package:husbandman/src/product_manager/domain/usecase/pick_product_image.dart';
@@ -48,7 +49,8 @@ class ProductManagerBloc
       required SetGeneralProducts setGeneralProducts,
       required UpdateProduct updateProduct,
       required UploadProduct uploadProduct,
-      required AddProductToCart addProductToCart})
+      required AddProductToCart addProductToCart,
+      required GetImgUrlFromSupaBase getImgUrlFromSupaBase})
       : _compressProductImage = compressProductImage,
         _deleteProduct = deleteProduct,
         _fetchFarmerProduct = fetchFarmerProduct,
@@ -64,6 +66,7 @@ class ProductManagerBloc
         _updateProduct = updateProduct,
         _uploadProduct = uploadProduct,
         _addProductToCart = addProductToCart,
+        _getImgUrlFromSupaBase = getImgUrlFromSupaBase,
         super(ProductManagerInitial()) {
     on<ProductManagerEvent>((event, emit) {
       emit(const ProductManagerLoading());
@@ -84,6 +87,7 @@ class ProductManagerBloc
     on<UpdateProductEvent>(_updateProductHandler);
     on<UploadProductEvent>(_uploadProductHandler);
     on<AddProductToCartEvent>(_addProductToCartHandler);
+    on<GetImgUrlFromSupaBaseEvent>(_getImgUrlFromSupaBaseHandler);
   }
 
   final CompressProductImage _compressProductImage;
@@ -101,6 +105,7 @@ class ProductManagerBloc
   final UpdateProduct _updateProduct;
   final UploadProduct _uploadProduct;
   final AddProductToCart _addProductToCart;
+  final GetImgUrlFromSupaBase _getImgUrlFromSupaBase;
 
   Future<void> _compressProductImageHandler(
     CompressProductImagesEvent event,
@@ -336,6 +341,25 @@ class ProductManagerBloc
       (l) => emit(ProductManagerError(l.errorMessage)),
       (r) => emit(
         ProductAddedToCart(cart: r),
+      ),
+    );
+  }
+
+  Future<void> _getImgUrlFromSupaBaseHandler(
+    GetImgUrlFromSupaBaseEvent event,
+    Emitter<ProductManagerState> emit,
+  ) async {
+    final result = await _getImgUrlFromSupaBase(
+      GetImgUrlFromSupaBaseParams(
+        folderPath: event.folderPath,
+        filePaths: event.filePaths,
+      ),
+    );
+
+    result.fold(
+      (l) => emit(ProductManagerError(l.errorMessage)),
+      (r) => emit(
+        GottenImgUrlFromSupaBase(r),
       ),
     );
   }

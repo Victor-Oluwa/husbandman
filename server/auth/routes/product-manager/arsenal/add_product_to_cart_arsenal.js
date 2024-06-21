@@ -71,21 +71,25 @@ async function findProductById(id) {
 
 function reportError(e, res) {
     if (e.message == error.PRODUCT_ALREADY_IN_CART) {
+        console.log(e.message);
         res.status(status.PRODUCT_ALREADY_IN_CART).json(e.message);
         return;
     }
 
     if (e.message == error.PRODUCT_DOES_NOT_EXIST) {
+        console.log(e.message);
         res.status(status.PRODUCT_DOES_NOT_EXIST).json(e.message);
         return;
     }
 
     if (e.message == error.PRODUCT_NOT_AVAILABLE) {
+        console.log(e.message);
         res.status(status.PRODUCT_NOT_AVAILABLE).json(e.message);
         return;
     }
 
     if (e.message == error.PRODUCT_OUT_OF_STOCK) {
+        console.log(e.message);
         res.status(status.PRODUCT_OUT_OF_STOCK).json(e.message);
         return;
     }

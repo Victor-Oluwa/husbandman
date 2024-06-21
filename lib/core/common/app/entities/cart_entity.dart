@@ -17,9 +17,11 @@ class CartEntity extends Equatable {
 
   factory CartEntity.fromMap(Map<String, dynamic> map) {
     return CartEntity(
-      id: map['_id'] as String ?? '',
-      ownerId: map['ownerId'] as String ?? '',
-      items: (map['items'] as List).cast<CartItem>() ?? [],
+      id: map['_id'] as String? ?? '',
+      ownerId: map['ownerId'] as String? ?? '',
+      items: (map['items'] as List<dynamic>)
+          .map((item) => CartItem.fromMap(item as Map<String, dynamic>))
+          .toList(),
     );
   }
 
@@ -31,10 +33,22 @@ class CartEntity extends Equatable {
     return {
       '_id': id,
       'ownerId': ownerId,
-      'items': items,
+      'items': items.map((item) => item.toMap()).toList(),
     };
   }
 
   @override
   List<Object?> get props => [id, ownerId, items];
+
+  CartEntity copyWith({
+    String? id,
+    String? ownerId,
+    List<CartItem>? items,
+  }) {
+    return CartEntity(
+      id: id ?? this.id,
+      ownerId: ownerId ?? this.ownerId,
+      items: items ?? this.items,
+    );
+  }
 }

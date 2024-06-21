@@ -10,6 +10,7 @@ import 'package:husbandman/core/common/app/provider/seller_products_provider.dar
 import 'package:husbandman/core/common/app/public_methods/cloudinary_upload/cloudinary_upload.dart';
 import 'package:husbandman/core/common/app/public_methods/file-picker/file_picker.dart';
 import 'package:husbandman/core/common/app/public_methods/file_compressor/file_compressor.dart';
+import 'package:husbandman/core/common/app/public_methods/superbase_upload/superbase_upload.dart';
 import 'package:husbandman/core/enums/set_product_type.dart';
 import 'package:husbandman/core/enums/update_product.dart';
 import 'package:husbandman/core/enums/update_user.dart';
@@ -29,6 +30,8 @@ class MockFilePicker extends Mock implements PickFile {}
 class MockFileCompressor extends Mock implements FileCompressor {}
 
 class MockRiverpod extends Mock implements Ref {}
+class MockSuperBaseUpload extends Mock implements SuperBaseUpload {}
+
 
 void main() {
   late http.Client client;
@@ -37,6 +40,7 @@ void main() {
   late CloudinaryUpload cloudinaryUpload;
   late PickFile pickFile;
   late FileCompressor compressor;
+  late SuperBaseUpload superBaseUpload;
 
   const exceptionMessage = 'Something went wrong';
   const exceptionStatus = 500;
@@ -50,12 +54,15 @@ void main() {
     cloudinaryUpload = MockCloudinaryUpload();
     pickFile = MockFilePicker();
     compressor = MockFileCompressor();
+    superBaseUpload = MockSuperBaseUpload();
+
     datasource = ProductManagerDatasourceImpl(
       client,
       ref,
       cloudinaryUpload,
       pickFile,
       compressor,
+      superBaseUpload,
     );
   });
 
@@ -558,7 +565,7 @@ void main() {
   });
 
   group('Pick Product Image', () {
-    final imageFiles = [File('file_path')];
+    final imageFiles = ['file_path'];
 
     test(
       'Should call [File Picker] and return List<File> when successful',

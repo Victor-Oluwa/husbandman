@@ -77,7 +77,7 @@ class ProductListingWidget extends StatelessWidget {
                   Material(
                     color: Colors.transparent,
                     child: HBMTextWidget(
-                      data: product.type,
+                      data: product.name,
                       fontFamily: HBMFonts.quicksandBold,
                       fontSize: context.width * 0.05,
                       color: HBMColors.charcoalGrey,

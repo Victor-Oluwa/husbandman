@@ -11,10 +11,11 @@ import 'package:husbandman/src/auth/presentation/view/sign_in_screen.dart';
 import 'package:husbandman/src/auth/presentation/view/user_verification_page.dart';
 import 'package:husbandman/src/auth/presentation/view/verify_invitation_key_screen.dart';
 import 'package:husbandman/src/cart/presentation/views/cart_view.dart';
+import 'package:husbandman/src/cart/presentation/widgets/quantity_picker.dart';
 import 'package:husbandman/src/onboarding/presentation/view/onboarding_screen.dart';
 import 'package:husbandman/src/product_manager/presentation/view/product_details.dart';
 import 'package:husbandman/src/product_manager/presentation/view/product_view_by_category.dart';
-import 'package:husbandman/src/product_manager/presentation/view/upload_product_view.dart';
+import 'package:husbandman/src/product_manager/presentation/view/upload_product/upload_product_main_widget.dart';
 import 'package:husbandman/src/product_manager/presentation/view/seller_products_view.dart';
 import 'package:husbandman/src/product_manager/presentation/view/seller_product_view_by_category.dart';
 import 'package:husbandman/src/profile/presentation/buyer_profile_view.dart';
@@ -124,6 +125,11 @@ Route<dynamic> generateRoute(RouteSettings settings) {
       final category = settings.arguments! as String;
       return _pageBuilder(
             (p0) => ProductViewByCategory(category: category),
+        settings: settings,
+      );
+    case RouteNames.testWidgetView:
+      return _pageBuilder(
+            (p0) => const QuantityPicker(),
         settings: settings,
       );
     default:

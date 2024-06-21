@@ -96,10 +96,10 @@ class LikedProduct extends ProductManagerState {
 class PickedProductImage extends ProductManagerState {
   const PickedProductImage(this.files);
 
-  final List<File> files;
+  final List<String> files;
 
   @override
-  List<List<File>> get props => [files];
+  List<List<String>> get props => [files];
 }
 
 class ProductRated extends ProductManagerState {
@@ -143,6 +143,14 @@ class ProductUpdated extends ProductManagerState {
 
   @override
   List<ProductEntity> get props => [product];
+}
+
+class GottenImgUrlFromSupaBase extends ProductManagerState {
+   const GottenImgUrlFromSupaBase(this.urls);
+   final List<String> urls;
+
+   @override
+   List<List<String>> get props => [urls];
 }
 
 class ProductUploaded extends ProductManagerState {

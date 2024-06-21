@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:husbandman/core/common/app/models/cart/cart_item.dart';
 import 'package:husbandman/core/common/app/models/cart/cart_model.dart';
@@ -14,7 +16,6 @@ class CartNotifier extends StateNotifier<CartModel> {
     DataMap? newCartMap,
     CartModel? newCartModel,
   }) {
-
     if (newCartModel != null) {
       state = newCartModel;
       return;
@@ -27,19 +28,32 @@ class CartNotifier extends StateNotifier<CartModel> {
     return;
   }
 
+  void removeCartItem2({required int index}){
+    final updatedItems = List<CartItem>.from(state.items)..removeAt(index);
+    log('Carrrt: '+updatedItems.toString());
+    log('index: $index');
+    // Update the state with the new list
+    state = state.copyWith(items: updatedItems);
+  }
+
   void removeCartItem({
     CartItem? pScapegoat,
     DataMap? mScapeGoat,
   }) {
-    if (pScapegoat != null) {
+    if (pScapegoat != null && mScapeGoat == null) {
       final index = state.items.indexOf(pScapegoat);
       if (index != -1) {
-        state.items.removeAt(index);
+        final updatedItems = List<CartItem>.from(state.items)..removeAt(index);
+        log('Carrrt: '+updatedItems.toString());
+        log('index: $index');
+
+        // Update the state with the new list
+        state = state.copyWith(items: updatedItems);
       }
       return;
     }
 
-    if (mScapeGoat != null) {
+    if (mScapeGoat != null && pScapegoat == null) {
       final scapegoat = CartItem.fromMap(mScapeGoat);
       final index = state.items.indexOf(scapegoat);
       if (index != -1) {

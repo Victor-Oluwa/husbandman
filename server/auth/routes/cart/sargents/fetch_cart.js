@@ -7,13 +7,14 @@ const fetchCartRouter = express.Router();
 
 fetchCartRouter.post(endpoints.FETCH_CART, async (req, res) => {
     try {
-        const { ownerId } = req.body();
+        const { ownerId } = req.body;
 
         let cart = await arsenal.findCart(ownerId);
 
         res.status(200).json(cart);
 
     } catch (e) {
+        console.log(e);
         res.status(500).json(e);
     }
 

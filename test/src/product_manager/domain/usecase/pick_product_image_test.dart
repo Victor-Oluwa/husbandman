@@ -13,7 +13,7 @@ void main() {
   late ProductManagerRepo repo;
   late PickProductImage usecase;
 
-  final tImageFiles = [File('image.png')];
+  final tImageFiles = ['image.png'];
   final serverFailure = ServerFailure(
     message: 'Failed to pick image',
     statusCode: 500,
@@ -37,7 +37,7 @@ void main() {
         expect(
           result,
           equals(
-            Right<dynamic, List<File>>(tImageFiles),
+            Right<dynamic, List<String>>(tImageFiles),
           ),
         );
 

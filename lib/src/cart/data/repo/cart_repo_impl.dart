@@ -1,4 +1,5 @@
 import 'package:dartz/dartz.dart';
+import 'package:husbandman/core/common/app/entities/cart_entity.dart';
 import 'package:husbandman/core/common/app/models/cart/cart_item.dart';
 import 'package:husbandman/core/common/app/models/cart/cart_model.dart';
 import 'package:husbandman/core/enums/set_cart_type.dart';
@@ -27,12 +28,14 @@ class CartRepoImpl implements CartRepo {
   }
 
   @override
-  ResultFuture<void> deleteCartItem({
+  ResultFuture<CartEntity> deleteCartItem({
     required String ownerId,
     required String itemId,
   }) async {
     try {
-      final result = await _cartDatasource.deleteCart(ownerId: ownerId);
+      final result = await _cartDatasource.deleteCartItem(
+        ownerId: ownerId,
+        itemId: itemId,);
       return Right(result);
     } on CartException catch (e) {
       return Left(CartFailure.fromException(e));
@@ -60,7 +63,7 @@ class CartRepoImpl implements CartRepo {
   }
 
   @override
-  ResultFuture<CartItem> updateItemQuantity({
+  ResultFuture<CartEntity> updateItemQuantity({
     required int quantity,
     required String itemId,
     required String ownerId,

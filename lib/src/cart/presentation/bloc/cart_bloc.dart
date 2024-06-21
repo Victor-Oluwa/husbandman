@@ -96,7 +96,7 @@ class CartBloc extends Bloc<CartEvent, CartState> {
 
     result.fold(
       (l) => CartError(message: l.errorMessage),
-      (_) => emit(const DeletedCartItem()),
+      (r) => emit( DeletedCartItem(cart: r)),
     );
   }
 

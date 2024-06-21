@@ -141,10 +141,12 @@ class ProductManagerRepoImpl implements ProductManagerRepo {
   }
 
   @override
-  ResultFuture<List<File>> pickProductImage() async {
+  ResultFuture<List<String>> pickProductImage() async {
     try {
       final result = await _productManagerDatasource.pickProductImage();
       return Right(result);
+    } on FilePickerException catch (e) {
+      return Left(FilePickerFailure.fromException(e));
     } on ProductManagerException catch (e) {
       return Left(ProductManagerFailure.fromException(e));
     }
@@ -270,6 +272,22 @@ class ProductManagerRepoImpl implements ProductManagerRepo {
       );
 
       return Right(result);
+    } on ProductManagerException catch (e) {
+      return Left(ProductManagerFailure.fromException(e));
+    }
+  }
+
+  @override
+  ResultFuture<List<String>> getImgUrlFromSupaBase({
+    required List<String> filePaths,
+    required String folderPath,
+  })async {
+    try {
+    final result = await  _productManagerDatasource.getImgUrlFromSupaBase(
+          filePaths: filePaths, folderPath: folderPath,);
+    return Right(result);
+    } on SuperBaseException catch (e) {
+      return Left(SuperBaseFailure.fromException(e));
     } on ProductManagerException catch (e) {
       return Left(ProductManagerFailure.fromException(e));
     }

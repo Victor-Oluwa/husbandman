@@ -288,7 +288,7 @@ void main() {
   });
 
   group('Pick Product Image', () {
-    final imageFiles = [File('img-path')];
+    final imageFiles = ['img-path'];
     test(
       'Should call [ProductManagerDatasource] and return [Right<ProductEntity>]',
       () async {
@@ -303,7 +303,7 @@ void main() {
         expect(
           result,
           equals(
-            Right<dynamic, List<File>>(imageFiles),
+            Right<dynamic, List<String>>(imageFiles),
           ),
         );
 

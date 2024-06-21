@@ -17,23 +17,27 @@ class CloudinaryUpload {
     required List<Uint8List?>? compressedFile,
     required String sellerName,
   }) async {
-    final response = await cloudinary.unsignedUpload(
-      uploadPreset: kCloudinaryUploadPreset,
-      fileBytes: compressedFile![0],
-      folder: sellerName,
-      resourceType: CloudinaryResourceType.image,
-      progressCallback: (count, total) {
-        log('Uploading image from file with progress: $count/$total');
-      },
-    );
-    if (response.isSuccessful && response.secureUrl != null) {
-      return [response.secureUrl!];
-    } else {
-      throw CloudinaryException(
-        message: response.error ?? 'Cloudinary upload failed',
-        statusCode: response.statusCode ?? 500,
+    try{
+      final response = await cloudinary.unsignedUpload(
+        uploadPreset: kCloudinaryUploadPreset,
+        fileBytes: compressedFile![0],
+        folder: sellerName,
+        resourceType: CloudinaryResourceType.image,
+        progressCallback: (count, total) {
+          log('Uploading image from file with progress: $count/$total');
+        },
       );
+      if (!response.isSuccessful || response.secureUrl == null) {
+        throw CloudinaryException(
+          message: response.error ?? 'Cloudinary upload failed',
+          statusCode: response.statusCode ?? 500,
+        );
+      }
+        return [response.secureUrl!];
+    } catch(e){
+      throw CloudinaryException(message: e.toString(), statusCode: 500);
     }
+
   }
 
   Future<List<String>> uploadImageAsFile({

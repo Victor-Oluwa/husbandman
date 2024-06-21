@@ -9,6 +9,7 @@ import 'package:husbandman/src/product_manager/domain/usecase/delete_product.dar
 import 'package:husbandman/src/product_manager/domain/usecase/fetch_farmer_products.dart';
 import 'package:husbandman/src/product_manager/domain/usecase/fetch_product_by_category.dart';
 import 'package:husbandman/src/product_manager/domain/usecase/fetch_products.dart';
+import 'package:husbandman/src/product_manager/domain/usecase/get_img_url_from_supa_base.dart';
 import 'package:husbandman/src/product_manager/domain/usecase/get_product_image_url.dart';
 import 'package:husbandman/src/product_manager/domain/usecase/like_product.dart';
 import 'package:husbandman/src/product_manager/domain/usecase/pick_product_image.dart';
@@ -20,7 +21,7 @@ import 'package:husbandman/src/product_manager/domain/usecase/update_product.dar
 import 'package:husbandman/src/product_manager/domain/usecase/upload_product.dart';
 import 'package:husbandman/src/product_manager/presentation/bloc/product_manager_bloc.dart';
 
-final productManagerBlocProvider = Provider<ProductManagerBloc>(
+final productManagerBlocProvider = Provider.autoDispose<ProductManagerBloc>(
   (ref) {
     return ProductManagerBloc(
       compressProductImage: ref.read(compressProductImageProvider),
@@ -38,6 +39,7 @@ final productManagerBlocProvider = Provider<ProductManagerBloc>(
       updateProduct: ref.read(updateProductProvider),
       uploadProduct: ref.read(uploadProductProvider),
       addProductToCart: ref.read(addProductToCartProvider),
+      getImgUrlFromSupaBase: ref.read(getImgUrlFromSupaBaseProvider),
     );
   },
 );
@@ -50,6 +52,7 @@ final productManagerDatasourceProvider = Provider<ProductManagerDatasourceImpl>(
       ref.read(cloudinaryUploadProvider),
       ref.read(pickFileProvider),
       ref.read(compressorProvider),
+      ref.read(superBaseUploadProvider),
     );
   },
 );
@@ -144,6 +147,14 @@ final uploadProductProvider = Provider<UploadProduct>(
   },
 );
 
-final addProductToCartProvider = Provider<AddProductToCart>((ref){
-  return AddProductToCart(repo: ref.read(productManagerRepoProvider));
-},);
+final addProductToCartProvider = Provider<AddProductToCart>(
+  (ref) {
+    return AddProductToCart(repo: ref.read(productManagerRepoProvider));
+  },
+);
+
+final getImgUrlFromSupaBaseProvider = Provider(
+  (ref) => GetImgUrlFromSupaBase(
+    repo: ref.read(productManagerRepoProvider),
+  ),
+);

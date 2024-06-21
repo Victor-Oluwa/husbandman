@@ -71,6 +71,12 @@ class FilePickerFailure extends Failure {
     required super.message,
     required super.statusCode,
   });
+
+  FilePickerFailure.fromException(FilePickerException exception)
+      : this(
+          message: exception.message,
+          statusCode: exception.statusCode,
+        );
 }
 
 class FirebaseFailure extends Failure {
@@ -117,6 +123,18 @@ class ProductManagerFailure extends Failure {
           message: exception.message,
           statusCode: exception.statusCode,
         );
+}
+
+class SuperBaseFailure extends Failure {
+  SuperBaseFailure({
+    required super.message,
+    required super.statusCode,
+  });
+
+  SuperBaseFailure.fromException(SuperBaseException exception): this(
+    statusCode: exception.statusCode,
+    message: exception.message,
+  );
 }
 
 class ServerFailure extends Failure {

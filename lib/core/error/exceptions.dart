@@ -27,8 +27,11 @@ class AdminException extends Equatable implements Exception {
   List<Object> get props => [message, statusCode];
 }
 
-class CartException extends Equatable implements Exception{
- const CartException({required this.message, required this.statusCode,});
+class CartException extends Equatable implements Exception {
+  const CartException({
+    required this.message,
+    required this.statusCode,
+  });
 
   final String message;
   final int statusCode;
@@ -113,6 +116,19 @@ class ProductManagerException extends Equatable implements Exception {
 
   @override
   List<Object?> get props => [message, statusCode];
+}
+
+class SuperBaseException extends Equatable implements Exception {
+ const SuperBaseException({
+    required this.message,
+    required this.statusCode,
+  });
+
+  final String message;
+  final int statusCode;
+
+  @override
+  List<dynamic> get props => [message, statusCode];
 }
 
 class ServerException extends Equatable implements Exception {

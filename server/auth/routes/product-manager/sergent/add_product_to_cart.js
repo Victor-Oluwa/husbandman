@@ -17,6 +17,7 @@ router.post(endpoints.ADD_PRODUCT_TO_CART, async (req, res) => {
         const newItem = {
             productId: product._id,
             productName: product.name,
+            productImage: product.images[0],
             quantity: quantity,
             sellerName: product.sellerName,
             sellerEmail: product.sellerEmail,
@@ -32,9 +33,8 @@ router.post(endpoints.ADD_PRODUCT_TO_CART, async (req, res) => {
             cart = await arsenal.addToCart(cart, newItem);
         }
 
-        await arsenal.updateProductQuantity(product, quantity);
+        // await arsenal.updateProductQuantity(product, quantity);
 
-        console.log(cart);
         res.status(200).json(cart);
 
     } catch (e) {

@@ -42,8 +42,8 @@ class MyApp extends ConsumerWidget {
         BlocProvider(create: (context) => ref.read(onboardingCubitProvider)),
         BlocProvider(create: (context) => ref.read(authBlocProvider)),
         BlocProvider(create: (context) => ref.read(adminBlocProvider)),
-        BlocProvider(create: (context) => ref.read(productManagerBlocProvider)),
         BlocProvider(create: (context) => ref.read(cartBlocProvider)),
+        // BlocProvider(create: (context) => ref.read(productManagerBlocProvider)),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,

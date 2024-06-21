@@ -1,3 +1,4 @@
+import 'package:husbandman/core/common/app/entities/cart_entity.dart';
 import 'package:husbandman/core/common/app/models/cart/cart_item.dart';
 import 'package:husbandman/core/common/app/models/cart/cart_model.dart';
 import 'package:husbandman/core/enums/set_cart_type.dart';
@@ -12,13 +13,13 @@ abstract class CartRepo {
     CartModel? pNewCartModel,
   });
 
-  ResultFuture<CartItem> updateItemQuantity({
+  ResultFuture<CartEntity> updateItemQuantity({
     required int quantity,
     required String itemId,
     required String ownerId,
   });
 
-  ResultFuture<void> deleteCartItem({
+  ResultFuture<CartEntity> deleteCartItem({
     required String ownerId,
     required String itemId,
   });

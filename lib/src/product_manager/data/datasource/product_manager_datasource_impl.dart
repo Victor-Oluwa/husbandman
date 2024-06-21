@@ -16,6 +16,7 @@ import 'package:husbandman/core/common/app/provider/user_provider.dart';
 import 'package:husbandman/core/common/app/public_methods/cloudinary_upload/cloudinary_upload.dart';
 import 'package:husbandman/core/common/app/public_methods/file-picker/file_picker.dart';
 import 'package:husbandman/core/common/app/public_methods/file_compressor/file_compressor.dart';
+import 'package:husbandman/core/common/app/public_methods/superbase_upload/superbase_upload.dart';
 import 'package:husbandman/core/enums/set_product_type.dart';
 import 'package:husbandman/core/enums/update_product.dart';
 import 'package:husbandman/core/error/exceptions.dart';
@@ -42,6 +43,7 @@ class ProductManagerDatasourceImpl implements ProductManagerDatasource {
     this._cloudinaryUpload,
     this._pickFile,
     this.compressor,
+    this._superBaseUpload,
   );
 
   final http.Client _client;
@@ -49,6 +51,7 @@ class ProductManagerDatasourceImpl implements ProductManagerDatasource {
   final PickFile _pickFile;
   final FileCompressor compressor;
   final Ref _ref;
+  final SuperBaseUpload _superBaseUpload;
 
   @override
   Future<CartEntity> addProductToCart({
@@ -86,7 +89,6 @@ class ProductManagerDatasourceImpl implements ProductManagerDatasource {
           statusCode: response.statusCode ?? 500,
         );
       }
-      log('Add to cart Err: ' + responseData.toString());
       return CartEntity.fromMap(responseData);
     } on DioException catch (dioError) {
       log('Dio error asshole: $dioError');
@@ -97,9 +99,9 @@ class ProductManagerDatasourceImpl implements ProductManagerDatasource {
         message: errorMessage!,
         statusCode: statusCode,
       );
-    } on ProductManagerException catch(e){
+    } on ProductManagerException catch (e) {
       rethrow;
-    }catch (e) {
+    } catch (e) {
       throw ProductManagerException(message: e.toString(), statusCode: 500);
     }
   }
@@ -360,11 +362,9 @@ class ProductManagerDatasourceImpl implements ProductManagerDatasource {
   }
 
   @override
-  Future<List<File>> pickProductImage() async {
+  Future<List<String>> pickProductImage() async {
     try {
       final result = await _pickFile.pickMultiple();
-
-      _ref.read(pickedProductImageProvider.notifier).state = result;
 
       return result;
     } on FilePickerException catch (e) {
@@ -677,6 +677,32 @@ class ProductManagerDatasourceImpl implements ProductManagerDatasource {
         message: e.toString(),
         statusCode: 500,
       );
+    }
+  }
+
+  @override
+  Future<List<String>> getImgUrlFromSupaBase({
+    required List<String> filePaths,
+    required String folderPath,
+  }) async {
+    try {
+      final response =
+          await _superBaseUpload.uploadMultipleImages(filePaths, folderPath);
+      if (response.isEmpty) {
+        throw const ProductManagerException(
+            message:
+                'Empty List was returned from uploadMultipleImages function',
+            statusCode: 500);
+      }
+
+      log('Log from ProductManagerDatasourceImpl: getImgUrlFromSupaBase response: $response');
+      return response;
+    } on SuperBaseException catch (e) {
+      rethrow;
+    } on ProductManagerException catch (e) {
+      rethrow;
+    } catch (e) {
+      throw ProductManagerException(message: e.toString(), statusCode: 500);
     }
   }
 }

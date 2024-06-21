@@ -17,4 +17,5 @@ class RouteNames {
   static const buyerProfile = 'buyer-profile';
   static const cartView = 'cart-page';
   static const productViewByCategory = 'product-view-by-category';
+  static const testWidgetView = 'test-widget-view';
 }

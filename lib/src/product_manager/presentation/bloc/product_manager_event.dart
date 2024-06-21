@@ -156,6 +156,19 @@ class SetGeneralProductEvent extends ProductManagerEvent {
   List<Object> get props => [setProductType, productMap!, productObject!];
 }
 
+class GetImgUrlFromSupaBaseEvent extends ProductManagerEvent {
+ const GetImgUrlFromSupaBaseEvent({
+    required this.filePaths,
+    required this.folderPath,
+  });
+
+  final List<String> filePaths;
+  final String folderPath;
+
+ @override
+ List<dynamic> get props => [folderPath, filePaths];
+}
+
 class UpdateProductEvent extends ProductManagerEvent {
   const UpdateProductEvent({
     required this.newData,

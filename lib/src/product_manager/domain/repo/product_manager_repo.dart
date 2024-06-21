@@ -7,6 +7,7 @@ import 'package:husbandman/core/common/app/models/product_model.dart';
 import 'package:husbandman/core/enums/set_product_type.dart';
 import 'package:husbandman/core/enums/update_product.dart';
 import 'package:husbandman/core/utils/typedef.dart';
+import 'package:image_picker/image_picker.dart';
 
 abstract class ProductManagerRepo {
   const ProductManagerRepo();
@@ -43,7 +44,7 @@ abstract class ProductManagerRepo {
 
   ResultFuture<ProductEntity> likeProduct(String id);
 
-  ResultFuture<List<File>> pickProductImage();
+  ResultFuture<List<String>> pickProductImage();
 
   ResultFuture<ProductEntity> rateProduct(String id);
 
@@ -68,6 +69,11 @@ abstract class ProductManagerRepo {
   ResultFuture<ProductEntity> updateProduct({
     required dynamic newData,
     required UpdateProductCulprit culprit,
+  });
+
+  ResultFuture<List<String>> getImgUrlFromSupaBase({
+    required List<String> filePaths,
+    required String folderPath,
   });
 
   ResultFuture<ProductEntity> uploadProduct({

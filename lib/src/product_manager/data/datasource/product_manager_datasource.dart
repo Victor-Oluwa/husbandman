@@ -41,9 +41,14 @@ abstract class ProductManagerDatasource {
     List<File>? file,
   });
 
+  Future<List<String>> getImgUrlFromSupaBase({
+    required List<String> filePaths,
+    required String folderPath,
+  });
+
   Future<ProductEntity> likeProduct(String id);
 
-  Future<List<File>> pickProductImage();
+  Future<List<String>> pickProductImage();
 
   Future<ProductEntity> rateProduct(String id);
 

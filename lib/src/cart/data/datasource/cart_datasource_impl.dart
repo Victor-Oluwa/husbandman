@@ -59,7 +59,7 @@ class CartDatasourceImpl implements CartDatasource {
   }
 
   @override
-  Future<void> deleteCartItem({
+  Future<CartModel> deleteCartItem({
     required String ownerId,
     required String itemId,
   }) async {
@@ -84,6 +84,8 @@ class CartDatasourceImpl implements CartDatasource {
           statusCode: response.statusCode ?? 500,
         );
       }
+
+      return CartModel.fromMap(response.data??{});
     } on DioException catch (e) {
       final errorMessage = e.response?.data.toString() ?? e.message;
       final statusCode = e.response?.statusCode ?? 500;
@@ -136,6 +138,8 @@ class CartDatasourceImpl implements CartDatasource {
                 .read(cartProvider.notifier)
                 .updateCart(newCartMap: mNewCartItem);
           }
+          break; // Add break statement here
+
         case SetCartType.removeCartItem:
           if (pNewCartItem == null && mNewCartItem == null) {
             throw const CartException(
@@ -162,6 +166,8 @@ class CartDatasourceImpl implements CartDatasource {
                 .read(cartProvider.notifier)
                 .removeCartItem(mScapeGoat: mNewCartItem);
           }
+          break; // Add break statement here
+
         case SetCartType.replaceCart:
           if (pNewCartItem == null && mNewCartItem == null) {
             throw const CartException(
@@ -188,6 +194,7 @@ class CartDatasourceImpl implements CartDatasource {
                 .read(cartProvider.notifier)
                 .replaceCart(mNewItem: mNewCartItem);
           }
+          break; // Add break statement here
       }
     } on CartException catch (e) {
       log('setCart Error from CartDatasourceImpl class: ${e.message}');
@@ -198,13 +205,15 @@ class CartDatasourceImpl implements CartDatasource {
     }
   }
 
+
   @override
-  Future<CartItem> updateItemQuantity({
+  Future<CartModel> updateItemQuantity({
     required int quantity,
     required String itemId,
     required String ownerId,
   }) async {
     try {
+      log('passed quantity: $quantity');
       final response = await Dio().post<DataMap>(
         '$kBaseUrl$kUpdateProductEndpoint',
         options: Options(
@@ -225,7 +234,7 @@ class CartDatasourceImpl implements CartDatasource {
           statusCode: response.statusCode ?? 500,
         );
       }
-      return CartItem.fromMap(response.data ?? {});
+      return CartModel.fromMap(response.data ?? {});
     } on DioException catch (e) {
       final errorMessage = e.response?.data.toString() ?? e.message;
       final statusCode = e.response?.statusCode ?? 500;
@@ -264,6 +273,14 @@ class CartDatasourceImpl implements CartDatasource {
           statusCode: response.statusCode ?? 500,
         );
       }
+
+      if (response.data == null) {
+        throw const CartException(
+          message: 'Cart is empty',
+          statusCode: 501,
+        );
+      }
+      // log('Cart from datasource: ${response.data}');
 
       return CartModel.fromMap(response.data ?? {});
     } on CartException catch (e) {
