@@ -1,4 +1,3 @@
-import 'package:husbandman/core/common/app/entities/cart_entity.dart';
 import 'package:husbandman/core/common/app/models/cart/cart_item.dart';
 import 'package:husbandman/core/common/app/models/cart/cart_model.dart';
 import 'package:husbandman/core/enums/set_cart_type.dart';
@@ -13,13 +12,13 @@ abstract class CartDatasource{
     CartModel? pNewCartModel,
   });
 
-  Future<CartEntity> updateItemQuantity({
+  Future<CartModel> updateItemQuantity({
     required int quantity,
     required String itemId,
     required String ownerId,
   });
 
-  Future<CartEntity> deleteCartItem({
+  Future<CartModel> deleteCartItem({
     required String ownerId,
     required String itemId,
   });

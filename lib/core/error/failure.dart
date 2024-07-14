@@ -131,10 +131,24 @@ class SuperBaseFailure extends Failure {
     required super.statusCode,
   });
 
-  SuperBaseFailure.fromException(SuperBaseException exception): this(
-    statusCode: exception.statusCode,
-    message: exception.message,
-  );
+  SuperBaseFailure.fromException(SuperBaseException exception)
+      : this(
+          statusCode: exception.statusCode,
+          message: exception.message,
+        );
+}
+
+class PaymentFailure extends Failure {
+  PaymentFailure({
+    required super.message,
+    required super.statusCode,
+  });
+
+  PaymentFailure.fromException(PaymentException exception)
+      : this(
+          message: exception.message,
+          statusCode: exception.statusCode,
+        );
 }
 
 class ServerFailure extends Failure {

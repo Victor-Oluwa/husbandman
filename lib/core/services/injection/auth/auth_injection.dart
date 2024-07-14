@@ -21,7 +21,7 @@ import 'package:husbandman/src/auth/domain/use-cases/validate_farmer_invitation_
 import 'package:husbandman/src/auth/domain/use-cases/validate_user.dart';
 import 'package:husbandman/src/auth/presentation/bloc/auth_bloc.dart';
 
-final authBlocProvider = Provider<AuthBloc>((ref) {
+final authBlocProvider = Provider.autoDispose<AuthBloc>((ref) {
   return AuthBloc(
     authenticateResetPasswordToken:
     ref.read(authenticateResetPasswordTokenProvider),

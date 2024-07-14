@@ -17,5 +17,7 @@ module.exports = {
     PRODUCT_DOES_NOT_EXIST: 'This product does not exist',
     USER_CART_NOT_FOUND: 'User cart was not found',
     FAILED_TO_FIND_CART_ITEM: 'Failed to find item in cart',
-
+    CARD_ALREADY_ADDED: 'You have added this card already',
+    CARD_NOT_FOUND: 'Card not found',
+    FAILED_TO_FETCH_CARD: 'Error fetching cards',
 }

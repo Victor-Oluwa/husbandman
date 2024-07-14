@@ -9,10 +9,10 @@ import 'package:http/http.dart' as http;
 import 'package:husbandman/core/common/app/entities/cart_entity.dart';
 import 'package:husbandman/core/common/app/entities/product_entity.dart';
 import 'package:husbandman/core/common/app/models/product_model.dart';
-import 'package:husbandman/core/common/app/provider/general_product_provider.dart';
-import 'package:husbandman/core/common/app/provider/picked_product_image_provider.dart';
-import 'package:husbandman/core/common/app/provider/seller_products_provider.dart';
-import 'package:husbandman/core/common/app/provider/user_provider.dart';
+import 'package:husbandman/core/common/app/provider/state_notifier_providers/general_product_provider.dart';
+import 'package:husbandman/core/common/app/provider/argument_providers/picked_product_image_provider.dart';
+import 'package:husbandman/core/common/app/provider/state_notifier_providers/seller_products_provider.dart';
+import 'package:husbandman/core/common/app/provider/state_notifier_providers/user_provider.dart';
 import 'package:husbandman/core/common/app/public_methods/cloudinary_upload/cloudinary_upload.dart';
 import 'package:husbandman/core/common/app/public_methods/file-picker/file_picker.dart';
 import 'package:husbandman/core/common/app/public_methods/file_compressor/file_compressor.dart';
@@ -440,8 +440,13 @@ class ProductManagerDatasourceImpl implements ProductManagerDatasource {
   Future<ProductModel> setSellerProduct({
     required SetProductType setProductType,
     List<DataMap>? productMap,
-    List<ProductModel>? productObject,
+    List<ProductEntity>? productObject,
   }) async {
+    var productModel = <ProductModel>[];
+    if (productObject != null) {
+      productModel =
+          productObject.map((entity) => entity as ProductModel).toList();
+    }
     var firstProduct = ProductModel.empty();
     try {
       if (productMap == null && productObject == null) {
@@ -455,7 +460,7 @@ class ProductManagerDatasourceImpl implements ProductManagerDatasource {
           if (productObject != null) {
             firstProduct = _ref
                 .read(sellerProductProvider.notifier)
-                .renewList(pProductList: productObject);
+                .renewList(pProductList: productModel);
           }
 
           if (productMap != null) {
@@ -467,7 +472,7 @@ class ProductManagerDatasourceImpl implements ProductManagerDatasource {
           if (productObject != null) {
             firstProduct = _ref
                 .read(sellerProductProvider.notifier)
-                .addNewProduct(newProductModel: productObject);
+                .addNewProduct(newProductModel: productModel);
           }
 
           if (productMap != null) {
@@ -479,7 +484,7 @@ class ProductManagerDatasourceImpl implements ProductManagerDatasource {
           if (productObject != null) {
             firstProduct = _ref
                 .read(sellerProductProvider.notifier)
-                .removeProduct(pScapegoat: productObject);
+                .removeProduct(pScapegoat: productModel);
           }
 
           if (productMap != null) {
@@ -491,7 +496,7 @@ class ProductManagerDatasourceImpl implements ProductManagerDatasource {
           if (productObject != null) {
             firstProduct = _ref
                 .read(sellerProductProvider.notifier)
-                .replaceProduct(pNewProduct: productObject);
+                .replaceProduct(pNewProduct: productModel);
           }
 
           if (productMap != null) {
@@ -513,9 +518,14 @@ class ProductManagerDatasourceImpl implements ProductManagerDatasource {
   Future<void> setGeneralProducts({
     required SetProductType setProductType,
     List<DataMap>? productMap,
-    List<ProductModel>? productObject,
+    List<ProductEntity>? productObject,
   }) async {
     try {
+      var productModel = <ProductModel>[];
+      if (productObject != null) {
+        productModel =
+            productObject.map((entity) => entity as ProductModel).toList();
+      }
       if (productMap == null && productObject == null) {
         throw const ProductManagerException(
           message: 'Both product map and product object cannot be null',
@@ -527,7 +537,7 @@ class ProductManagerDatasourceImpl implements ProductManagerDatasource {
           if (productObject != null) {
             _ref
                 .read(generalProductProvider.notifier)
-                .renewList(pProductList: productObject);
+                .renewList(pProductList: productModel);
           }
 
           if (productMap != null) {
@@ -539,7 +549,7 @@ class ProductManagerDatasourceImpl implements ProductManagerDatasource {
           if (productObject != null) {
             _ref
                 .read(generalProductProvider.notifier)
-                .addNewProduct(newProductModel: productObject);
+                .addNewProduct(newProductModel: productModel);
           }
 
           if (productMap != null) {
@@ -551,7 +561,7 @@ class ProductManagerDatasourceImpl implements ProductManagerDatasource {
           if (productObject != null) {
             _ref
                 .read(generalProductProvider.notifier)
-                .removeProduct(pScapegoat: productObject);
+                .removeProduct(pScapegoat: productModel);
           }
 
           if (productMap != null) {
@@ -563,7 +573,7 @@ class ProductManagerDatasourceImpl implements ProductManagerDatasource {
           if (productObject != null) {
             _ref
                 .read(generalProductProvider.notifier)
-                .replaceProduct(pNewProduct: productObject);
+                .replaceProduct(pNewProduct: productModel);
           }
 
           if (productMap != null) {

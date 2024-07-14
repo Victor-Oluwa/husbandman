@@ -18,4 +18,13 @@ class RouteNames {
   static const cartView = 'cart-page';
   static const productViewByCategory = 'product-view-by-category';
   static const testWidgetView = 'test-widget-view';
+  static const addCardView = 'selectCardView';
+  static const allCardView = 'allCardView';
+  static const enterAmountView = 'EnterAmountView';
+  static const enterCardPinViewWIthArgs = 'enter-card-pin';
+  static const breadBrowserViewWithArgs = 'bread-browser';
+  static const enterCardAddressView = 'enter-card-address';
+  static const enterOTPViewWithArgs = 'enter-otp-view';
+  static const paymentSuccessfulViewWithArg = 'payment-successful-view';
+
 }

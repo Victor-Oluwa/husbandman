@@ -1,6 +1,5 @@
 import 'package:equatable/equatable.dart';
 import 'package:husbandman/core/common/app/entities/product_entity.dart';
-import 'package:husbandman/core/common/app/models/product_model.dart';
 import 'package:husbandman/core/enums/set_product_type.dart';
 import 'package:husbandman/core/usecases/usecases.dart';
 import 'package:husbandman/core/utils/typedef.dart';
@@ -28,13 +27,13 @@ class SetSellerProductParams extends Equatable {
 
   SetSellerProductParams.empty()
       : this(
-          productObject: [ProductModel.empty()],
+          productObject: [ProductEntity.empty()],
           productMap: [ProductEntity.empty().toMap()],
           setProductType: SetProductType.renew,
         );
 
   final List<DataMap>? productMap;
-  final List<ProductModel>? productObject;
+  final List<ProductEntity>? productObject;
   final SetProductType setProductType;
 
   @override

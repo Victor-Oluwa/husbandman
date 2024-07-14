@@ -28,7 +28,7 @@ class CartRepoImpl implements CartRepo {
   }
 
   @override
-  ResultFuture<CartEntity> deleteCartItem({
+  ResultFuture<CartModel> deleteCartItem({
     required String ownerId,
     required String itemId,
   }) async {
@@ -63,7 +63,7 @@ class CartRepoImpl implements CartRepo {
   }
 
   @override
-  ResultFuture<CartEntity> updateItemQuantity({
+  ResultFuture<CartModel> updateItemQuantity({
     required int quantity,
     required String itemId,
     required String ownerId,

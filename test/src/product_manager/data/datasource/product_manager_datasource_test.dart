@@ -6,7 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:husbandman/core/common/app/models/product_model.dart';
-import 'package:husbandman/core/common/app/provider/seller_products_provider.dart';
+import 'package:husbandman/core/common/app/provider/state_notifier_providers/seller_products_provider.dart';
 import 'package:husbandman/core/common/app/public_methods/cloudinary_upload/cloudinary_upload.dart';
 import 'package:husbandman/core/common/app/public_methods/file-picker/file_picker.dart';
 import 'package:husbandman/core/common/app/public_methods/file_compressor/file_compressor.dart';

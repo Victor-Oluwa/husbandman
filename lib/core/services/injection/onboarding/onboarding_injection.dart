@@ -9,7 +9,7 @@ import 'package:husbandman/src/onboarding/domain/usecases/cache_first_timer.dart
 import 'package:husbandman/src/onboarding/domain/usecases/check_if_user_is_first_timer.dart';
 import 'package:husbandman/src/onboarding/presentation/cubit/onboarding_cubit.dart';
 
-final onboardingCubitProvider = Provider<OnboardingCubit>((ref) {
+final onboardingCubitProvider = Provider.autoDispose<OnboardingCubit>((ref) {
   return OnboardingCubit(
     cacheFirstTimer: ref.read(cacheFirstTimerProvider),
     checkIfUserIsFirstTimer: ref.read(checkIfUserIsFirstTimerProvider),

@@ -18,8 +18,12 @@ class SetCartEvent extends CartEvent {
   final CartModel? pNewCartModel;
 
   @override
-  List<dynamic> get props =>
-      [setCartType, pNewCartItem, mNewCartItem, pNewCartModel];
+  List<dynamic> get props => [
+        setCartType,
+        pNewCartItem,
+        mNewCartItem,
+        pNewCartModel,
+      ];
 }
 
 class UpdateItemQuantityEvent extends CartEvent {

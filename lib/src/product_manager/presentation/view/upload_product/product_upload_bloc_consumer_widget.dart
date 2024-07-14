@@ -3,16 +3,17 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:husbandman/core/common/app/provider/picked_product_image_provider.dart';
-import 'package:husbandman/core/common/app/provider/product_image_url_provider.dart';
-import 'package:husbandman/core/common/app/provider/selected_product_category_provider.dart';
-import 'package:husbandman/core/common/app/provider/user_provider.dart';
+import 'package:husbandman/core/common/app/provider/argument_providers/picked_product_image_provider.dart';
+import 'package:husbandman/core/common/app/provider/argument_providers/product_image_url_provider.dart';
+import 'package:husbandman/core/common/app/provider/argument_providers/selected_product_category_provider.dart';
+import 'package:husbandman/core/common/app/provider/state_notifier_providers/user_provider.dart';
 import 'package:husbandman/core/common/app/public_methods/loading/loading_controller.dart';
 import 'package:husbandman/core/common/widgets/hbm_text_widget.dart';
 import 'package:husbandman/core/common/widgets/snack_bar.dart';
 import 'package:husbandman/core/extensions/context_extension.dart';
 import 'package:husbandman/core/res/fonts.dart';
 import 'package:husbandman/core/utils/constants.dart';
+import 'package:husbandman/src/auth/domain/entity/home_category_content.dart';
 import 'package:husbandman/src/product_manager/presentation/bloc/product_manager_bloc.dart';
 import 'package:husbandman/src/product_manager/presentation/view/upload_product/image_picker_widget.dart';
 import 'package:husbandman/src/product_manager/presentation/view/upload_product/upload_button_widget.dart';
@@ -34,12 +35,13 @@ class ProductUploadBlocConsumerWidget extends StatelessWidget {
     final deliveryLocationsController = TextEditingController();
     final items = [
       'No Category',
-      'Grain',
-      'Fruits',
-      'Herbs',
-      'Vegetables',
-      'Tuber',
-      'Others',
+      const HomeCategoryContent.powdered().name,
+      const HomeCategoryContent.grain().name,
+      const HomeCategoryContent.fruits().name,
+      const HomeCategoryContent.herbs().name,
+      const HomeCategoryContent.vegetables().name,
+      const HomeCategoryContent.tuber().name,
+      const HomeCategoryContent.others().name,
     ];
 
     return BlocConsumer<ProductManagerBloc, ProductManagerState>(

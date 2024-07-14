@@ -22,7 +22,7 @@ class SuperBaseUpload {
 
         final response = await superBaseInit.client.storage
             .from(
-                'Product Images') // Ensure you have created a bucket named 'images' in your Supabase storage
+                'Product Images',)
             .upload(fullPath, file);
 
         // Get the download URL

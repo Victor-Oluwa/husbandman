@@ -57,13 +57,13 @@ abstract class ProductManagerRepo {
   ResultFuture<ProductEntity> setSellerProduct({
     required SetProductType setProductType,
     List<DataMap>? productMap,
-    List<ProductModel>? productObject,
+    List<ProductEntity>? productObject,
   });
 
   ResultFuture<void> setGeneralProducts({
     required SetProductType setProductType,
     List<DataMap>? productMap,
-    List<ProductModel>? productObject,
+    List<ProductEntity>? productObject,
   });
 
   ResultFuture<ProductEntity> updateProduct({

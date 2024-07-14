@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:equatable/equatable.dart';
 
 class UserEntity extends Equatable {
@@ -22,6 +24,30 @@ class UserEntity extends Equatable {
     this.bannerImage = '',
     this.cartIds = const <String>[],
   });
+
+  factory UserEntity.fromMap(Map<String, dynamic> map) {
+    return UserEntity(
+      id: map['_id'] as String,
+      name: map['name'] as String,
+      email: map['email'] as String,
+      password: map['password'] as String,
+      phone: map['phone'] as List<String>,
+      address: map['address'] as String,
+      balance: map['balance'] as double,
+      dealingsId: map['dealingsId'] as List<String>,
+      about: map['about'] as String,
+      type: map['type'] as String,
+      token: map['token'] as String,
+      profilePic: map['profilePic'] as String,
+      notifications: map['notifications'] as List<String>,
+      customers: map['customers'] as List<String>,
+      lastSeen: map['lastSeen'] as String,
+      products: map['products'] as List<String>,
+      badge: map['badge'] as int,
+      bannerImage: map['bannerImage'] as String,
+      cartIds: map['cartIds'] as List<String>,
+    );
+  }
 
   UserEntity.empty()
       : this(
@@ -77,4 +103,28 @@ class UserEntity extends Equatable {
         profilePic,
         customers,
       ];
+
+  Map<String, dynamic> toMap() {
+    return {
+      '_id': id?? '',
+      'name': name??'',
+      'email': email??'',
+      'password': password??'',
+      'phone': phone??'',
+      'address': address??'',
+      'balance': balance??0,
+      'dealingsId': dealingsId??[''],
+      'about': about??'',
+      'type': type??'',
+      'token': token??'',
+      'profilePic': profilePic??'',
+      'notifications': notifications??[''],
+      'customers': customers??[''],
+      'lastSeen': lastSeen??'',
+      'products': products?? [''],
+      'badge': badge??0,
+      'bannerImage': bannerImage??'',
+      'cartIds': cartIds?? [''],
+    };
+  }
 }

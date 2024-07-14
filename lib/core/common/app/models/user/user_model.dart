@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:husbandman/core/utils/typedef.dart';
 import 'package:husbandman/src/auth/domain/entity/user_entity.dart';
 
@@ -23,6 +25,11 @@ class UserModel extends UserEntity {
     super.cartIds,
     super.products,
   });
+
+  // Convert Entity to Model
+  // factory ProductModel.fromEntity(ProductEntity entity) {
+  //   return ProductModel(id: entity.id, name: entity.name, price: entity.price);
+  // }
 
   factory UserModel.fromMap(DataMap map) {
     return UserModel(

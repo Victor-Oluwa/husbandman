@@ -1,7 +1,7 @@
 
+import 'package:husbandman/core/common/app/models/user/user_model.dart';
 import 'package:husbandman/core/enums/update_user.dart';
 import 'package:husbandman/core/utils/typedef.dart';
-import 'package:husbandman/src/auth/domain/entity/user_entity.dart';
 
 abstract class AuthDataSource {
   AuthDataSource();
@@ -10,7 +10,7 @@ abstract class AuthDataSource {
     required String token,
   });
 
-  Future<UserEntity> buyerSignUp({
+  Future<UserModel> buyerSignUp({
     required String name,
     required String email,
     required String password,
@@ -22,7 +22,7 @@ abstract class AuthDataSource {
 
   Future<void> cacheVerifiedInvitationToken({required String token});
 
-  Future<UserEntity> farmerSignUp({
+  Future<UserModel> farmerSignUp({
     required String name,
     required String email,
     required String password,
@@ -35,25 +35,25 @@ abstract class AuthDataSource {
 
   Future<String> retrieveUserToken();
 
-  Future<UserEntity> setUser({required DataMap user});
+  Future<UserModel> setUser({required DataMap user});
 
   Future<void> sendResetPasswordToken({
     required String email,
   });
 
-  Future<UserEntity> signIn({
+  Future<UserModel> signIn({
     required String email,
     required String password,
   });
 
   Future<void> signOut();
 
-  Future<UserEntity> updateUser({
+  Future<UserModel> updateUser({
     required dynamic newData,
     required UpdateUserCulprit culprit,
   });
 
-  Future<UserEntity> validateUser({required String token});
+  Future<UserModel> validateUser({required String token});
 
   Future<String> validateFarmerInvitationKey({
     required String invitationKey,

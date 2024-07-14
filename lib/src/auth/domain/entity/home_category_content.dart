@@ -32,8 +32,18 @@ const HomeCategoryContent.powdered():this(
   icon: '',
 );
 
-const HomeCategoryContent.tools():this(
-  name: 'Tools',
+const HomeCategoryContent.fruits():this(
+  name: 'Fruits',
+  icon: '',
+);
+
+const HomeCategoryContent.tuber():this(
+  name: 'Tuber',
+  icon: '',
+);
+
+const HomeCategoryContent.others():this(
+  name: 'Others',
   icon: '',
 );
 

@@ -1,4 +1,5 @@
 import 'package:dartz/dartz.dart';
+import 'package:husbandman/core/common/app/models/user/user_model.dart';
 import 'package:husbandman/core/enums/update_user.dart';
 import 'package:husbandman/core/error/exceptions.dart';
 import 'package:husbandman/core/error/failure.dart';
@@ -28,7 +29,7 @@ class AuthRepoImpl implements AuthRepo {
   }
 
   @override
-  ResultFuture<UserEntity> buyerSignUp({
+  ResultFuture<UserModel> buyerSignUp({
     required String name,
     required String email,
     required String password,
@@ -75,7 +76,7 @@ class AuthRepoImpl implements AuthRepo {
   }
 
   @override
-  ResultFuture<UserEntity> farmerSignUp({
+  ResultFuture<UserModel> farmerSignUp({
     required String name,
     required String email,
     required String password,
@@ -139,7 +140,7 @@ class AuthRepoImpl implements AuthRepo {
   }
 
   @override
-  ResultFuture<UserEntity> setUser({required DataMap user}) async {
+  ResultFuture<UserModel> setUser({required DataMap user}) async {
     try {
       final result = await _authDataSource.setUser(user: user);
       return Right(result);
@@ -151,7 +152,7 @@ class AuthRepoImpl implements AuthRepo {
   }
 
   @override
-  ResultFuture<UserEntity> signIn({
+  ResultFuture<UserModel> signIn({
     required String email,
     required String password,
   }) async {
@@ -179,7 +180,7 @@ class AuthRepoImpl implements AuthRepo {
   }
 
   @override
-  ResultFuture<UserEntity> updateUser({
+  ResultFuture<UserModel> updateUser({
     required dynamic newData,
     required UpdateUserCulprit culprit,
   }) async {
@@ -197,7 +198,7 @@ class AuthRepoImpl implements AuthRepo {
   }
 
   @override
-  ResultFuture<UserEntity> validateUser({required String token}) async {
+  ResultFuture<UserModel> validateUser({required String token}) async {
     try {
       final result = await _authDataSource.validateUser(token: token);
       return Right(result);

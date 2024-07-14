@@ -4,11 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:husbandman/core/common/app/models/product_model.dart';
-import 'package:husbandman/core/common/app/provider/category_product_provider.dart';
-import 'package:husbandman/core/common/app/provider/general_product_provider.dart';
+import 'package:husbandman/core/common/app/provider/state_notifier_providers/category_product_provider.dart';
+import 'package:husbandman/core/common/app/provider/state_notifier_providers/general_product_provider.dart';
 import 'package:husbandman/core/common/widgets/hbm_text_widget.dart';
 import 'package:husbandman/core/common/widgets/home_search_widget.dart';
-import 'package:husbandman/core/common/widgets/snack_bar.dart';
 import 'package:husbandman/core/enums/set_product_type.dart';
 import 'package:husbandman/core/extensions/context_extension.dart';
 import 'package:husbandman/core/services/injection/product_manager/product_manager_injection.dart';
@@ -54,9 +53,10 @@ class _ProductViewByCategoryState extends ConsumerState<ProductViewByCategory> {
         )
         .toList();
     CoreUtils.hbmLogTerminal(
-        message:
-            'fetchProductsByCategory called; Items already in category product provider $fetchedProduct',
-        fromClass: 'ProductViewByCategory');
+      message:
+          'fetchProductsByCategory called; Items already in category product provider $fetchedProduct',
+      fromClass: 'ProductViewByCategory',
+    );
     productManagerBloc.add(
       FetchProductsByCategoryEvent(
         category: widget.category,
@@ -138,7 +138,7 @@ class _ProductViewByCategoryState extends ConsumerState<ProductViewByCategory> {
               for (var i = 0; i < state.products.length; i++) {
                 CoreUtils.hbmLogTerminal(
                   message:
-                  'Category product was fetched: ${state.products[i].type}: Name: ${state.products[i].name}',
+                      'Category product was fetched: ${state.products[i].type}: Name: ${state.products[i].name}',
                   fromClass: 'ProductViewByCategory',
                 );
               }

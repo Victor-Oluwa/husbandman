@@ -8,7 +8,7 @@ import 'package:husbandman/core/common/app/models/user/buyer_model.dart';
 import 'package:husbandman/core/common/app/models/user/farmer_model.dart';
 import 'package:husbandman/core/common/app/models/user/user_model.dart';
 import 'package:husbandman/core/common/app/provider/invitation_key_provider.dart';
-import 'package:husbandman/core/common/app/provider/user_provider.dart';
+import 'package:husbandman/core/common/app/provider/state_notifier_providers/user_provider.dart';
 import 'package:husbandman/core/common/app/storage/hbm_storage.dart';
 import 'package:husbandman/core/common/strings/error_messages.dart';
 import 'package:husbandman/core/enums/update_user.dart';
@@ -234,7 +234,6 @@ class AuthDataSourceImpl implements AuthDataSource {
     } catch (e) {
       log('Set user error');
       throw AuthException(message: e.toString(), statusCode: 100);
-    }finally{
     }
   }
 

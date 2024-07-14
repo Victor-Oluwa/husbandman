@@ -184,7 +184,7 @@ class ProductManagerRepoImpl implements ProductManagerRepo {
   ResultFuture<ProductEntity> setSellerProduct({
     required SetProductType setProductType,
     List<DataMap>? productMap,
-    List<ProductModel>? productObject,
+    List<ProductEntity>? productObject,
   }) async {
     try {
       final result = await _productManagerDatasource.setSellerProduct(
@@ -202,7 +202,7 @@ class ProductManagerRepoImpl implements ProductManagerRepo {
   ResultFuture<void> setGeneralProducts({
     required SetProductType setProductType,
     List<DataMap>? productMap,
-    List<ProductModel>? productObject,
+    List<ProductEntity>? productObject,
   }) async {
     try {
       await _productManagerDatasource.setGeneralProducts(

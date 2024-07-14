@@ -26,6 +26,6 @@ abstract class CartRepo {
 
   ResultFuture<void> deleteCart({required String ownerId});
 
-  ResultFuture<CartModel> fetchCart({required String ownerId});
+  ResultFuture<CartEntity> fetchCart({required String ownerId});
 
 }

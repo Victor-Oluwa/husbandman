@@ -5,7 +5,7 @@ import 'package:cloudinary/cloudinary.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:husbandman/core/common/app/models/cart/cart_item.dart';
 import 'package:husbandman/core/common/app/models/cart/cart_model.dart';
-import 'package:husbandman/core/common/app/provider/cart_provider.dart';
+import 'package:husbandman/core/common/app/provider/state_notifier_providers/cart_provider.dart';
 import 'package:husbandman/core/enums/set_cart_type.dart';
 import 'package:husbandman/core/error/exceptions.dart';
 import 'package:husbandman/core/utils/constants.dart';

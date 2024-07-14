@@ -9,7 +9,6 @@ class PickFile {
     final images = <File>[];
     try {
       final result = await FilePicker.platform.pickFiles(
-        type: FileType.any,
         allowMultiple: true,
       );
 

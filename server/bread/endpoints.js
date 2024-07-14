@@ -41,7 +41,17 @@ module.exports = {
     DELETE_CART_ITEM: '/cart/items/deleteOne',
     DELETE_CART: '/cart/delete',
 
+    //Payment
+    ADD_NEW_CARD_ENDPOINT: '/card/add-new',
+    DELETE_CARD_ENDPOINT: '/card/delete',
+    FETCH_ALL_CARDS_ENDPOINT: '/cards/fetch-all',
+    INITIALIZE_CARD_FUNDING: '/card/fund/initialise',
+    CARD_FUNDING_PIN_AUTH: '/card/authorize-pin',
+    CARD_FUNDING_ADDRESS_AUTH: '/card/authorize-address',
+    CARD_FUNDING_VERIFICATION: '/card/funding/verify',
+
 }
+
 
 
 

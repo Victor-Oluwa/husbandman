@@ -61,13 +61,13 @@ abstract class ProductManagerDatasource {
   Future<ProductEntity> setSellerProduct({
     required SetProductType setProductType,
     List<DataMap>? productMap,
-    List<ProductModel>? productObject,
+    List<ProductEntity>? productObject,
   });
 
   Future<void> setGeneralProducts({
     required SetProductType setProductType,
     List<DataMap>? productMap,
-    List<ProductModel>? productObject,
+    List<ProductEntity>? productObject,
   });
 
   Future<ProductEntity> updateProduct({

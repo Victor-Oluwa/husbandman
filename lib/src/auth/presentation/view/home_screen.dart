@@ -5,8 +5,8 @@ import 'package:flutter_advanced_drawer/flutter_advanced_drawer.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:husbandman/core/common/app/models/product_model.dart';
-import 'package:husbandman/core/common/app/provider/general_product_provider.dart';
-import 'package:husbandman/core/common/app/provider/user_provider.dart';
+import 'package:husbandman/core/common/app/provider/state_notifier_providers/general_product_provider.dart';
+import 'package:husbandman/core/common/app/provider/state_notifier_providers/user_provider.dart';
 import 'package:husbandman/core/common/app/public_methods/loading/loading_controller.dart';
 import 'package:husbandman/core/common/widgets/hbm_text_widget.dart';
 import 'package:husbandman/core/common/widgets/home_search_widget.dart';
@@ -47,7 +47,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   Future<void> fetchProducts() async {
     final fetchedProduct =
         ref.read(generalProductProvider).map((product) => product.id).toList();
-    productManagerBloc.add(FetchProductsEvent(limit: 5, fetched: fetchedProduct));
+    productManagerBloc
+        .add(FetchProductsEvent(limit: 5, fetched: fetchedProduct));
 
     setState(() {
       _isLoading = false;
@@ -109,10 +110,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
     return MultiBlocProvider(
       providers: [
-        BlocProvider(create: (context)=> ref.read(authBlocProvider)),
-        BlocProvider(create: (context)=> ref.read(productManagerBlocProvider)),
+        BlocProvider(create: (context) => ref.read(authBlocProvider)),
+        BlocProvider(create: (context) => ref.read(productManagerBlocProvider)),
       ],
       child: Scaffold(
+        backgroundColor: Colors.grey.shade200,
         appBar: buildAppBar(context),
         body: MultiBlocListener(
           listeners: [
@@ -140,7 +142,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                       ));
                 }
 
-                if(state is GeneralProductSet){
+                if (state is GeneralProductSet) {
                   log('general product set');
                 }
 
@@ -157,7 +159,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   return Center(
                     child: Container(
                       decoration: BoxDecoration(
-                        color: HBMColors.coolGrey,
+                        color: HBMColors.lightGrey,
                         borderRadius: const BorderRadius.only(
                           topLeft: Radius.circular(20),
                           topRight: Radius.circular(20),
@@ -174,7 +176,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                               padding: EdgeInsets.symmetric(
                                   horizontal: horizontalPadding),
                               child: const SearchField(
-                                  isElevated: true,
+                                  isElevated: false,
                                   hintText: 'Search anything...'),
                             ),
                             SizedBox(height: context.height * 0.03),
@@ -200,11 +202,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                     color: HBMColors.white,
                                     leftPadding: 0,
                                     onTap: () {
-                                      Navigator.pushNamed(context,
-                                          RouteNames.productViewByCategory,
-                                          arguments:
-                                              const HomeCategoryContent.grain()
-                                                  .name,);
+                                      Navigator.pushNamed(
+                                        context,
+                                        RouteNames.productViewByCategory,
+                                        arguments:
+                                            const HomeCategoryContent.grain()
+                                                .name,
+                                      );
                                     },
                                   ),
                                   CategoryWidget(
@@ -212,11 +216,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                     color: HBMColors.white,
                                     leftPadding: 0,
                                     onTap: () {
-                                      Navigator.pushNamed(context,
-                                          RouteNames.productViewByCategory,
-                                          arguments:
-                                              const HomeCategoryContent.herbs()
-                                                  .name,);
+                                      Navigator.pushNamed(
+                                        context,
+                                        RouteNames.productViewByCategory,
+                                        arguments:
+                                            const HomeCategoryContent.herbs()
+                                                .name,
+                                      );
                                     },
                                   ),
                                   CategoryWidget(
@@ -246,15 +252,45 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                     },
                                   ),
                                   CategoryWidget(
-                                    content: const HomeCategoryContent.tools(),
+                                    content: const HomeCategoryContent.fruits(),
                                     color: HBMColors.white,
                                     leftPadding: 0,
                                     onTap: () {
-                                      Navigator.pushNamed(context,
-                                          RouteNames.productViewByCategory,
-                                          arguments:
-                                              const HomeCategoryContent.tools()
-                                                  .name);
+                                      Navigator.pushNamed(
+                                        context,
+                                        RouteNames.productViewByCategory,
+                                        arguments:
+                                            const HomeCategoryContent.fruits()
+                                                .name,
+                                      );
+                                    },
+                                  ),
+                                  CategoryWidget(
+                                    content: const HomeCategoryContent.tuber(),
+                                    color: HBMColors.white,
+                                    leftPadding: 0,
+                                    onTap: () {
+                                      Navigator.pushNamed(
+                                        context,
+                                        RouteNames.productViewByCategory,
+                                        arguments:
+                                            const HomeCategoryContent.tuber()
+                                                .name,
+                                      );
+                                    },
+                                  ),
+                                  CategoryWidget(
+                                    content: const HomeCategoryContent.others(),
+                                    color: HBMColors.white,
+                                    leftPadding: 0,
+                                    onTap: () {
+                                      Navigator.pushNamed(
+                                        context,
+                                        RouteNames.productViewByCategory,
+                                        arguments:
+                                            const HomeCategoryContent.others()
+                                                .name,
+                                      );
                                     },
                                   ),
                                 ],
@@ -312,95 +348,93 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   SafeArea buildDrawer(BuildContext context) {
     return SafeArea(
       child: SingleChildScrollView(
-        child: Container(
-          child: ListTileTheme(
-            textColor: HBMColors.mediumGrey,
-            tileColor: HBMColors.mediumGrey,
-            iconColor: HBMColors.coolGrey,
-            horizontalTitleGap: context.width * 0.10,
-            contentPadding: EdgeInsets.symmetric(
-                horizontal: context.width * 0.08,
-                vertical: context.height * 0.04),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                ListTile(
-                  onTap: () {},
-                  leading: Icon(Icons.home_filled, size: context.width * 0.08),
-                  title: HBMTextWidget(
-                    data: 'Home',
+        child: ListTileTheme(
+          textColor: HBMColors.mediumGrey,
+          tileColor: HBMColors.mediumGrey,
+          iconColor: HBMColors.coolGrey,
+          horizontalTitleGap: context.width * 0.10,
+          contentPadding: EdgeInsets.symmetric(
+              horizontal: context.width * 0.08,
+              vertical: context.height * 0.04),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              ListTile(
+                onTap: () {},
+                leading: Icon(Icons.home_filled, size: context.width * 0.08),
+                title: HBMTextWidget(
+                  data: 'Home',
+                  fontFamily: HBMFonts.quicksandNormal,
+                  fontSize: context.width * 0.04,
+                  color: HBMColors.coolGrey,
+                ),
+              ),
+              ListTile(
+                onTap: () {
+                  Navigator.pushNamed(context, RouteNames.dashboard);
+                },
+                leading: Icon(Icons.dashboard, size: context.width * 0.08),
+                title: HBMTextWidget(
+                  data: 'Dashboard',
+                  fontFamily: HBMFonts.quicksandNormal,
+                  fontSize: context.width * 0.04,
+                  color: HBMColors.coolGrey,
+                ),
+              ),
+              ListTile(
+                onTap: () {
+                  Navigator.pushNamed(context, RouteNames.buyerProfile);
+                },
+                leading: Icon(Icons.person_2, size: context.width * 0.08),
+                title: HBMTextWidget(
+                  data: 'Profile',
+                  fontFamily: HBMFonts.quicksandNormal,
+                  fontSize: context.width * 0.04,
+                  color: HBMColors.coolGrey,
+                ),
+              ),
+              ListTile(
+                onTap: () {},
+                leading: Icon(Icons.people_alt_rounded,
+                    size: context.width * 0.08),
+                title: HBMTextWidget(
+                  data: 'Customers',
+                  fontFamily: HBMFonts.quicksandNormal,
+                  fontSize: context.width * 0.04,
+                  color: HBMColors.coolGrey,
+                ),
+              ),
+              ListTile(
+                onTap: () {},
+                leading: Icon(Icons.history, size: context.width * 0.08),
+                title: HBMTextWidget(
+                  data: 'History',
+                  fontFamily: HBMFonts.quicksandNormal,
+                  fontSize: context.width * 0.04,
+                  color: HBMColors.coolGrey,
+                ),
+              ),
+              ListTile(
+                onTap: () {},
+                leading: Icon(Icons.settings, size: context.width * 0.08),
+                title: HBMTextWidget(
+                  data: 'Settings',
+                  fontFamily: HBMFonts.quicksandNormal,
+                  fontSize: context.width * 0.04,
+                  color: HBMColors.coolGrey,
+                ),
+              ),
+              DefaultTextStyle(
+                style: const TextStyle(fontSize: 12, color: Colors.white54),
+                child: Container(
+                  child: HBMTextWidget(
+                    data: 'Terms of Service | Privacy Policy',
                     fontFamily: HBMFonts.quicksandNormal,
-                    fontSize: context.width * 0.04,
                     color: HBMColors.coolGrey,
                   ),
                 ),
-                ListTile(
-                  onTap: () {
-                    Navigator.pushNamed(context, RouteNames.dashboard);
-                  },
-                  leading: Icon(Icons.dashboard, size: context.width * 0.08),
-                  title: HBMTextWidget(
-                    data: 'Dashboard',
-                    fontFamily: HBMFonts.quicksandNormal,
-                    fontSize: context.width * 0.04,
-                    color: HBMColors.coolGrey,
-                  ),
-                ),
-                ListTile(
-                  onTap: () {
-                    Navigator.pushNamed(context, RouteNames.buyerProfile);
-                  },
-                  leading: Icon(Icons.person_2, size: context.width * 0.08),
-                  title: HBMTextWidget(
-                    data: 'Profile',
-                    fontFamily: HBMFonts.quicksandNormal,
-                    fontSize: context.width * 0.04,
-                    color: HBMColors.coolGrey,
-                  ),
-                ),
-                ListTile(
-                  onTap: () {},
-                  leading: Icon(Icons.people_alt_rounded,
-                      size: context.width * 0.08),
-                  title: HBMTextWidget(
-                    data: 'Customers',
-                    fontFamily: HBMFonts.quicksandNormal,
-                    fontSize: context.width * 0.04,
-                    color: HBMColors.coolGrey,
-                  ),
-                ),
-                ListTile(
-                  onTap: () {},
-                  leading: Icon(Icons.history, size: context.width * 0.08),
-                  title: HBMTextWidget(
-                    data: 'History',
-                    fontFamily: HBMFonts.quicksandNormal,
-                    fontSize: context.width * 0.04,
-                    color: HBMColors.coolGrey,
-                  ),
-                ),
-                ListTile(
-                  onTap: () {},
-                  leading: Icon(Icons.settings, size: context.width * 0.08),
-                  title: HBMTextWidget(
-                    data: 'Settings',
-                    fontFamily: HBMFonts.quicksandNormal,
-                    fontSize: context.width * 0.04,
-                    color: HBMColors.coolGrey,
-                  ),
-                ),
-                DefaultTextStyle(
-                  style: const TextStyle(fontSize: 12, color: Colors.white54),
-                  child: Container(
-                    child: HBMTextWidget(
-                      data: 'Terms of Service | Privacy Policy',
-                      fontFamily: HBMFonts.quicksandNormal,
-                      color: HBMColors.coolGrey,
-                    ),
-                  ),
-                ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),
@@ -409,6 +443,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
   AppBar buildAppBar(BuildContext context) {
     return AppBar(
+      backgroundColor: Colors.transparent,
       elevation: 0,
       toolbarHeight: context.width * 0.20,
       centerTitle: true,

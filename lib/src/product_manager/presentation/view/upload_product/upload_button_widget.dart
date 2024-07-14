@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import 'package:husbandman/core/common/app/provider/picked_product_image_provider.dart';
-import 'package:husbandman/core/common/app/provider/product_image_uploaded_notifier.dart';
-import 'package:husbandman/core/common/app/provider/product_image_url_provider.dart';
-import 'package:husbandman/core/common/app/provider/selected_product_category_provider.dart';
-import 'package:husbandman/core/common/app/provider/user_provider.dart';
+import 'package:husbandman/core/common/app/provider/argument_providers/picked_product_image_provider.dart';
+import 'package:husbandman/core/common/app/provider/indicator_providers/product_image_uploaded_notifier.dart';
+import 'package:husbandman/core/common/app/provider/argument_providers/product_image_url_provider.dart';
+import 'package:husbandman/core/common/app/provider/argument_providers/selected_product_category_provider.dart';
+import 'package:husbandman/core/common/app/provider/state_notifier_providers/user_provider.dart';
 import 'package:husbandman/core/common/app/public_methods/loading/loading_controller.dart';
 import 'package:husbandman/core/common/widgets/hbm_text_widget.dart';
 import 'package:husbandman/core/common/widgets/snack_bar.dart';

@@ -10,7 +10,7 @@ import 'package:husbandman/src/cart/domain/usecase/set_cart.dart';
 import 'package:husbandman/src/cart/domain/usecase/update_item_quantity.dart';
 import 'package:husbandman/src/cart/presentation/bloc/cart_bloc.dart';
 
-final cartBlocProvider = Provider<CartBloc>((ref) {
+final cartBlocProvider = Provider.autoDispose<CartBloc>((ref) {
   return CartBloc(
     ref.read(setCartProvider),
     ref.read(updateItemQuantityProvider),

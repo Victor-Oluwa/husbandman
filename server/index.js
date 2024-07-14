@@ -1,13 +1,12 @@
 require('dotenv').config();
 const express = require('express');
-// const bcrypt = require('bcryptjs');
-// const jwt = require('jsonwebtoken');
 const mongoose = require('mongoose');
 const cors = require('cors');
-const authRouter = require('./auth/routes/auth/commander/auth');
-const adminRouter = require('./auth/routes/admin/commander/admin');
-const productManagerRouter = require('./auth/routes/product-manager/commander/product_manager');
-const cartRoute = require('./auth/routes/cart/commander/cart');
+const authRouter = require('./bread/routes/auth/commander/auth');
+const adminRouter = require('./bread/routes/admin/commander/admin');
+const productManagerRouter = require('./bread/routes/product-manager/commander/product_manager');
+const cartRoute = require('./bread/routes/cart/commander/cart');
+const paymentRoute = require('./bread/routes/payment/commandar/payment');
 
 //IMPORTS FROM OTHER FILES
 
@@ -21,6 +20,7 @@ app.use(authRouter);
 app.use(adminRouter);
 app.use(productManagerRouter);
 app.use(cartRoute);
+app.use(paymentRoute);
 
 //Connections
 mongoose.connect(process.env.MONGODB_URI, {

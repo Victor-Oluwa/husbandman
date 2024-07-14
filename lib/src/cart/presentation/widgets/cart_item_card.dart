@@ -1,9 +1,8 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:husbandman/core/common/app/models/cart/cart_item.dart';
-import 'package:husbandman/core/common/app/provider/user_provider.dart';
+import 'package:husbandman/core/common/app/provider/state_notifier_providers/user_provider.dart';
 import 'package:husbandman/core/common/widgets/hbm_text_widget.dart';
 import 'package:husbandman/core/extensions/context_extension.dart';
 import 'package:husbandman/core/res/color.dart';
@@ -11,16 +10,19 @@ import 'package:husbandman/core/res/fonts.dart';
 import 'package:husbandman/src/cart/presentation/bloc/cart_bloc.dart';
 import 'package:husbandman/src/cart/presentation/views/cart_view.dart';
 import 'package:husbandman/src/cart/presentation/widgets/quantity_picker.dart';
-class CartItemCard extends ConsumerWidget {
+
+class CartItemCard extends StatelessWidget {
   const CartItemCard({
     required this.item,
+    required this.ref,
     super.key,
   });
 
   final CartItem item;
+  final WidgetRef ref;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     return Card(
       elevation: 0,
       color: HBMColors.mediumGrey,
@@ -78,14 +80,11 @@ class CartItemCard extends ConsumerWidget {
                             icon: const Icon(Icons.delete_outline_rounded),
                             onPressed: () {
                               context.read<CartBloc>().add(
-                                DeleteCartItemEvent(
-                                  ownerId: ref
-                                      .read(userProvider)
-                                      .id,
-                                  itemId: item.id,
-                                ),
-                              );
-
+                                    DeleteCartItemEvent(
+                                      ownerId: ref.read(userProvider).id,
+                                      itemId: item.id,
+                                    ),
+                                  );
                             },
                             color: HBMColors.coolGrey,
                           ),
@@ -94,8 +93,11 @@ class CartItemCard extends ConsumerWidget {
                           ),
                           IconButton(
                             padding: EdgeInsets.zero,
-                            onPressed: (){
-                              showQuantityPickerDialog(cartItemId: item.id, ref: ref, context: context);
+                            onPressed: () {
+                              showQuantityPickerDialog(
+                                  cartItemId: item.id,
+                                  ref: ref,
+                                  context: context);
                             },
                             icon: Wrap(
                               children: [
@@ -111,7 +113,6 @@ class CartItemCard extends ConsumerWidget {
                               ],
                             ),
                           ),
-
                         ],
                       ),
                     ],
@@ -119,7 +120,7 @@ class CartItemCard extends ConsumerWidget {
                 ],
               ),
             ),
-            SizedBox(width: context.width*0.04),
+            SizedBox(width: context.width * 0.04),
           ],
         ),
       ),

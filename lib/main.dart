@@ -37,79 +37,70 @@ class MyApp extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return MultiBlocProvider(
-      providers: [
-        BlocProvider(create: (context) => ref.read(onboardingCubitProvider)),
-        BlocProvider(create: (context) => ref.read(authBlocProvider)),
-        BlocProvider(create: (context) => ref.read(adminBlocProvider)),
-        BlocProvider(create: (context) => ref.read(cartBlocProvider)),
-        // BlocProvider(create: (context) => ref.read(productManagerBlocProvider)),
-      ],
-      child: MaterialApp(
-        debugShowCheckedModeBanner: false,
-        title: title,
-        theme: ThemeData(
-          visualDensity: VisualDensity.adaptivePlatformDensity,
-          primaryColor: HBMColors.coolGrey,
-          textTheme: TextTheme(
-            displayLarge: TextStyle(
-              fontSize: context.width * 0.10,
-              fontFamily: HBMFonts.quicksandBold,
-              fontWeight: FontWeight.bold,
-            ),
-            titleLarge: GoogleFonts.exo2(
-              fontSize: context.width * 0.07,
-              fontWeight: FontWeight.bold,
-            ),
-            bodyMedium: GoogleFonts.quicksand(
-              fontSize: context.width * 0.04,
-            ),
-            bodySmall: GoogleFonts.quicksand(
-              fontSize: context.width * 0.04,
-            ),
-            displayMedium: GoogleFonts.exo2(
-              fontSize: context.width * 0.08,
-              fontWeight: FontWeight.bold,
-            ),
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      title: title,
+      theme: ThemeData(
+        visualDensity: VisualDensity.adaptivePlatformDensity,
+        primaryColor: HBMColors.coolGrey,
+        textTheme: TextTheme(
+          displayLarge: TextStyle(
+            fontSize: context.width * 0.10,
+            fontFamily: HBMFonts.quicksandBold,
+            fontWeight: FontWeight.bold,
           ),
-          colorScheme: ThemeData.light().colorScheme.copyWith(
-                secondary: HBMColors.charcoalGrey,
-                primary: HBMColors.coolGrey,
-              ),
+          titleLarge: GoogleFonts.exo2(
+            fontSize: context.width * 0.07,
+            fontWeight: FontWeight.bold,
+          ),
+          bodyMedium: GoogleFonts.quicksand(
+            fontSize: context.width * 0.04,
+          ),
+          bodySmall: GoogleFonts.quicksand(
+            fontSize: context.width * 0.04,
+          ),
+          displayMedium: GoogleFonts.exo2(
+            fontSize: context.width * 0.08,
+            fontWeight: FontWeight.bold,
+          ),
         ),
-        darkTheme: ThemeData(
-          colorScheme: ThemeData.dark().colorScheme.copyWith(
-                secondary: HBMColors.coolGrey,
-                primary: HBMColors.charcoalGrey,
-              ),
-          visualDensity: VisualDensity.adaptivePlatformDensity,
-        ),
-        themeMode: ThemeMode.light,
-        onGenerateRoute: generateRoute,
-        builder: (context, child) {
-          return Stack(
-            children: [
-              child!,
-              ValueListenableBuilder<bool>(
-                valueListenable: LoadingIndicatorController.instance.isLoading,
-                builder: (context, isLoading, child) {
-                  log(isLoading.toString());
-                  if (isLoading) {
-                    return SizedBox(
-                      // color: Colors.transparent,
-                      child: Center(
-                        child: Lottie.asset(MediaRes.theBossHand),
-                      ),
-                    );
-                  } else {
-                    return const SizedBox.shrink();
-                  }
-                },
-              ),
-            ],
-          );
-        },
+        colorScheme: ThemeData.light().colorScheme.copyWith(
+              secondary: HBMColors.charcoalGrey,
+              primary: HBMColors.coolGrey,
+            ),
       ),
+      darkTheme: ThemeData(
+        colorScheme: ThemeData.dark().colorScheme.copyWith(
+              secondary: HBMColors.coolGrey,
+              primary: HBMColors.charcoalGrey,
+            ),
+        visualDensity: VisualDensity.adaptivePlatformDensity,
+      ),
+      themeMode: ThemeMode.light,
+      onGenerateRoute: generateRoute,
+      builder: (context, child) {
+        return Stack(
+          children: [
+            child!,
+            ValueListenableBuilder<bool>(
+              valueListenable: LoadingIndicatorController.instance.isLoading,
+              builder: (context, isLoading, child) {
+                log(isLoading.toString());
+                if (isLoading) {
+                  return SizedBox(
+                    // color: Colors.transparent,
+                    child: Center(
+                      child: Lottie.asset(MediaRes.theBossHand),
+                    ),
+                  );
+                } else {
+                  return const SizedBox.shrink();
+                }
+              },
+            ),
+          ],
+        );
+      },
     );
   }
 }
