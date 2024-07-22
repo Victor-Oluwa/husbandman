@@ -19,5 +19,5 @@ module.exports = {
     CARD_ALREADY_ADDED: 120,
     CARD_NOT_FOUND: 121,
     FAILED_TO_FETCH_CARD: 122,
-
+    HISTORY_NOT_FOUND: 123,
 }

@@ -41,6 +41,7 @@ cardFundingPinAuthRoute.post(endpoints.CARD_FUNDING_PIN_AUTH, async (req, res) =
                 if (callCharge.status == 'success') {
                     return res.status(200).json({
                         transactionId: callCharge.data.id,
+                        message: "verify",
                         info: "verify",
                     });
                 } else {

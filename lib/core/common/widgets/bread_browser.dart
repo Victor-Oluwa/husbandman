@@ -3,12 +3,14 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:husbandman/core/common/app/provider/argument_providers/card_funding_history_id_provider.dart';
 import 'package:husbandman/core/common/widgets/bread_text_field.dart';
+import 'package:husbandman/core/enums/update_card_funding_history.dart';
+import 'package:husbandman/core/services/injection/payment/payment_injection.dart';
 import 'package:husbandman/src/payment/domain/entity/card_funding_address_auth_response_entity.dart';
 import 'package:husbandman/src/payment/domain/entity/card_funding_pin_auth_response_entity.dart';
 import 'package:husbandman/src/payment/domain/entity/initialize_card_funding_response_entity.dart';
-
-final stateCounterProvider = StateProvider((ref) => 0);
+import 'package:husbandman/src/payment/presentation/bloc/payment_bloc.dart';
 
 class BreadBrowser extends ConsumerStatefulWidget {
   const BreadBrowser({
@@ -29,6 +31,7 @@ class BreadBrowser extends ConsumerStatefulWidget {
 }
 
 class BreadBrowserState extends ConsumerState<BreadBrowser> {
+  late PaymentBloc _paymentBloc;
   InAppWebViewController? webViewController;
   TextEditingController fieldController = TextEditingController();
   String currentUrl = '';
@@ -49,24 +52,44 @@ class BreadBrowserState extends ConsumerState<BreadBrowser> {
 
   @override
   void initState() {
-    final id = getTransactionId();
-    final redirect = getRedirectLink();
+    _paymentBloc = ref.read(paymentBlocProvider);
+    final transactionId = getTransactionId();
+    final historyId = ref.read(cardFundingHistoryIdProvider);
 
-    log('Transaction ID: $id');
-    log('Redirect url: $redirect');
+    _paymentBloc.add(
+      UpdateCardFundingHistoryEvent(
+        historyId: historyId,
+        values: [
+          transactionId,
+          true,
+          DateTime.now().toIso8601String(),
+        ],
+        culprits: const [
+          UpdateCardFundingHistoryCulprit.transactionId,
+          UpdateCardFundingHistoryCulprit.isBrowserAuth,
+          UpdateCardFundingHistoryCulprit.date,
+        ],
+      ),
+    );
+
+    log('Transaction ID: $transactionId');
 
     super.initState();
   }
 
   @override
   void didChangeDependencies() {
-    ref.invalidate(stateCounterProvider);
     super.didChangeDependencies();
   }
 
   @override
+  void dispose() {
+    _paymentBloc.close();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    int stateCounter = ref.watch(stateCounterProvider);
     return Scaffold(
       appBar: AppBar(
         title: BreadTextField(

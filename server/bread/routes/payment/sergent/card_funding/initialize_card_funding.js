@@ -6,7 +6,6 @@ const flw = new Flutterwave(process.env.FLW_PUBLIC_KEY, process.env.FLW_SECRET_K
 const initCardFundingRoute = express.Router();
 
 initCardFundingRoute.post(endpoints.INITIALIZE_CARD_FUNDING, async (req, res) => {
-    console.log('Got here');
     try {
         const { cardNumber, cvv, expiryYear, expiryMonth, currency, amount, redirect_url, fullname, email, phone, ref, } = req.body;
         const payload = {
@@ -25,28 +24,27 @@ initCardFundingRoute.post(endpoints.INITIALIZE_CARD_FUNDING, async (req, res) =>
         }
 
         const response = await flw.Charge.card(payload);
-        console.log(response);
 
         const mode = response?.meta?.authorization?.mode;
 
         switch (mode) {
             case 'pin':
                 return res.status(200).json({
-                    message: "PIN required",
+                    message: "pinRequired",
                     payload: payload,
                 });
 
             case 'redirect':
                 var url = response.meta.authorization.redirect;
                 return res.status(200).json({
-                    message: "Redirecting",
+                    message: "redirecting",
                     url: url,
                     transactionId: response.data.id,
                 });
 
             case 'avs_noauth':
                 return res.status(200).json({
-                    message: "Address required",
+                    message: "addressRequired",
                     payload: payload,
                 });
 
@@ -57,7 +55,8 @@ initCardFundingRoute.post(endpoints.INITIALIZE_CARD_FUNDING, async (req, res) =>
                         transactionId: response.data.id,
                     });
                 } else {
-                    res.status(500).json('Funding initialization failed');
+                    return res.status(500).json(`Initialization failed: ${response.status}`);
+
                 }
 
         }

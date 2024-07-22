@@ -1,6 +1,8 @@
+import 'package:cloudinary/cloudinary.dart';
 import 'package:dartz/dartz.dart';
 import 'package:husbandman/core/common/app/entities/payment_card_entity.dart';
 import 'package:husbandman/core/common/app/models/payment_card_model.dart';
+import 'package:husbandman/core/enums/update_card_funding_history.dart';
 import 'package:husbandman/core/error/exceptions.dart';
 import 'package:husbandman/core/error/failure.dart';
 import 'package:husbandman/core/utils/typedef.dart';
@@ -8,6 +10,7 @@ import 'package:husbandman/src/payment/data/datasource/payment_datasource.dart';
 import 'package:husbandman/src/payment/data/model/card_funding_pin_auth_response.dart';
 import 'package:husbandman/src/payment/data/model/initialize_card_funding_response_model.dart';
 import 'package:husbandman/src/payment/domain/entity/card_funding_address_auth_response_entity.dart';
+import 'package:husbandman/src/payment/domain/entity/card_funding_history_entity.dart';
 import 'package:husbandman/src/payment/domain/repo/payment_repo.dart';
 
 class PaymentRepoImpl implements PaymentRepo {
@@ -177,6 +180,47 @@ class PaymentRepoImpl implements PaymentRepo {
       final result = await _paymentDatasource.cardFundingVerification(
         transactionId: transactionId,
       );
+      return Right(result);
+    } on PaymentException catch (e) {
+      return Left(PaymentFailure.fromException(e));
+    }
+  }
+
+  @override
+  ResultFuture<String> addNewCardFundingHistory({
+    required CardFundingHistoryEntity history,
+  }) async {
+    try {
+      final result =
+          await _paymentDatasource.addNewCardFundingHistory(history: history);
+      return Right(result);
+    } on PaymentException catch (e) {
+      return Left(PaymentFailure.fromException(e));
+    }
+  }
+
+  @override
+  ResultFuture<String> updateCardFundingHistory({
+    required String historyId,
+    required List<dynamic> values,
+    required List<UpdateCardFundingHistoryCulprit> culprits,
+  }) async {
+    try {
+      final result = await _paymentDatasource.updateCardFundingHistory(
+        historyId: historyId,
+        values: values,
+        culprits: culprits,
+      );
+      return Right(result);
+    } on PaymentException catch (e) {
+      return Left(PaymentFailure.fromException(e));
+    }
+  }
+
+  @override
+  ResultFuture<List<CardFundingHistoryEntity>> fetchCardFundingHistory() async {
+    try {
+      final result = await _paymentDatasource.fetchCardFundingHistory();
       return Right(result);
     } on PaymentException catch (e) {
       return Left(PaymentFailure.fromException(e));

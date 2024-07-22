@@ -12,7 +12,7 @@ class InitializeCardFundingResponseEntity extends Equatable{
   const InitializeCardFundingResponseEntity.empty():this(
     message: '',
     url: '',
-    transactionId: '',
+    transactionId: 'none',
     payload: const{},
   );
 

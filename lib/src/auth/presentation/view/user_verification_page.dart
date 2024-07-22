@@ -3,7 +3,6 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:husbandman/core/common/app/models/user/user_model.dart';
 import 'package:husbandman/core/common/app/provider/state_notifier_providers/user_provider.dart';
 import 'package:husbandman/core/common/strings/hbm_strings.dart';
 import 'package:husbandman/core/common/widgets/hbm_text_widget.dart';
@@ -48,16 +47,25 @@ class _UserVerificationPageState extends ConsumerState<UserVerificationPage> {
           listeners: [
             BlocListener<OnboardingCubit, OnboardingState>(
               listener: (context, state) {
-                if (state is FirstTimerStatus && state.isFirstTimer) {
-                  //If user is first timer. They are navigated to Onboarding
-                  Navigator.pushNamedAndRemoveUntil(
-                    context,
-                    RouteNames.onboardingScreen,
-                    (route) => false,
-                  );
-                } else if (state is FirstTimerStatus && !state.isFirstTimer) {
-                  // If user is not a first timer. User's token is retrieved for verification
-                  context.read<AuthBloc>().add(RetrieveUserTokenEvent());
+                if (state is FirstTimerStatus) {
+                  if (state.isFirstTimer) {
+                    //If user is first timer. They are navigated to Onboarding
+                    log('User is first timer');
+                    Navigator.pushNamedAndRemoveUntil(
+                      context,
+                      RouteNames.onboardingScreen,
+                      (route) => false,
+                    );
+                    return;
+                  }
+
+                  if (!state.isFirstTimer) {
+                    // If user is not a first timer. User's token is retrieved for verification
+                    log('User is not first timer');
+                    return context
+                        .read<AuthBloc>()
+                        .add(RetrieveUserTokenEvent());
+                  }
                 }
               },
             ),
@@ -65,14 +73,14 @@ class _UserVerificationPageState extends ConsumerState<UserVerificationPage> {
               listener: (context, state) {
                 if (state is UserTokenRetrieved) {
                   //User token is validated after being retrieved
-                  log('Token retrieved: ${state.token}');
+                  log('User token retrieved: ${state.token}');
                   context
                       .read<AuthBloc>()
                       .add(ValidateUserEvent(token: state.token));
                 }
 
                 if (state is UserValidated) {
-                  log('User validated');
+                  log('User validated successfully');
                   //If the user token is valid. The user object is saved in the state
                   context.read<AuthBloc>().add(
                         SetUserEvent(

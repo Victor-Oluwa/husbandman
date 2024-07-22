@@ -3,14 +3,17 @@ import 'package:husbandman/core/services/injection/injection_container.dart';
 import 'package:husbandman/src/payment/data/datasource/payment_datasource_impl.dart';
 import 'package:husbandman/src/payment/data/repo/payment_repo_impl.dart';
 import 'package:husbandman/src/payment/domain/usecase/add_new_card.dart';
+import 'package:husbandman/src/payment/domain/usecase/add_new_card_funding_history.dart';
 import 'package:husbandman/src/payment/domain/usecase/card_funding_address_auth.dart';
 import 'package:husbandman/src/payment/domain/usecase/card_funding_pin_auth.dart';
 import 'package:husbandman/src/payment/domain/usecase/card_funding_verification.dart';
 import 'package:husbandman/src/payment/domain/usecase/delete_card.dart';
+import 'package:husbandman/src/payment/domain/usecase/fetch_card_funding_history.dart';
 import 'package:husbandman/src/payment/domain/usecase/fetch_cards.dart';
 import 'package:husbandman/src/payment/domain/usecase/initialize_card_funding.dart';
 import 'package:husbandman/src/payment/domain/usecase/set_card.dart';
 import 'package:husbandman/src/payment/domain/usecase/card_funding_otp_validation.dart';
+import 'package:husbandman/src/payment/domain/usecase/update_card_funding_history.dart';
 import 'package:husbandman/src/payment/presentation/bloc/payment_bloc.dart';
 
 final paymentBlocProvider = Provider.autoDispose((ref) {
@@ -23,7 +26,10 @@ final paymentBlocProvider = Provider.autoDispose((ref) {
     ref.read(cardFundingPinAuthProvider),
     ref.read(validateCardFundingProvider),
     ref.read(cardFundingAddressAuthProvider),
-    ref.read(cardFundingVerification),
+    ref.read(cardFundingVerificationProvider),
+    ref.read(addNewCardFundingHistoryProvider),
+    ref.read(updateCardFundingHistoryProvider),
+    ref.read(fetchCardFundingHistoryProvider),
   );
 });
 
@@ -75,8 +81,26 @@ final validateCardFundingProvider = Provider.autoDispose(
   ),
 );
 
-final cardFundingVerification = Provider.autoDispose(
+final cardFundingVerificationProvider = Provider.autoDispose(
   (ref) => CardFundingVerification(
+    paymentRepo: ref.read(paymentRepoProvider),
+  ),
+);
+
+final addNewCardFundingHistoryProvider = Provider.autoDispose(
+      (ref) => AddNewCardFundingHistory(
+    paymentRepo: ref.read(paymentRepoProvider),
+  ),
+);
+
+final updateCardFundingHistoryProvider = Provider.autoDispose(
+      (ref) => UpdateCardFundingHistory(
+    paymentRepo: ref.read(paymentRepoProvider),
+  ),
+);
+
+final fetchCardFundingHistoryProvider = Provider.autoDispose(
+      (ref) => FetchCardFundingHistory(
     paymentRepo: ref.read(paymentRepoProvider),
   ),
 );

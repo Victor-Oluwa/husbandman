@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:husbandman/core/common/widgets/hbm_text_widget.dart';
@@ -6,7 +8,6 @@ import 'package:husbandman/core/res/color.dart';
 import 'package:husbandman/core/res/fonts.dart';
 import 'package:husbandman/core/res/media_res.dart';
 import 'package:husbandman/core/services/route_names.dart';
-import 'package:path/path.dart';
 
 class PaymentSuccessfulView extends StatelessWidget {
   const PaymentSuccessfulView({super.key, this.status});
@@ -14,6 +15,7 @@ class PaymentSuccessfulView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    log('Status: $status');
     return Scaffold(
       backgroundColor: HBMColors.coolGrey,
       body: Align(

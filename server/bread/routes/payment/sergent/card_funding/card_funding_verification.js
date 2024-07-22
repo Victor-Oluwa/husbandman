@@ -8,11 +8,15 @@ const cardFundingVerificationRoute = express.Router();
 
 cardFundingVerificationRoute.post(endpoints.CARD_FUNDING_VERIFICATION, async (req, res) => {
     try {
-        const transactionId = req.body;
+        const { transactionId } = req.body;
 
-        const transaction = flw.Transaction.verify({
+        const transaction = await flw.Transaction.verify({
             id: transactionId
         });
+
+        if (!transaction || !transaction.data || !transaction.data.status) {
+            return res.status(500).json('Transaction verification returned null');
+        }
 
         if (transaction.data.status == "successful") {
             return res.status(200).json('successful');
@@ -22,9 +26,11 @@ cardFundingVerificationRoute.post(endpoints.CARD_FUNDING_VERIFICATION, async (re
             return res.status(200).json('failed');
         }
 
+
+
     } catch (e) {
         console.log(e);
-        res.status(200).json(e);
+        res.status(500).json(e);
     }
 },);
 

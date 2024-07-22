@@ -1,4 +1,4 @@
-const kBaseUrl = 'http://192.168.215.1:3000';
+const kBaseUrl = 'http://192.168.161.1:3000';
 const kCloudinaryApiKey = '986773188828922';
 const kCloudinaryApiSecret = 'jNkAnxCCWLdadVMvsKCxf61jKRU';
 const kCloudinaryUploadPreset = 'cvyzrljr';
@@ -18,7 +18,7 @@ RegExp emailValidatorJargon = RegExp(
 
 // /Metaphysics
 // /Quantum Mechanics
-// Potential for human eveolution beyond current limitations
+// Potential for human evolution beyond current limitations
 //Deciphered
 //Mythology
 //Enormous Elish and the seven tablets of creation

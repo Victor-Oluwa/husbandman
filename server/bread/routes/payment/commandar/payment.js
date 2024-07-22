@@ -7,6 +7,9 @@ const cardFundingOtpValidationRoute = require('../sergent/card_funding/card_fund
 const cardFundingPinAuthRoute = require('../sergent/card_funding/card_funding_pin_authentication');
 const cardFundingAddressAuthRoute = require('../sergent/card_funding/card_funding_address_authentication');
 const cardFundingVerificationRoute = require('../sergent/card_funding/card_funding_verification');
+const addNewCardFundingHistoryRoute = require('../sergent/card_funding_history/add_new_card_funding_history');
+const updateCardFundingHistoryRoute = require('../sergent/card_funding_history/update_card_funding_history');
+const fetchCardFundingHistory = require('../sergent/card_funding_history/fetch_card_funding_history');
 
 const paymentRoute = express.Router();
 
@@ -18,6 +21,12 @@ paymentRoute.use(cardFundingOtpValidationRoute);
 paymentRoute.use(cardFundingPinAuthRoute);
 paymentRoute.use(cardFundingAddressAuthRoute);
 paymentRoute.use(cardFundingVerificationRoute);
+paymentRoute.use(addNewCardFundingHistoryRoute);
+paymentRoute.use(updateCardFundingHistoryRoute);
+paymentRoute.use(fetchCardFundingHistory);
+
+
+
 
 
 

@@ -113,7 +113,7 @@ Route<dynamic> generateRoute(RouteSettings settings) {
 
     case RouteNames.dashboard:
       return _pageBuilder(
-        (p0) => const Dashboard(),
+        (p0) => Dashboard(),
         settings: settings,
       );
     case RouteNames.productDetails:
@@ -245,9 +245,9 @@ Route<dynamic> generateRoute(RouteSettings settings) {
         );
       }
     case RouteNames.paymentSuccessfulViewWithArg:
-      final status = settings.arguments.toString();
+      final status = settings.arguments;
       return _pageBuilder(
-        (_) => PaymentSuccessfulView(status: status),
+        (_) => PaymentSuccessfulView(status: status?.toString()),
         settings: settings,
       );
     default:

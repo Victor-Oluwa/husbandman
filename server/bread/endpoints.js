@@ -49,6 +49,9 @@ module.exports = {
     CARD_FUNDING_PIN_AUTH: '/card/authorize-pin',
     CARD_FUNDING_ADDRESS_AUTH: '/card/authorize-address',
     CARD_FUNDING_VERIFICATION: '/card/funding/verify',
+    ADD_NEW_CARD_FUNDING_HISTORY: '/card/funding/new-history',
+    UPDATE_CARD_FUNDING_HISTORY: '/card/funding/edit-history',
+    FETCH_CARD_FUNDING_HISTORY: '/card/funding/history',
 
 }
 

@@ -6,13 +6,18 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:husbandman/core/common/app/entities/payment_card_entity.dart';
 import 'package:husbandman/core/common/app/models/payment_card_model.dart';
 import 'package:husbandman/core/common/app/provider/state_notifier_providers/payment_card_provider.dart';
+import 'package:husbandman/core/enums/card_auth_type.dart';
+import 'package:husbandman/core/enums/init_card_funding_message.dart';
+import 'package:husbandman/core/enums/update_card_funding_history.dart';
 import 'package:husbandman/core/error/exceptions.dart';
 import 'package:husbandman/core/utils/constants.dart';
 import 'package:husbandman/core/utils/typedef.dart';
 import 'package:husbandman/src/payment/data/datasource/payment_datasource.dart';
 import 'package:husbandman/src/payment/data/model/card_funding_address_auth_response.dart';
+import 'package:husbandman/src/payment/data/model/card_funding_history.dart';
 import 'package:husbandman/src/payment/data/model/card_funding_pin_auth_response.dart';
 import 'package:husbandman/src/payment/data/model/initialize_card_funding_response_model.dart';
+import 'package:husbandman/src/payment/domain/entity/card_funding_history_entity.dart';
 
 const kAddNewCardEndpoint = '/card/add-new';
 const kDeleteCardEndpoint = '/card/delete';
@@ -22,6 +27,9 @@ const kValidateCardFundingEndpoint = '/card/validate-otp';
 const kCardFundingPinAuthEndpoint = '/card/authorize-pin';
 const kCardFundingAddressAuthEndpoint = '/card/authorize-address';
 const kCardFundingVerificationEndpoint = '/card/funding/verify';
+const kAddNewCardFundingHistoryEndpoint = '/card/funding/new-history';
+const kUpdateCardFundingHistoryEndpoint = '/card/funding/edit-history';
+const kFetchCardFundingHistoryEndpoint = '/card/funding/history';
 
 class PaymentDatasourceImpl implements PaymentDatasource {
   PaymentDatasourceImpl({required Dio dio, required Ref ref})
@@ -74,7 +82,7 @@ class PaymentDatasourceImpl implements PaymentDatasource {
 
       final card = PaymentCardModel.fromMap(response.data!);
       return card;
-    } on PaymentException catch (e) {
+    } on PaymentException catch (_) {
       rethrow;
     } catch (e) {
       throw PaymentException(message: e.toString(), statusCode: 500);
@@ -109,7 +117,7 @@ class PaymentDatasourceImpl implements PaymentDatasource {
           statusCode: 500,
         );
       }
-    } on PaymentException catch (e) {
+    } on PaymentException catch (_) {
       rethrow;
     } catch (e) {
       throw PaymentException(message: e.toString(), statusCode: 500);
@@ -225,18 +233,19 @@ class PaymentDatasourceImpl implements PaymentDatasource {
       }
 
       final message = response.data?['message'].toString();
+      final messageEnum = cardFundingAuthTypeEnumMap[message];
       final payload = response.data?['payload'] as DataMap?;
       final url = response.data?['url'] as String?;
       final transactionId = response.data?['transactionId'].toString();
 
-      if (message == null) {
+      if (message == null || messageEnum == null) {
         throw const PaymentException(
           message: 'Payment Initialization returned a null value for message',
           statusCode: 500,
         );
       }
-      switch (message) {
-        case 'PIN required':
+      switch (messageEnum) {
+        case CardFundingAuthTypeEnum.pinRequired:
           if (payload == null) {
             throw const PaymentException(
               message:
@@ -245,8 +254,10 @@ class PaymentDatasourceImpl implements PaymentDatasource {
             );
           }
           return InitializeCardFundingResponse(
-              message: message, payload: payload);
-        case 'Redirecting':
+            message: message,
+            payload: payload,
+          );
+        case CardFundingAuthTypeEnum.redirecting:
           if (url == null || transactionId == null) {
             throw const PaymentException(
               message: 'Payment Initialization returned a null '
@@ -260,7 +271,7 @@ class PaymentDatasourceImpl implements PaymentDatasource {
             transactionId: transactionId,
           );
 
-        case 'Address required':
+        case CardFundingAuthTypeEnum.addressRequired:
           if (payload == null) {
             throw const PaymentException(
               message:
@@ -273,7 +284,7 @@ class PaymentDatasourceImpl implements PaymentDatasource {
             payload: payload,
           );
 
-        case 'verify':
+        case CardFundingAuthTypeEnum.verify:
           if (transactionId == null) {
             throw const PaymentException(
               message: 'Initialize Card Funding: transactionId is'
@@ -284,11 +295,6 @@ class PaymentDatasourceImpl implements PaymentDatasource {
           return InitializeCardFundingResponse(
             message: message,
             transactionId: transactionId,
-          );
-        default:
-          throw const PaymentException(
-            message: 'Failed to initialize payment',
-            statusCode: 500,
           );
       }
     } on PaymentException catch (e) {
@@ -350,6 +356,8 @@ class PaymentDatasourceImpl implements PaymentDatasource {
       }
 
       return _parseCardFundingPinResponse(result);
+    } on PaymentException catch (e) {
+      rethrow;
     } on DioException catch (e) {
       if (e.response != null) {
         throw PaymentException(
@@ -373,14 +381,15 @@ class PaymentDatasourceImpl implements PaymentDatasource {
 
   CardFundingPinAuthResponse _parseCardFundingPinResponse(DataMap result) {
     final message = result['message']?.toString() ?? '';
+    final messageEnum = cardFundingValidationTypeEnumMap[message];
     final transactionId = result['transactionId']?.toString() ?? '';
     final url = result['url']?.toString() ?? '';
     final info = result['info']?.toString() ?? '';
     final status = result['status']?.toString() ?? '';
     final ref = result['ref']?.toString() ?? '';
 
-    switch (message) {
-      case 'otp':
+    switch (messageEnum) {
+      case CardFundingValidationTypeEnum.otp:
         return CardFundingPinAuthResponse(
           message: message,
           transactionId: transactionId,
@@ -389,7 +398,7 @@ class PaymentDatasourceImpl implements PaymentDatasource {
           info: info,
         );
 
-      case 'redirect':
+      case CardFundingValidationTypeEnum.redirect:
         return CardFundingPinAuthResponse(
           message: message,
           transactionId: transactionId,
@@ -397,15 +406,14 @@ class PaymentDatasourceImpl implements PaymentDatasource {
           url: url,
           status: status,
         );
-      case 'verify':
+      case CardFundingValidationTypeEnum.verify:
         return CardFundingPinAuthResponse(
           message: message,
           transactionId: transactionId,
         );
-
-      default:
+      case null:
         throw const PaymentException(
-          message: 'Pin verification failed',
+          message: 'Message returned null',
           statusCode: 500,
         );
     }
@@ -478,16 +486,18 @@ class PaymentDatasourceImpl implements PaymentDatasource {
     }
   }
 
-  CardFundingAddressAuthResponse _parseCardFundingAddressResponse(DataMap result) {
+  CardFundingAddressAuthResponse _parseCardFundingAddressResponse(
+      DataMap result) {
     final message = result['message']?.toString() ?? '';
+    final messageEnum = cardFundingValidationTypeEnumMap[message];
     final transactionId = result['transactionId']?.toString() ?? '';
     final url = result['url']?.toString() ?? '';
     final info = result['info']?.toString() ?? '';
     final status = result['status']?.toString() ?? '';
     final ref = result['ref']?.toString() ?? '';
 
-    switch (message) {
-      case 'otp':
+    switch (messageEnum) {
+      case CardFundingValidationTypeEnum.otp:
         return CardFundingAddressAuthResponse(
           message: message,
           transactionId: transactionId,
@@ -496,7 +506,7 @@ class PaymentDatasourceImpl implements PaymentDatasource {
           info: info,
         );
 
-      case 'redirect':
+      case CardFundingValidationTypeEnum.redirect:
         return CardFundingAddressAuthResponse(
           message: message,
           transactionId: transactionId,
@@ -504,14 +514,14 @@ class PaymentDatasourceImpl implements PaymentDatasource {
           url: url,
           status: status,
         );
-      case 'verify':
+      case CardFundingValidationTypeEnum.verify:
         return CardFundingAddressAuthResponse(
           message: message,
           transactionId: transactionId,
         );
-      default:
+      case null:
         throw const PaymentException(
-          message: 'Authentication with address failed',
+          message: 'Message returned null',
           statusCode: 500,
         );
     }
@@ -628,6 +638,192 @@ class PaymentDatasourceImpl implements PaymentDatasource {
       }
     } catch (e) {
       throw PaymentException(message: e.toString(), statusCode: 500);
+    }
+  }
+
+  @override
+  Future<String> addNewCardFundingHistory({
+    required CardFundingHistoryEntity history,
+  }) async {
+    try {
+      final response = await _dio
+          .post<String>(
+            '$kBaseUrl$kAddNewCardFundingHistoryEndpoint',
+            options: Options(
+              headers: {
+                'Content-Type': 'application/json; charset=UTF-8',
+              },
+            ),
+            data: jsonEncode({
+              'fundingStatus': history.fundingStatus.name ?? '',
+              'cardNumber': history.cardNumber,
+              'userEmail': history.userEmail,
+              'cardHolderName': history.cardHolderName,
+              'userId': history.userId,
+              'transactionId': history.transactionId,
+              'date': history.date,
+              'failureMessage': history.failureMessage ?? '',
+              'failureStage': history.failureStage?.name ?? '',
+              'time': history.time,
+              'userLocation': history.userLocation ?? '',
+            }),
+          )
+          .timeout(const Duration(seconds: 30));
+      if (response.statusCode != 200 && response.statusCode != 201) {
+        throw PaymentException(
+          message: response.data.toString(),
+          statusCode: response.statusCode ?? 500,
+        );
+      }
+
+      final responseData = response.data;
+
+      if (responseData == null) {
+        throw const PaymentException(
+          message: 'Failed to add card funding history: Response returned null',
+          statusCode: 500,
+        );
+      }
+
+      return jsonDecode(responseData).toString();
+    } on PaymentException catch (_) {
+      rethrow;
+    } on DioException catch (e) {
+      if (e.response != null) {
+        throw PaymentException(
+          message: e.response?.data.toString() ?? '',
+          statusCode: 500,
+        );
+      } else {
+        throw PaymentException(
+          message: e.message ?? '',
+          statusCode: 500,
+        );
+      }
+    } catch (e) {
+      throw PaymentException(
+        message: e.toString(),
+        statusCode: 500,
+      );
+    }
+  }
+
+  @override
+  Future<String> updateCardFundingHistory({
+    required String historyId,
+    required List<dynamic> values,
+    required List<UpdateCardFundingHistoryCulprit> culprits,
+  }) async {
+    try {
+      final culpritString = culprits.map((e) => e.name).toList();
+
+      log('History ID: $historyId:  Passes value: $values:  Passed culprits: $culpritString');
+
+      final response = await _dio.post<String>(
+        '$kBaseUrl$kUpdateCardFundingHistoryEndpoint',
+        options: Options(
+          headers: {
+            'Content-Type': 'application/json; charset=UTF-8',
+          },
+        ),
+        data: jsonEncode({
+          'historyId': historyId,
+          'value': values,
+          'culprit': culpritString,
+        }),
+      );
+
+      if (response.statusCode != 200 && response.statusCode != 201) {
+        throw PaymentException(
+          message: response.data.toString(),
+          statusCode: response.statusCode ?? 500,
+        );
+      }
+
+      final responseData = response.data;
+
+      if (responseData == null) {
+        throw const PaymentException(
+          message:
+              'Failed to update card funding history: Response returned null',
+          statusCode: 500,
+        );
+      }
+
+      return jsonDecode(responseData).toString();
+    } on PaymentException catch (e) {
+      rethrow;
+    } on DioException catch (e) {
+      if (e.response != null) {
+        throw PaymentException(
+          message: e.response?.data.toString() ?? '',
+          statusCode: 500,
+        );
+      } else {
+        throw PaymentException(
+          message: e.message ?? '',
+          statusCode: 500,
+        );
+      }
+    } catch (e) {
+      throw PaymentException(
+        message: e.toString(),
+        statusCode: 500,
+      );
+    }
+  }
+
+  @override
+  Future<List<CardFundingHistoryEntity>> fetchCardFundingHistory() async {
+    try {
+      final response = await _dio.post<List<DataMap>>(
+        '$kBaseUrl$kFetchCardFundingHistoryEndpoint',
+        options: Options(
+          headers: {
+            'Content-Type': 'application/json; charset=UTF-8',
+          },
+        ),
+      );
+
+      if (response.statusCode != 200 && response.statusCode != 201) {
+        throw PaymentException(
+          message: response.data.toString(),
+          statusCode: response.statusCode ?? 500,
+        );
+      }
+
+      final responseData = response.data;
+
+      if (responseData == null) {
+        throw const PaymentException(
+          message:
+              'Failed to fetch card funding history: Response returned null',
+          statusCode: 500,
+        );
+      }
+
+      return List<DataMap>.from(responseData)
+          .map(CardFundingHistory.fromMap)
+          .toList();
+    } on PaymentException catch (_) {
+      rethrow;
+    } on DioException catch (e) {
+      if (e.response != null) {
+        throw PaymentException(
+          message: e.response?.data.toString() ?? '',
+          statusCode: 500,
+        );
+      } else {
+        throw PaymentException(
+          message: e.message ?? '',
+          statusCode: 500,
+        );
+      }
+    } catch (e) {
+      throw PaymentException(
+        message: e.toString(),
+        statusCode: 500,
+      );
     }
   }
 }

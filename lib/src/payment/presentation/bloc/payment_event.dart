@@ -168,3 +168,32 @@ class CardFundingVerificationEvent extends PaymentEvent {
   @override
   List<String> get props => [transactionId];
 }
+
+class AddNewCardFundingHistoryEvent extends PaymentEvent {
+  const AddNewCardFundingHistoryEvent({required this.history});
+
+  final CardFundingHistoryEntity history;
+
+  @override
+  List<CardFundingHistoryEntity> get props => [history];
+}
+
+class UpdateCardFundingHistoryEvent extends PaymentEvent {
+ const UpdateCardFundingHistoryEvent({
+    required this.historyId,
+    required this.values,
+    required this.culprits,
+  });
+
+  final String historyId;
+  final List<dynamic> values;
+  final List<UpdateCardFundingHistoryCulprit> culprits;
+
+  @override
+  List<dynamic> get props => [historyId, values, culprits];
+}
+
+class FetchCardFundingHistoryEvent extends PaymentEvent{
+  @override
+  List<dynamic> get props => [];
+}

@@ -28,6 +28,10 @@ class OnboardingLocalDataSrcImpl implements OnboardingLocalDataSource {
     }
   }
 
+  //Indonisia
+  //TV banned in afgan
+  // Youtube banned in china
+
   @override
   Future<bool> checkIfUserIsFirstTimer() async {
     try {

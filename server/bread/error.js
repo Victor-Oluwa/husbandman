@@ -20,4 +20,5 @@ module.exports = {
     CARD_ALREADY_ADDED: 'You have added this card already',
     CARD_NOT_FOUND: 'Card not found',
     FAILED_TO_FETCH_CARD: 'Error fetching cards',
+    HISTORY_NOT_FOUND: 'History not found',
 }

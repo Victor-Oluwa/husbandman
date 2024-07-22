@@ -1,6 +1,9 @@
-enum CardAuthType{
-  verify,
+enum CardFundingValidationTypeEnum {
+  otp,
   redirect,
-  pin,
-  address,
+  verify,
 }
+
+final Map<String, CardFundingValidationTypeEnum> cardFundingValidationTypeEnumMap ={
+  for(var value in CardFundingValidationTypeEnum.values) value.name: value,
+};

@@ -20,6 +20,15 @@ class PaymentError extends PaymentState {
   List<String> get props => [message];
 }
 
+class PaymentHistoryError extends PaymentState {
+  const PaymentHistoryError(this.message);
+
+  final String message;
+
+  @override
+  List<String> get props => [message];
+}
+
 class NewCardAdded extends PaymentState {
   const NewCardAdded(this.card);
 
@@ -87,4 +96,29 @@ class VerifiedCardFunding extends PaymentState{
   List<String> get props =>[status];
 }
 
+class AddedNewCardFundingHistory extends PaymentState {
+ const AddedNewCardFundingHistory(this.historyId);
 
+  final String historyId;
+
+  @override
+  List<String> get props => [historyId];
+}
+
+class UpdatedCardFundingHistory extends PaymentState {
+  const UpdatedCardFundingHistory(this.historyId);
+
+  final String historyId;
+
+  @override
+  List<String> get props => [historyId];
+}
+
+class FetchedCardFundingHistory extends PaymentState {
+  const FetchedCardFundingHistory(this.confirmation);
+
+  final List<CardFundingHistoryEntity> confirmation;
+
+  @override
+  List<List<CardFundingHistoryEntity>> get props => [confirmation,];
+}
