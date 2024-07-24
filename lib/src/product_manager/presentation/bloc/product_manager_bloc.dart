@@ -4,9 +4,9 @@ import 'dart:typed_data';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:husbandman/core/common/app/entities/cart_entity.dart';
+import 'package:husbandman/src/cart/domain/entity/cart_entity.dart';
 import 'package:husbandman/core/common/app/entities/product_entity.dart';
-import 'package:husbandman/core/common/app/models/cart/cart_item.dart';
+import 'package:husbandman/src/cart/data/model/cart_item.dart';
 import 'package:husbandman/core/common/app/models/product_model.dart';
 import 'package:husbandman/core/enums/set_product_type.dart';
 import 'package:husbandman/core/enums/update_product.dart';

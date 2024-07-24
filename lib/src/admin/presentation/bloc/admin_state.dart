@@ -27,15 +27,6 @@ class AccountDeleted extends AdminState {
   const AccountDeleted();
 }
 
-class FetchedOrders extends AdminState {
-  const FetchedOrders(this.orders);
-
-  final List<OrderEntity> orders;
-
-  @override
-  List<Object> get props => [orders];
-}
-
 class FetchedInvitationToken extends AdminState {
   const FetchedInvitationToken(this.tokens);
 

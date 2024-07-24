@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
-import 'package:husbandman/core/common/app/models/cart/cart_item.dart';
+import 'package:husbandman/src/cart/data/model/cart_item.dart';
 import 'package:husbandman/core/common/app/models/product_model.dart';
+import 'package:husbandman/src/cart/domain/entity/cart_item_entity.dart';
 
 class CartEntity extends Equatable {
   const CartEntity({
@@ -20,14 +21,14 @@ class CartEntity extends Equatable {
       id: map['_id'] as String? ?? '',
       ownerId: map['ownerId'] as String? ?? '',
       items: (map['items'] as List<dynamic>)
-          .map((item) => CartItem.fromMap(item as Map<String, dynamic>))
+          .map((item) => CartItemEntity.fromMap(item as Map<String, dynamic>))
           .toList(),
     );
   }
 
   final String id;
   final String ownerId;
-  final List<CartItem> items;
+  final List<CartItemEntity> items;
 
   Map<String, dynamic> toMap() {
     return {
@@ -40,15 +41,4 @@ class CartEntity extends Equatable {
   @override
   List<Object?> get props => [id, ownerId, items];
 
-  CartEntity copyWith({
-    String? id,
-    String? ownerId,
-    List<CartItem>? items,
-  }) {
-    return CartEntity(
-      id: id ?? this.id,
-      ownerId: ownerId ?? this.ownerId,
-      items: items ?? this.items,
-    );
-  }
 }

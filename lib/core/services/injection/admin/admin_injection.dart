@@ -12,7 +12,6 @@ import 'package:husbandman/src/admin/domain/use-cases/block_account.dart';
 import 'package:husbandman/src/admin/domain/use-cases/change_farmer_badge.dart';
 import 'package:husbandman/src/admin/domain/use-cases/delete_account.dart';
 import 'package:husbandman/src/admin/domain/use-cases/fetch_all_invitation_token.dart';
-import 'package:husbandman/src/admin/domain/use-cases/fetch_all_orders.dart';
 import 'package:husbandman/src/admin/domain/use-cases/fetch_all_users.dart';
 import 'package:husbandman/src/admin/domain/use-cases/filter_user.dart';
 import 'package:husbandman/src/admin/domain/use-cases/generate_unique_invitation_token.dart';
@@ -26,7 +25,6 @@ final adminBlocProvider = Provider<AdminBloc>((ref) {
     changeFarmerBadge: ref.read(changeFarmerBadgeProvider),
     deleteAccount: ref.read(deleteAccountProvider),
     fetchAllInvitationToken: ref.read(fetchAllInvitationTokenProvider),
-    fetchAllOrders: ref.read(fetchAllOrdersProvider),
     fetchAllUsers: ref.read(fetchAllUsersProvider),
     filterUser: ref.read(filterUserProvider),
     generateUniqueInvitationToken: ref.read(
@@ -69,10 +67,6 @@ final deleteAccountProvider = Provider<DeleteAccount>((ref) {
 final fetchAllInvitationTokenProvider =
 Provider<FetchAllInvitationToken>((ref) {
   return FetchAllInvitationToken(ref.read(adminRepoProvider));
-});
-
-final fetchAllOrdersProvider = Provider<FetchAllOrders>((ref) {
-  return FetchAllOrders(ref.read(adminRepoProvider));
 });
 
 final fetchAllUsersProvider = Provider<FetchAllUsers>((ref) {

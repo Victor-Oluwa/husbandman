@@ -1,10 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:husbandman/core/common/app/entities/cart_entity.dart';
-import 'package:husbandman/core/common/app/models/cart/cart_item.dart';
-import 'package:husbandman/core/common/app/models/cart/cart_model.dart';
-import 'package:husbandman/core/enums/set_cart_type.dart';
-import 'package:husbandman/core/utils/typedef.dart';
+import 'package:husbandman/src/cart/domain/entity/cart_entity.dart';
 import 'package:husbandman/src/cart/domain/usecase/delete_cart.dart';
 import 'package:husbandman/src/cart/domain/usecase/delete_cart_item.dart';
 import 'package:husbandman/src/cart/domain/usecase/fetch_cart.dart';
@@ -16,7 +12,7 @@ part 'cart_event.dart';
 part 'cart_state.dart';
 
 class CartBloc extends Bloc<CartEvent, CartState> {
-      CartBloc(
+  CartBloc(
     SetCart setCart,
     UpdateItemQuantity updateItemQuantity,
     DeleteCartItem deleteCartItem,
@@ -49,12 +45,7 @@ class CartBloc extends Bloc<CartEvent, CartState> {
     Emitter<CartState> emit,
   ) async {
     final result = await _setCart(
-      SetCartParams(
-        setCartType: event.setCartType,
-        pNewCartItem: event.pNewCartItem,
-        mNewCartItem: event.mNewCartItem,
-        pNewCartModel: event.pNewCartModel,
-      ),
+      event.cartEntity,
     );
 
     result.fold(
@@ -96,7 +87,7 @@ class CartBloc extends Bloc<CartEvent, CartState> {
 
     result.fold(
       (l) => CartError(message: l.errorMessage),
-      (r) => emit( DeletedCartItem(cart: r)),
+      (r) => emit(DeletedCartItem(cart: r)),
     );
   }
 

@@ -1,6 +1,5 @@
 import 'package:dartz/dartz.dart';
 import 'package:husbandman/core/common/app/entities/invitation_token_entity.dart';
-import 'package:husbandman/core/common/app/models/order_model.dart';
 import 'package:husbandman/core/common/app/models/user/user_model.dart';
 import 'package:husbandman/core/enums/filter_user.dart';
 import 'package:husbandman/core/enums/search_user.dart';
@@ -51,21 +50,6 @@ class AdminRepoImpl implements AdminRepo {
     try {
       await _adminDatasource.deleteAccount(userId: userId);
       return const Right(null);
-    } on AdminException catch (e) {
-      return Left(
-        AdminFailure(
-          message: e.message,
-          statusCode: e.statusCode,
-        ),
-      );
-    }
-  }
-
-  @override
-  ResultFuture<List<OrderModel>> fetchAllOrders() async {
-    try {
-      final result = await _adminDatasource.fetchAllOrders();
-      return Right(result);
     } on AdminException catch (e) {
       return Left(
         AdminFailure(

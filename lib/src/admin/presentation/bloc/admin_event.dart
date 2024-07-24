@@ -38,10 +38,6 @@ class DeleteAccountEvent extends AdminEvent {
   List<String> get props => [userId];
 }
 
-class FetchAllOrdersEvent extends AdminEvent {
-  const FetchAllOrdersEvent();
-}
-
 class FetchAllInvitationTokenEvent extends AdminEvent {
   const FetchAllInvitationTokenEvent();
 }

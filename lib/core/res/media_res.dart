@@ -19,20 +19,12 @@ class MediaRes {
   static const happyFarmer = '$_baseVector/Happy-Farmer.svg';
   static const successIcon = '$_baseVector/success.svg';
 
-  static const charcoalGreyDepositIcon = '$_baseIcon/Deposit_icon(Charcoal_grey).svg';
-  static const coolGreyDepositIcon = '$_baseIcon/Deposit_icon(Cool_grey).svg';
-  static const mediumGreyDepositIcon = '$_baseIcon/Deposit_icon(medium_grey).svg';
-  static const blackDepositIcon = '$_baseIcon/Deposit_icon(white).svg';
-  static const charcoalGreyWithdrawIcon = '$_baseIcon/Withdraw_icon(charcoalGrey).svg';
-  static const coolGreyWithdrawIcon = '$_baseIcon/Withdraw_icon(cool_grey).svg';
-  static const mediumGreyWithdrawIcon = '$_baseIcon/Withdraw_icon(mediumGrey).svg';
-  static const whiteWithdrawIcon = '$_baseIcon/Withdraw_icon(white).svg';
-  static const blackWithdrawIcon = '$_baseIcon/Withdraw_icon.svg';
-  static const charcoalGreyShopIcon = '$_baseIcon/shop_charcoalGrey.svg';
-  static const blackShopIcon = '$_baseIcon/shop_black.svg';
-  static const coolGreyShopIcon = '$_baseIcon/shop_cool_grey.svg';
-  static const mediumGreyShopIcon = '$_baseIcon/shop_mediumGrey.svg';
-  static const whiteShopIcon  = '$_baseIcon/shop_white.svg';
+  static const charcoalBagImage = '$_baseIcon/charcoalBagImage.png';
+  static const greyBagImage = '$_baseIcon/greyBagImage.png';
+  static const charcoalUserImage = '$_baseIcon/charcoalUserImage.png';
+  static const greyUserImage = '$_baseIcon/greyUserImage.png';
+  static const darkWithdrawIcon = '$_baseIcon/dark_withdraw-bitcoin.svg';
+  static const greyWithdrawImage = '$_baseIcon/geryWithdrawImage.png';
   static const coolGreyOrderIcon = '$_baseIcon/orders_cool_grey.svg';
 
   static const pageUnderConstruction =

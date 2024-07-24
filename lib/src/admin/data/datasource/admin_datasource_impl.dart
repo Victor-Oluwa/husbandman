@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 import 'package:husbandman/core/common/app/models/invitation_token_model.dart';
-import 'package:husbandman/core/common/app/models/order_model.dart';
 import 'package:husbandman/core/common/app/models/user/user_model.dart';
 import 'package:husbandman/core/common/app/public_methods/token-generator/token_generator.dart';
 import 'package:husbandman/core/common/strings/error_messages.dart';
@@ -115,40 +114,6 @@ class AdminDatasourceImpl implements AdminDatasource {
       rethrow;
     } catch (e) {
       throw AdminException(message: e.toString(), statusCode: 404);
-    }
-  }
-
-  @override
-  Future<List<OrderModel>> fetchAllOrders() async {
-    try {
-      final response = await _client.post(
-        Uri.parse('$kBaseUrl$kFetchAllOrdersEndpoint'),
-        headers: {
-          'Content-Type': 'application/json; charset=UTF-8',
-        },
-      );
-
-      if (response.statusCode != 200 && response.statusCode != 201) {
-        throw AdminException(
-          message: response.body,
-          statusCode: response.statusCode,
-        );
-      }
-
-      final result = List<DataMap>.from(jsonDecode(response.body) as List)
-          .map(
-            OrderModel.fromMap,
-          )
-          .toList();
-
-      return result;
-    } on AdminException catch (_) {
-      rethrow;
-    } catch (e) {
-      throw AdminException(
-        message: e.toString(),
-        statusCode: 404,
-      );
     }
   }
 

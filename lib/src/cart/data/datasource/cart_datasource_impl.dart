@@ -3,10 +3,9 @@ import 'dart:developer';
 
 import 'package:cloudinary/cloudinary.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:husbandman/core/common/app/models/cart/cart_item.dart';
-import 'package:husbandman/core/common/app/models/cart/cart_model.dart';
+import 'package:husbandman/src/cart/domain/entity/cart_entity.dart';
+import 'package:husbandman/src/cart/data/model/cart_model.dart';
 import 'package:husbandman/core/common/app/provider/state_notifier_providers/cart_provider.dart';
-import 'package:husbandman/core/enums/set_cart_type.dart';
 import 'package:husbandman/core/error/exceptions.dart';
 import 'package:husbandman/core/utils/constants.dart';
 import 'package:husbandman/core/utils/typedef.dart';
@@ -105,97 +104,12 @@ class CartDatasourceImpl implements CartDatasource {
 
   @override
   Future<void> setCart({
-    required SetCartType setCartType,
-    CartItem? pNewCartItem,
-    DataMap? mNewCartItem,
-    CartModel? pNewCartModel,
+   required CartEntity cartEntity,
   }) async {
     try {
-      switch (setCartType) {
-        case SetCartType.updateCart:
-          if (pNewCartModel == null && mNewCartItem == null) {
-            throw const CartException(
-              message: 'Both pNewCartModel and mNewCartItem can not be null',
-              statusCode: 505,
-            );
-          }
-
-          if (pNewCartModel != null && mNewCartItem != null) {
-            throw const CartException(
-              message: 'Either pNewCartModel or mNewCartItem must be null',
-              statusCode: 505,
-            );
-          }
-
-          if (pNewCartModel != null && mNewCartItem == null) {
-            _ref
-                .read(cartProvider.notifier)
-                .updateCart(newCartModel: pNewCartModel);
-          }
-
-          if (mNewCartItem != null && pNewCartModel == null) {
-            _ref
-                .read(cartProvider.notifier)
-                .updateCart(newCartMap: mNewCartItem);
-          }
-          break; // Add break statement here
-
-        case SetCartType.removeCartItem:
-          if (pNewCartItem == null && mNewCartItem == null) {
-            throw const CartException(
-              message: 'Both pNewCartItem and mNewCartItem can not be null',
-              statusCode: 505,
-            );
-          }
-
-          if (pNewCartItem != null && mNewCartItem != null) {
-            throw const CartException(
-              message: 'Either pNewCartItem or mNewCartItem must be null',
-              statusCode: 505,
-            );
-          }
-
-          if (pNewCartItem != null && mNewCartItem == null) {
-            _ref
-                .read(cartProvider.notifier)
-                .removeCartItem(pScapegoat: pNewCartItem);
-          }
-
-          if (mNewCartItem != null && pNewCartItem == null) {
-            _ref
-                .read(cartProvider.notifier)
-                .removeCartItem(mScapeGoat: mNewCartItem);
-          }
-          break; // Add break statement here
-
-        case SetCartType.replaceCart:
-          if (pNewCartItem == null && mNewCartItem == null) {
-            throw const CartException(
-              message: 'Both pNewCartItem and mNewCartItem can not be null',
-              statusCode: 505,
-            );
-          }
-
-          if (pNewCartItem != null && mNewCartItem != null) {
-            throw const CartException(
-              message: 'Either pNewCartItem or mNewCartItem must be null',
-              statusCode: 505,
-            );
-          }
-
-          if (pNewCartItem != null && mNewCartItem == null) {
-            _ref
-                .read(cartProvider.notifier)
-                .replaceCart(pNewItem: pNewCartItem);
-          }
-
-          if (mNewCartItem != null && pNewCartItem == null) {
-            _ref
-                .read(cartProvider.notifier)
-                .replaceCart(mNewItem: mNewCartItem);
-          }
-          break; // Add break statement here
-      }
+      _ref
+          .read(cartProvider.notifier)
+          .updateCart(cartEntity: cartEntity);
     } on CartException catch (e) {
       log('setCart Error from CartDatasourceImpl class: ${e.message}');
       rethrow;

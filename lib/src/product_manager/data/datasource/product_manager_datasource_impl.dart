@@ -6,7 +6,7 @@ import 'package:dio/dio.dart';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
-import 'package:husbandman/core/common/app/entities/cart_entity.dart';
+import 'package:husbandman/src/cart/domain/entity/cart_entity.dart';
 import 'package:husbandman/core/common/app/entities/product_entity.dart';
 import 'package:husbandman/core/common/app/models/product_model.dart';
 import 'package:husbandman/core/common/app/provider/state_notifier_providers/general_product_provider.dart';
@@ -92,13 +92,19 @@ class ProductManagerDatasourceImpl implements ProductManagerDatasource {
       return CartEntity.fromMap(responseData);
     } on DioException catch (dioError) {
       log('Dio error asshole: $dioError');
-      final errorMessage =
-          dioError.response?.data.toString() ?? dioError.message;
-      final statusCode = dioError.response?.statusCode ?? 500;
-      throw ProductManagerException(
-        message: errorMessage!,
-        statusCode: statusCode,
-      );
+
+      if(dioError.response != null){
+        throw ProductManagerException(
+          message: dioError.response?.data.toString()??'',
+          statusCode: 500,
+        );
+      }else{
+        throw ProductManagerException(
+          message: dioError.message ??'',
+          statusCode: 500,
+        );
+      }
+
     } on ProductManagerException catch (e) {
       rethrow;
     } catch (e) {

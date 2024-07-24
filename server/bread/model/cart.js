@@ -9,6 +9,7 @@ const cartItemSchema = new mongoose.Schema({
     sellerEmail: { type: String, required: true },
     price: { type: Number, required: true },
     deliveryDate: { type: String, default: '' },
+    percentage: { type: Number, default: 0.0 },
 });
 
 const cartSchema = new mongoose.Schema({

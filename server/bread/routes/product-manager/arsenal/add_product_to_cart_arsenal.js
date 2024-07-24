@@ -6,13 +6,8 @@ const error = require('../../../error');
 const status = require('../../../status');
 
 async function addToCart(cart, newItem) {
-    const existingItem = cart.items.find(item => item.productId === newItem.productId);
-
-    if (existingItem) {
-        existingItem.quantity += newItem.quantity;
-    } else {
-        cart.items.push(newItem);
-    }
+    console.log('Adding adding adding');
+    cart.items.push(newItem);
 
     await cart.save();
     console.log('Item added to existing cart.');
@@ -39,8 +34,8 @@ async function updateProductQuantity(product, quantity) {
     await product.save();
 }
 
-async function checkIfProductExistInCart(product, cartOwnerId) {
-    const cart = await Cart.findOne({ ownerId: cartOwnerId });
+async function checkIfProductExistInCart(product, cart) {
+
     const productExist = cart.items.find(item => item.productId === product._id.toString());
 
     if (productExist) {
@@ -71,9 +66,9 @@ async function findProductById(id) {
 
 function reportError(e, res) {
     if (e.message == error.PRODUCT_ALREADY_IN_CART) {
-        console.log(e.message);
-        res.status(status.PRODUCT_ALREADY_IN_CART).json(e.message);
-        return;
+        console.log('PAIC ERROR:' + e.message);
+        return res.status(status.PRODUCT_ALREADY_IN_CART).json(e.message);
+
     }
 
     if (e.message == error.PRODUCT_DOES_NOT_EXIST) {
@@ -95,7 +90,7 @@ function reportError(e, res) {
     }
 
     console.log(e);
-    res.status(500).json(e);
+    res.status(500).json(e.message);
 }
 
 module.exports = {

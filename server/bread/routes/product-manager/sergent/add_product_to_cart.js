@@ -22,6 +22,7 @@ router.post(endpoints.ADD_PRODUCT_TO_CART, async (req, res) => {
             sellerName: product.sellerName,
             sellerEmail: product.sellerEmail,
             price: product.price,
+            percentage: product.price * 0.10
         };
 
         let cart = await Cart.findOne({ ownerId: ownerId });
@@ -29,7 +30,8 @@ router.post(endpoints.ADD_PRODUCT_TO_CART, async (req, res) => {
         if (!cart) {
             cart = await arsenal.createCart(ownerId, newItem);
         } else {
-            await arsenal.checkIfProductExistInCart(product, cartOwnerId);
+            await arsenal.checkIfProductExistInCart(product, cart);
+            console.log('Tried adding to crt');
             cart = await arsenal.addToCart(cart, newItem);
         }
 
@@ -38,7 +40,8 @@ router.post(endpoints.ADD_PRODUCT_TO_CART, async (req, res) => {
         res.status(200).json(cart);
 
     } catch (e) {
-        arsenal.reportError(e, res);
+        console.log(e.message);
+        res.status(500).json(e.message);
     }
 });
 

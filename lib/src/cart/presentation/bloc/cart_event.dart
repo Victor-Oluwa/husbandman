@@ -6,23 +6,14 @@ sealed class CartEvent extends Equatable {
 
 class SetCartEvent extends CartEvent {
   const SetCartEvent({
-    required this.setCartType,
-    this.pNewCartItem,
-    this.mNewCartItem,
-    this.pNewCartModel,
+   required this.cartEntity,
   });
 
-  final SetCartType setCartType;
-  final CartItem? pNewCartItem;
-  final DataMap? mNewCartItem;
-  final CartModel? pNewCartModel;
+ final CartEntity cartEntity;
 
   @override
   List<dynamic> get props => [
-        setCartType,
-        pNewCartItem,
-        mNewCartItem,
-        pNewCartModel,
+    cartEntity,
       ];
 }
 

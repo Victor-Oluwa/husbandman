@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:husbandman/core/common/app/models/product_model.dart';
 import 'package:husbandman/core/common/app/provider/state_notifier_providers/user_provider.dart';
 import 'package:husbandman/core/common/widgets/hbm_text_widget.dart';
+import 'package:husbandman/core/common/widgets/snack_bar.dart';
 import 'package:husbandman/core/extensions/context_extension.dart';
 import 'package:husbandman/core/res/color.dart';
 import 'package:husbandman/core/res/fonts.dart';
@@ -28,14 +29,13 @@ class ProductDetailsView extends ConsumerWidget {
         body: BlocConsumer<ProductManagerBloc, ProductManagerState>(
           listener: (context, state) {
             if (state is ProductAddedToCart) {
-              log(
-                  'ProductDetailsView Listener: A product was added to cart:');
+              log('ProductDetailsView Listener: A product was added to cart:');
+              HBMSnackBar.show(context: context, content: 'Added to cart');
             }
 
             if (state is ProductManagerError) {
               log(
-                'ProductDetailsView Listener: productManagerError: ${state
-                    .message}',
+                'ProductDetailsView Listener: ${state.message}',
               );
             }
           },

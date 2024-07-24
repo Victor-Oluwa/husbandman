@@ -10,7 +10,6 @@ import 'package:husbandman/src/admin/domain/use-cases/block_account.dart';
 import 'package:husbandman/src/admin/domain/use-cases/change_farmer_badge.dart';
 import 'package:husbandman/src/admin/domain/use-cases/delete_account.dart';
 import 'package:husbandman/src/admin/domain/use-cases/fetch_all_invitation_token.dart';
-import 'package:husbandman/src/admin/domain/use-cases/fetch_all_orders.dart';
 import 'package:husbandman/src/admin/domain/use-cases/fetch_all_users.dart';
 import 'package:husbandman/src/admin/domain/use-cases/filter_user.dart';
 import 'package:husbandman/src/admin/domain/use-cases/generate_unique_invitation_token.dart';
@@ -28,7 +27,6 @@ class AdminBloc extends Bloc<AdminEvent, AdminState> {
     required ChangeFarmerBadge changeFarmerBadge,
     required DeleteAccount deleteAccount,
     required FetchAllInvitationToken fetchAllInvitationToken,
-    required FetchAllOrders fetchAllOrders,
     required FetchAllUsers fetchAllUsers,
     required FilterUser filterUser,
     required GenerateUniqueInvitationToken generateUniqueInvitationToken,
@@ -38,7 +36,6 @@ class AdminBloc extends Bloc<AdminEvent, AdminState> {
         _changeFarmerBadge = changeFarmerBadge,
         _deleteAccount = deleteAccount,
         _fetchAllInvitationToken = fetchAllInvitationToken,
-        _fetchAllOrders = fetchAllOrders,
         _fetchAllUsers = fetchAllUsers,
         _filterUser = filterUser,
         _generateUniqueInvitationToken = generateUniqueInvitationToken,
@@ -53,7 +50,6 @@ class AdminBloc extends Bloc<AdminEvent, AdminState> {
     on<ChangeFarmerBadgeEvent>(_changeFarmerBadgeHandler);
     on<DeleteAccountEvent>(_deleteAccountHandler);
     on<FetchAllInvitationTokenEvent>(_fetchAllInvitationTokenHandler);
-    on<FetchAllOrdersEvent>(_fetchAllOrdersHandler);
     on<FetchAllUsersEvent>(_fetchAllUsersHandler);
     on<FilterUserEvent>(_filterUserHandler);
     on<GenerateUniqueInvitationTokenEvent>(
@@ -67,7 +63,6 @@ class AdminBloc extends Bloc<AdminEvent, AdminState> {
   final ChangeFarmerBadge _changeFarmerBadge;
   final DeleteAccount _deleteAccount;
   final FetchAllInvitationToken _fetchAllInvitationToken;
-  final FetchAllOrders _fetchAllOrders;
   final FetchAllUsers _fetchAllUsers;
   final FilterUser _filterUser;
   final GenerateUniqueInvitationToken _generateUniqueInvitationToken;
@@ -129,20 +124,6 @@ class AdminBloc extends Bloc<AdminEvent, AdminState> {
       (l) => emit(AdminError(l.errorMessage)),
       (r) => emit(
         FetchedInvitationToken(r),
-      ),
-    );
-  }
-
-  Future<void> _fetchAllOrdersHandler(
-    FetchAllOrdersEvent event,
-    Emitter<AdminState> emit,
-  ) async {
-    final result = await _fetchAllOrders();
-
-    result.fold(
-      (l) => emit(AdminError(l.errorMessage)),
-      (r) => emit(
-        FetchedOrders(r),
       ),
     );
   }

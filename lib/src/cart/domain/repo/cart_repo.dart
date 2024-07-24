@@ -1,16 +1,10 @@
-import 'package:husbandman/core/common/app/entities/cart_entity.dart';
-import 'package:husbandman/core/common/app/models/cart/cart_item.dart';
-import 'package:husbandman/core/common/app/models/cart/cart_model.dart';
-import 'package:husbandman/core/enums/set_cart_type.dart';
+import 'package:husbandman/src/cart/domain/entity/cart_entity.dart';
 import 'package:husbandman/core/utils/typedef.dart';
 
 abstract class CartRepo {
 
   ResultFuture<void> setCart({
-    required SetCartType setCartType,
-    CartItem? pNewCartItem,
-    DataMap? mNewCartItem,
-    CartModel? pNewCartModel,
+   required CartEntity cartEntity,
   });
 
   ResultFuture<CartEntity> updateItemQuantity({

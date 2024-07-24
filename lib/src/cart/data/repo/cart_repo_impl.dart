@@ -1,8 +1,6 @@
 import 'package:dartz/dartz.dart';
-import 'package:husbandman/core/common/app/entities/cart_entity.dart';
-import 'package:husbandman/core/common/app/models/cart/cart_item.dart';
-import 'package:husbandman/core/common/app/models/cart/cart_model.dart';
-import 'package:husbandman/core/enums/set_cart_type.dart';
+import 'package:husbandman/src/cart/domain/entity/cart_entity.dart';
+import 'package:husbandman/src/cart/data/model/cart_model.dart';
 import 'package:husbandman/core/error/exceptions.dart';
 import 'package:husbandman/core/error/failure.dart';
 import 'package:husbandman/core/utils/typedef.dart';
@@ -44,17 +42,11 @@ class CartRepoImpl implements CartRepo {
 
   @override
   ResultFuture<void> setCart({
-    required SetCartType setCartType,
-    CartItem? pNewCartItem,
-    DataMap? mNewCartItem,
-    CartModel? pNewCartModel,
+   required CartEntity cartEntity,
   }) async {
     try {
       final result = await _cartDatasource.setCart(
-        setCartType: setCartType,
-        mNewCartItem: mNewCartItem,
-        pNewCartItem: pNewCartItem,
-        pNewCartModel: pNewCartModel,
+          cartEntity: cartEntity,
       );
       return Right(result);
     } on CartException catch (e) {

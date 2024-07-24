@@ -1,10 +1,10 @@
-import 'package:husbandman/core/common/app/entities/cart_entity.dart';
-import 'package:husbandman/core/common/app/models/cart/cart_item.dart';
+import 'package:husbandman/src/cart/data/model/cart_item.dart';
+import 'package:husbandman/src/cart/domain/entity/cart_entity.dart';
 
 class CartModel extends CartEntity {
   const CartModel({
     required super.ownerId,
-    required super.items,
+    required List<CartItem> super.items,
     required super.id,
   });
 
@@ -36,17 +36,4 @@ class CartModel extends CartEntity {
   @override
   List<Object?> get props => [id, ownerId, items];
 
-
-  @override
-  CartModel copyWith({
-    String? id,
-    String? ownerId,
-    List<CartItem>? items,
-  }) {
-    return CartModel(
-      id: id ?? this.id,
-      ownerId: ownerId ?? this.ownerId,
-      items: items ?? this.items,
-    );
-  }
 }

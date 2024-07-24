@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_advanced_drawer/flutter_advanced_drawer.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:husbandman/core/common/app/provider/state_notifier_providers/general_product_provider.dart';
 import 'package:husbandman/core/common/app/provider/state_notifier_providers/user_provider.dart';
@@ -9,6 +10,7 @@ import 'package:husbandman/core/common/widgets/hbm_text_widget.dart';
 import 'package:husbandman/core/extensions/context_extension.dart';
 import 'package:husbandman/core/res/color.dart';
 import 'package:husbandman/core/res/fonts.dart';
+import 'package:husbandman/core/res/media_res.dart';
 import 'package:husbandman/core/services/injection/auth/auth_injection.dart';
 import 'package:husbandman/core/services/route_names.dart';
 import 'package:husbandman/src/auth/presentation/bloc/auth_bloc.dart';
@@ -337,22 +339,22 @@ class _DashboardState extends ConsumerState<Dashboard> {
           _buildIconButton(
             context,
             HBMColors.mediumGrey,
-            context.width * 0.10,
-            FontAwesomeIcons.buildingColumns,
+            context.width * 0.12,
+           MediaRes.darkWithdrawIcon,
             'Withdraw',
           ),
           _buildIconButton(
             context,
             HBMColors.mediumGrey,
-            context.width * 0.10,
-            FontAwesomeIcons.store,
+            context.width * 0.12,
+            MediaRes.darkWithdrawIcon,
             'Shop',
           ),
           _buildIconButton(
             context,
             HBMColors.mediumGrey,
-            context.width * 0.10,
-            FontAwesomeIcons.idBadge,
+            context.width * 0.12,
+            MediaRes.darkWithdrawIcon,
             'Account',
           ),
         ],
@@ -364,7 +366,7 @@ class _DashboardState extends ConsumerState<Dashboard> {
     BuildContext context,
     Color color,
     double size,
-    IconData iconData,
+    String iconPath,
     String label,
   ) {
     return Container(
@@ -377,11 +379,12 @@ class _DashboardState extends ConsumerState<Dashboard> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-          FaIcon(
-            iconData,
-            color: color,
-            size: size,
-          ),
+          SvgPicture.asset(iconPath, width: size,),
+          // FaIcon(
+          //   iconData,
+          //   color: color,
+          //   size: size,
+          // ),
           HBMTextWidget(
             data: label,
             fontFamily: HBMFonts.quicksandBold,

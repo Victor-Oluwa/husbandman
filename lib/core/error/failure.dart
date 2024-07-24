@@ -151,6 +151,21 @@ class PaymentFailure extends Failure {
         );
 }
 
+class OrderFailure extends Failure {
+  OrderFailure({
+    required super.message,
+    required super.statusCode,
+  });
+
+  OrderFailure.fromException(OrderException exception):this(
+    message: exception.message,
+    statusCode: exception.statusCode,
+  );
+
+  @override
+  List<dynamic> get props =>[message, statusCode];
+}
+
 class ServerFailure extends Failure {
   ServerFailure({
     required super.message,

@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
-import 'package:husbandman/core/common/app/entities/cart_entity.dart';
-import 'package:husbandman/core/common/app/models/cart/cart_item.dart';
+import 'package:husbandman/src/cart/domain/entity/cart_entity.dart';
+import 'package:husbandman/src/cart/data/model/cart_item.dart';
 import 'package:husbandman/core/usecases/usecases.dart';
 import 'package:husbandman/core/utils/typedef.dart';
 import 'package:husbandman/src/cart/domain/repo/cart_repo.dart';

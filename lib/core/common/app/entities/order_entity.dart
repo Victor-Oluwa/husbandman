@@ -1,8 +1,8 @@
 import 'package:equatable/equatable.dart';
 import 'package:husbandman/core/common/app/entities/product_entity.dart';
 
-class OrderEntity extends Equatable {
-  const OrderEntity({
+class OrderEntityOld extends Equatable {
+  const OrderEntityOld({
     required this.id,
     required this.farmer,
     required this.products,
@@ -10,8 +10,8 @@ class OrderEntity extends Equatable {
     required this.totalDeliveryTime,
   });
 
-  factory OrderEntity.fromMap(Map<String, dynamic> map) {
-    return OrderEntity(
+  factory OrderEntityOld.fromMap(Map<String, dynamic> map) {
+    return OrderEntityOld(
       id: map['_id'] as String,
       farmer: map['farmer'] as String,
       products: map['products'] as List<ProductEntity>,
@@ -20,7 +20,7 @@ class OrderEntity extends Equatable {
     );
   }
 
-  const OrderEntity.empty()
+  const OrderEntityOld.empty()
       : this(
           id: 'empty.id',
           farmer: 'empty.farmer',

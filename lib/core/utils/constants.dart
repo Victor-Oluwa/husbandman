@@ -1,4 +1,4 @@
-const kBaseUrl = 'http://192.168.161.1:3000';
+const kBaseUrl = 'http://192.168.71.1:3000';
 const kCloudinaryApiKey = '986773188828922';
 const kCloudinaryApiSecret = 'jNkAnxCCWLdadVMvsKCxf61jKRU';
 const kCloudinaryUploadPreset = 'cvyzrljr';
@@ -43,3 +43,16 @@ RegExp emailValidatorJargon = RegExp(
 //Something off about the sun
 //New disorder where people see demon faces
 //Ever since the eclypsis the cloud seems different
+
+
+// "Icon made by Fir3Ghost from www.flaticon.com" (Withraw Icon)
+// By Creatype (Shop bag)
+// By Freepik (Profile 1)
+//<div> Icons made by <a href="https://www.flaticon.com/authors/fir3ghost" title="Fir3Ghost"> Fir3Ghost </a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com'</a></div>
+
+//<a href="https://iconscout.com/icons/banking" class="text-underline font-size-sm" target="_blank">Banking</a> by <a href="https://iconscout.com/contributors/maxim-basinski" class="text-underline font-size-sm">Maxim Basinski</a> on <a href="https://iconscout.com" class="text-underline font-size-sm">IconScout</a>
+// <a href="https://iconscout.com/icons/shopping-basket" class="text-underline font-size-sm" target="_blank">shopping basket</a> by <a href="https://iconscout.com/contributors/lutfix" class="text-underline font-size-sm" target="_blank">Lutfi Achmad</a>
+//<a href="https://iconscout.com/icons/ice-cream-store" class="text-underline font-size-sm" target="_blank">Ice Cream Store</a> by <a href="https://iconscout.com/contributors/AmruID" class="text-underline font-size-sm">Amru Id</a> on <a href="https://iconscout.com" class="text-underline font-size-sm">IconScout</a>
+//<a href="https://iconscout.com/icons/basket-shopping" class="text-underline font-size-sm" target="_blank">basket shopping</a> by <a href="https://iconscout.com/contributors/rizal-pratama" class="text-underline font-size-sm">Rizal Pratama</a> on <a href="https://iconscout.com" class="text-underline font-size-sm">IconScout</a>
+//<a href="https://iconscout.com/icons/id" class="text-underline font-size-sm" target="_blank">id</a> by <a href="https://iconscout.com/contributors/vector-stall" class="text-underline font-size-sm">Vector Stall</a> on <a href="https://iconscout.com" class="text-underline font-size-sm">IconScout</a>
+//<a href="https://iconscout.com/icons/id" class="text-underline font-size-sm" target="_blank">id</a> by <a href="https://iconscout.com/contributors/vector-stall" class="text-underline font-size-sm">Vector Stall</a> on <a href="https://iconscout.com" class="text-underline font-size-sm">IconScout</a>
