@@ -2,6 +2,7 @@ import 'package:equatable/equatable.dart';
 import 'package:husbandman/src/auth/domain/entity/user/props/address/address_entity.dart';
 import 'package:husbandman/src/auth/domain/entity/user/props/customer/customer_entity.dart';
 import 'package:husbandman/src/auth/domain/entity/user/props/notification/notification_entity.dart';
+import 'package:husbandman/src/auth/domain/entity/user/props/pendingPayment/pending_payment_entity.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'user_entity.g.dart';
@@ -32,6 +33,7 @@ class UserEntity extends Equatable {
     this.bannerImage = 'Optional',
     this.cartId = 'Optional',
     this.orderId = 'Optional',
+    this.pendingPaymentEntity,
   });
 
   factory UserEntity.fromJson(Map<String, dynamic> json) =>
@@ -61,6 +63,7 @@ class UserEntity extends Equatable {
   final String bannerImage;
   final String cartId;
   final String orderId;
+  final PendingPaymentEntity? pendingPaymentEntity;
 
   @override
   List<Object?> get props => [
@@ -75,6 +78,3 @@ class UserEntity extends Equatable {
   Map<String, dynamic> toJson() => _$UserEntityToJson(this);
 }
 
-//Total deposit
-// pending funds
-//pending order

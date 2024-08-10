@@ -3,6 +3,7 @@ import 'package:husbandman/core/utils/typedef.dart';
 import 'package:husbandman/src/auth/domain/entity/user/props/address/address_entity.dart';
 import 'package:husbandman/src/auth/domain/entity/user/props/customer/customer_entity.dart';
 import 'package:husbandman/src/auth/domain/entity/user/props/notification/notification_entity.dart';
+import 'package:husbandman/src/auth/domain/entity/user/props/pendingPayment/pending_payment_entity.dart';
 import 'package:husbandman/src/auth/domain/entity/user/user_entity.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -36,6 +37,7 @@ class SellerEntity extends UserEntity {
     required super.orderId,
     this.pendingOrderFunds,
     this.ordered,
+    super.pendingPaymentEntity,
   });
 
   factory SellerEntity.fromJson(Map<String, dynamic> json) =>
@@ -54,7 +56,7 @@ class SellerEntity extends UserEntity {
 @JsonSerializable(explicitToJson: true)
 class PendingOrderFundsEntity extends Equatable {
   const PendingOrderFundsEntity({
-     this.id = '',
+    this.id = '',
     required this.funds,
   });
 
@@ -74,7 +76,7 @@ class PendingOrderFundsEntity extends Equatable {
 @JsonSerializable()
 class FundEntity extends Equatable {
   const FundEntity({
-     this.id = '',
+    this.id = '',
     required this.orderId,
     required this.buyerId,
     required this.productId,
@@ -108,7 +110,7 @@ class FundEntity extends Equatable {
 @JsonSerializable(explicitToJson: true)
 class OrderedEntity extends Equatable {
   const OrderedEntity({
-     this.id = '',
+    this.id = '',
     required this.totalEarning,
     required this.totalDeductible,
     required this.orderedItems,
@@ -186,8 +188,3 @@ class OrderedItemEntity extends Equatable {
         isItemDelivered,
       ];
 }
-// Zack puniel
-// David Pulsy
-// Madam Guyon
-// Robert Law
-// Watchman lee

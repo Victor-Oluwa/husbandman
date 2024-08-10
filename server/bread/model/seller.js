@@ -3,6 +3,32 @@ const addressSchema = require('./address');
 const notificationSchema = require('./notification');
 const customerSchema = require('./customer');
 
+const paymentSchema = new mongoose.Schema({
+    sellerId: { type: String, required: true },
+    orderId: { type: String, required: true },
+    productId: { type: String, required: true },
+    sellerName: { type: String, required: true },
+    timeStamp: { type: String, required: true },
+    productName: { type: String, required: true },
+    productPrice: { type: Number, required: true },
+})
+
+const pendingPaymentSchema = new mongoose.Schema({
+    payments: [paymentSchema]
+})
+
+const fundSchema = new mongoose.Schema({
+    orderId: { type: String, required: true },
+    buyerId: { type: String, required: true },
+    productId: { type: String, required: true },
+    productName: { type: String, required: true },
+    amountPending: { type: Number, required: true },
+})
+
+const pendingOrderFundsSchema = new mongoose.Schema({
+    funds: [fundSchema]
+});
+
 const orderedItemsSchema = new mongoose.Schema({
     sellerId: { type: String, required: true },
     buyerId: { type: String, required: true },
@@ -48,6 +74,8 @@ const sellerSchema = mongoose.Schema({
     cartId: { type: String, default: '' },
     orderId: { type: String, default: '' },
     ordered: { type: orderedSchema },
+    pendingOrderFunds: { type: pendingOrderFundsSchema },
+    pendingPayment: { type: pendingPaymentSchema }
 })
 
 const Seller = mongoose.model('Seller', sellerSchema);

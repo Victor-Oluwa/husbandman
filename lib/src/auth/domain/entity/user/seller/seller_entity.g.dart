@@ -49,6 +49,10 @@ SellerEntity _$SellerEntityFromJson(Map<String, dynamic> json) => SellerEntity(
       ordered: json['ordered'] == null
           ? null
           : OrderedEntity.fromJson(json['ordered'] as Map<String, dynamic>),
+      pendingPaymentEntity: json['pendingPaymentEntity'] == null
+          ? null
+          : PendingPaymentEntity.fromJson(
+              json['pendingPaymentEntity'] as Map<String, dynamic>),
     );
 
 Map<String, dynamic> _$SellerEntityToJson(SellerEntity instance) =>
@@ -76,6 +80,7 @@ Map<String, dynamic> _$SellerEntityToJson(SellerEntity instance) =>
       'bannerImage': instance.bannerImage,
       'cartId': instance.cartId,
       'orderId': instance.orderId,
+      'pendingPaymentEntity': instance.pendingPaymentEntity?.toJson(),
       'ordered': instance.ordered?.toJson(),
       'pendingOrderFunds': instance.pendingOrderFunds?.toJson(),
     };

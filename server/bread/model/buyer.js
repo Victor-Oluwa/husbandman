@@ -3,6 +3,19 @@ const addressSchema = require('./address');
 const notificationSchema = require('./notification');
 const customerSchema = require('./customer');
 
+const paymentSchema = new mongoose.Schema({
+    sellerId: { type: String, required: true },
+    orderId: { type: String, required: true },
+    productId: { type: String, required: true },
+    sellerName: { type: String, required: true },
+    timeStamp: { type: String, required: true },
+    productName: { type: String, required: true },
+    productPrice: { type: Number, required: true },
+})
+
+const pendingPaymentSchema = new mongoose.Schema({
+    payments: [paymentSchema]
+})
 
 const buyerSchema = mongoose.Schema({
     name: { type: String, required: true },
@@ -26,7 +39,7 @@ const buyerSchema = mongoose.Schema({
     bannerImage: { type: String, default: '' },
     cartId: { type: String, default: '' },
     orderId: { type: String, default: '' },
-
+    pendingPaymentEntity: { type: pendingPaymentSchema },
 
 })
 

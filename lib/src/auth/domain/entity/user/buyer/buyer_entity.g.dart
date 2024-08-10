@@ -42,6 +42,10 @@ BuyerEntity _$BuyerEntityFromJson(Map<String, dynamic> json) => BuyerEntity(
       bannerImage: json['bannerImage'] as String? ?? 'Optional',
       cartId: json['cartId'] as String? ?? 'Optional',
       orderId: json['orderId'] as String? ?? 'Optional',
+      pendingPaymentEntity: json['pendingPaymentEntity'] == null
+          ? null
+          : PendingPaymentEntity.fromJson(
+              json['pendingPaymentEntity'] as Map<String, dynamic>),
     );
 
 Map<String, dynamic> _$BuyerEntityToJson(BuyerEntity instance) =>
@@ -69,44 +73,5 @@ Map<String, dynamic> _$BuyerEntityToJson(BuyerEntity instance) =>
       'bannerImage': instance.bannerImage,
       'cartId': instance.cartId,
       'orderId': instance.orderId,
-    };
-
-PendingPaymentEntity _$PendingPaymentEntityFromJson(
-        Map<String, dynamic> json) =>
-    PendingPaymentEntity(
-      id: json['_id'] as String? ?? '',
-      payments: (json['payments'] as List<dynamic>)
-          .map((e) => PaymentEntity.fromJson(e as Map<String, dynamic>))
-          .toList(),
-    );
-
-Map<String, dynamic> _$PendingPaymentEntityToJson(
-        PendingPaymentEntity instance) =>
-    <String, dynamic>{
-      '_id': instance.id,
-      'payments': instance.payments.map((e) => e.toJson()).toList(),
-    };
-
-PaymentEntity _$PaymentEntityFromJson(Map<String, dynamic> json) =>
-    PaymentEntity(
-      id: json['_id'] as String? ?? '',
-      sellerId: json['sellerId'] as String,
-      orderId: json['orderId'] as String,
-      productId: json['productId'] as String,
-      sellerName: json['sellerName'] as String,
-      timeStamp: json['timeStamp'] as String,
-      productName: json['productName'] as String,
-      productPrice: json['productPrice'] as String,
-    );
-
-Map<String, dynamic> _$PaymentEntityToJson(PaymentEntity instance) =>
-    <String, dynamic>{
-      '_id': instance.id,
-      'sellerId': instance.sellerId,
-      'orderId': instance.orderId,
-      'productId': instance.productId,
-      'sellerName': instance.sellerName,
-      'timeStamp': instance.timeStamp,
-      'productName': instance.productName,
-      'productPrice': instance.productPrice,
+      'pendingPaymentEntity': instance.pendingPaymentEntity?.toJson(),
     };

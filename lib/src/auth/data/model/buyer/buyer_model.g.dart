@@ -42,6 +42,10 @@ BuyerModel _$BuyerModelFromJson(Map<String, dynamic> json) => BuyerModel(
       bannerImage: json['bannerImage'] as String? ?? 'Optional',
       cartId: json['cartId'] as String? ?? 'Optional',
       orderId: json['orderId'] as String? ?? 'Optional',
+      pendingPaymentEntity: json['pendingPaymentEntity'] == null
+          ? null
+          : PendingPaymentEntity.fromJson(
+              json['pendingPaymentEntity'] as Map<String, dynamic>),
     );
 
 Map<String, dynamic> _$BuyerModelToJson(BuyerModel instance) =>
@@ -69,4 +73,5 @@ Map<String, dynamic> _$BuyerModelToJson(BuyerModel instance) =>
       'bannerImage': instance.bannerImage,
       'cartId': instance.cartId,
       'orderId': instance.orderId,
+      'pendingPaymentEntity': instance.pendingPaymentEntity?.toJson(),
     };

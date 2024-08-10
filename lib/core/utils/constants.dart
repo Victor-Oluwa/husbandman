@@ -56,3 +56,10 @@ RegExp emailValidatorJargon = RegExp(
 //<a href="https://iconscout.com/icons/basket-shopping" class="text-underline font-size-sm" target="_blank">basket shopping</a> by <a href="https://iconscout.com/contributors/rizal-pratama" class="text-underline font-size-sm">Rizal Pratama</a> on <a href="https://iconscout.com" class="text-underline font-size-sm">IconScout</a>
 //<a href="https://iconscout.com/icons/id" class="text-underline font-size-sm" target="_blank">id</a> by <a href="https://iconscout.com/contributors/vector-stall" class="text-underline font-size-sm">Vector Stall</a> on <a href="https://iconscout.com" class="text-underline font-size-sm">IconScout</a>
 //<a href="https://iconscout.com/icons/id" class="text-underline font-size-sm" target="_blank">id</a> by <a href="https://iconscout.com/contributors/vector-stall" class="text-underline font-size-sm">Vector Stall</a> on <a href="https://iconscout.com" class="text-underline font-size-sm">IconScout</a>
+
+
+// Zack puniel
+// David Pulsy
+// Madam Guyon
+// Robert Law
+// Watchman lee

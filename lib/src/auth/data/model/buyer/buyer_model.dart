@@ -2,6 +2,7 @@ import 'package:husbandman/src/auth/domain/entity/user/buyer/buyer_entity.dart';
 import 'package:husbandman/src/auth/domain/entity/user/props/address/address_entity.dart';
 import 'package:husbandman/src/auth/domain/entity/user/props/customer/customer_entity.dart';
 import 'package:husbandman/src/auth/domain/entity/user/props/notification/notification_entity.dart';
+import 'package:husbandman/src/auth/domain/entity/user/props/pendingPayment/pending_payment_entity.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'buyer_model.g.dart';
@@ -32,6 +33,7 @@ class BuyerModel extends BuyerEntity {
     super.bannerImage,
     super.cartId,
     super.orderId,
+    super.pendingPaymentEntity,
   });
 
   factory BuyerModel.fromJson(Map<String, dynamic> json) =>

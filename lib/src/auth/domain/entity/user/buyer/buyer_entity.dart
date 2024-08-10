@@ -3,6 +3,7 @@ import 'package:husbandman/core/utils/typedef.dart';
 import 'package:husbandman/src/auth/domain/entity/user/props/address/address_entity.dart';
 import 'package:husbandman/src/auth/domain/entity/user/props/customer/customer_entity.dart';
 import 'package:husbandman/src/auth/domain/entity/user/props/notification/notification_entity.dart';
+import 'package:husbandman/src/auth/domain/entity/user/props/pendingPayment/pending_payment_entity.dart';
 import 'package:husbandman/src/auth/domain/entity/user/user_entity.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -34,6 +35,7 @@ class BuyerEntity extends UserEntity {
     super.bannerImage,
     super.cartId,
     super.orderId,
+    super.pendingPaymentEntity,
   });
 
   BuyerEntity.empty()
@@ -70,59 +72,3 @@ class BuyerEntity extends UserEntity {
   Map<String, dynamic> toJson() => _$BuyerEntityToJson(this);
 }
 
-@JsonSerializable(explicitToJson: true)
-class PendingPaymentEntity extends Equatable {
-  const PendingPaymentEntity({
-    this.id = '',
-    required this.payments,
-  });
-
-  @JsonKey(name: '_id')
-  final String id;
-  final List<PaymentEntity> payments;
-
-  @override
-  List<Object?> get props => [id, payments];
-
-  factory PendingPaymentEntity.fromJson(DataMap json)=> _$PendingPaymentEntityFromJson(json);
-  DataMap toJson()=> _$PendingPaymentEntityToJson(this);
-}
-
-@JsonSerializable()
-class PaymentEntity extends Equatable {
-  const PaymentEntity({
-    this.id= '',
-    required this.sellerId,
-    required this.orderId,
-    required this.productId,
-    required this.sellerName,
-    required this.timeStamp,
-    required this.productName,
-    required this.productPrice,
-  });
-
-  @JsonKey(name: '_id')
-  final String id;
-  final String sellerId;
-  final String orderId;
-  final String productId;
-  final String sellerName;
-  final String timeStamp;
-  final String productName;
-  final String productPrice;
-
-  @override
-  List<Object?> get props => [
-        id,
-        sellerId,
-        orderId,
-        productId,
-        productName,
-        sellerName,
-        timeStamp,
-        productPrice,
-      ];
-
-  factory PaymentEntity.fromJson(DataMap json)=> _$PaymentEntityFromJson(json);
-  DataMap toJson()=> _$PaymentEntityToJson(this);
-}

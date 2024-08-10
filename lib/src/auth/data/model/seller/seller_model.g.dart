@@ -74,3 +74,57 @@ Map<String, dynamic> _$SellerModelToJson(SellerModel instance) =>
       'ordered': instance.ordered?.toJson(),
       'pendingOrderFunds': instance.pendingOrderFunds?.toJson(),
     };
+
+OrderedModel _$OrderedModelFromJson(Map<String, dynamic> json) => OrderedModel(
+      totalEarning: (json['totalEarning'] as num).toDouble(),
+      totalDeductible: (json['totalDeductible'] as num).toDouble(),
+      orderedItems: (json['orderedItems'] as List<dynamic>)
+          .map((e) => OrderedItemEntity.fromJson(e as Map<String, dynamic>))
+          .toList(),
+      id: json['_id'] as String? ?? '',
+    );
+
+Map<String, dynamic> _$OrderedModelToJson(OrderedModel instance) =>
+    <String, dynamic>{
+      '_id': instance.id,
+      'totalEarning': instance.totalEarning,
+      'totalDeductible': instance.totalDeductible,
+      'orderedItems': instance.orderedItems.map((e) => e.toJson()).toList(),
+    };
+
+OrderedItemModel _$OrderedItemModelFromJson(Map<String, dynamic> json) =>
+    OrderedItemModel(
+      sellerId: json['sellerId'] as String,
+      buyerId: json['buyerId'] as String,
+      buyerName: json['buyerName'] as String,
+      buyerImage: json['buyerImage'] as String,
+      buyerEmail: json['buyerEmail'] as String,
+      buyerAddress:
+          AddressEntity.fromJson(json['buyerAddress'] as Map<String, dynamic>),
+      productName: json['productName'] as String,
+      productImage: json['productImage'] as String,
+      productPrice: json['productPrice'] as String,
+      deductible: json['deductible'] as String,
+      productQuantity: json['productQuantity'] as String,
+      productDeliveryDate: json['productDeliveryDate'] as String,
+      isItemDelivered: json['isItemDelivered'] as bool,
+      id: json['_id'] as String? ?? '',
+    );
+
+Map<String, dynamic> _$OrderedItemModelToJson(OrderedItemModel instance) =>
+    <String, dynamic>{
+      '_id': instance.id,
+      'sellerId': instance.sellerId,
+      'buyerId': instance.buyerId,
+      'buyerName': instance.buyerName,
+      'buyerImage': instance.buyerImage,
+      'buyerEmail': instance.buyerEmail,
+      'buyerAddress': instance.buyerAddress,
+      'productName': instance.productName,
+      'productImage': instance.productImage,
+      'productPrice': instance.productPrice,
+      'deductible': instance.deductible,
+      'productQuantity': instance.productQuantity,
+      'productDeliveryDate': instance.productDeliveryDate,
+      'isItemDelivered': instance.isItemDelivered,
+    };
