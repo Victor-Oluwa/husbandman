@@ -1,10 +1,8 @@
-import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:husbandman/core/common/app/models/user/user_model.dart';
 import 'package:husbandman/core/common/app/provider/state_notifier_providers/user_provider.dart';
 import 'package:husbandman/core/common/strings/hbm_strings.dart';
 import 'package:husbandman/core/common/widgets/hbm_text_widget.dart';
@@ -16,7 +14,7 @@ import 'package:husbandman/core/res/media_res.dart';
 import 'package:husbandman/core/services/injection/auth/auth_injection.dart';
 import 'package:husbandman/core/services/route_names.dart';
 import 'package:husbandman/core/utils/constants.dart';
-import 'package:husbandman/core/utils/core_utils.dart';
+import 'package:husbandman/src/auth/domain/entity/user/user_entity.dart';
 import 'package:husbandman/src/auth/presentation/bloc/auth_bloc.dart';
 
 class SignInScreen extends ConsumerStatefulWidget {
@@ -53,22 +51,21 @@ class _FarmerSignUpScreenState extends ConsumerState<SignInScreen> {
               child: BlocConsumer<AuthBloc, AuthState>(
                 listener: (context, state) {
                   if (state is SignedIn) {
-                    final user = state.user as UserModel;
                     context
                         .read<AuthBloc>()
-                        .add(SetUserEvent(user: user.toMap()));
+                        .add(SetUserEvent(user: state.user));
                   }
 
                   if (state is UserSet) {
+                    final user = UserEntity.fromJson(state.user);
                     context.read<AuthBloc>().add(
-                      CacheUserTokenEvent(token: state.user.token),
+                      CacheUserTokenEvent(token: user.token),
                     );
                   }
 
                   if (state is UserTokenCached) {
                     final user = ref
-                        .read(userProvider)
-                        .type;
+                        .read(userProvider).userType;
                     user == HBMStrings.admin
                         ? Navigator.pushNamedAndRemoveUntil(
                       context,
@@ -200,14 +197,10 @@ class _FarmerSignUpScreenState extends ConsumerState<SignInScreen> {
                           left: sidePadding,
                         ),
                         child: TextButton(
-                          style: ButtonStyle(
-                            minimumSize: MaterialStateProperty.all(
-                              Size(context.width * 0.35, context.height * 0.06),
-                            ),
-                            foregroundColor:
-                            MaterialStateProperty.all(Colors.white),
-                            backgroundColor:
-                            MaterialStateProperty.all(HBMColors.charcoalGrey),
+                          style: TextButton.styleFrom(
+                            fixedSize: Size(context.width * 0.35, context.height * 0.06),
+                            foregroundColor: Colors.white,
+                            backgroundColor: HBMColors.charcoalGrey,
                           ),
                           onPressed: () {
                             if (!formKey.currentState!.validate()) {

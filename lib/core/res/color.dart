@@ -10,5 +10,7 @@ class HBMColors {
   static Color matte = Color(0xFF28282B);
   static Color lightGrey = Color(0xFFD3D3D3);
   static Color transparent = Colors.transparent;
+  static Color blue = Colors.blue.shade900;
+
 
 }

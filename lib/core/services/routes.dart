@@ -14,6 +14,7 @@ import 'package:husbandman/src/auth/presentation/view/user_verification_page.dar
 import 'package:husbandman/src/auth/presentation/view/verify_invitation_key_screen.dart';
 import 'package:husbandman/src/cart/presentation/views/cart_view.dart';
 import 'package:husbandman/src/onboarding/presentation/view/onboarding_screen.dart';
+import 'package:husbandman/src/order/presentation/view/check_out_view.dart';
 import 'package:husbandman/src/payment/domain/entity/card_funding_address_auth_response_entity.dart';
 import 'package:husbandman/src/payment/domain/entity/card_funding_pin_auth_response_entity.dart';
 import 'package:husbandman/src/payment/domain/entity/initialize_card_funding_response_entity.dart';
@@ -248,6 +249,11 @@ Route<dynamic> generateRoute(RouteSettings settings) {
       final status = settings.arguments;
       return _pageBuilder(
         (_) => PaymentSuccessfulView(status: status?.toString()),
+        settings: settings,
+      );
+    case RouteNames.checkOutView:
+      return _pageBuilder(
+            (_) => const CheckOutView(),
         settings: settings,
       );
     default:

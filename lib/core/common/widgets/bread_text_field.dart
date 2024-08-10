@@ -40,7 +40,7 @@ class BreadTextField extends StatelessWidget {
     this.cursorWidth = 2.0,
     this.textStyle,
     this.inputFormatters,
-    this.validator,
+    this.validator, this.floatingLabelBehavior,
   });
 
   final TextEditingController fieldController;
@@ -79,6 +79,7 @@ class BreadTextField extends StatelessWidget {
   final double cursorWidth;
   final TextStyle? textStyle;
   final List<TextInputFormatter>? inputFormatters;
+  final FloatingLabelBehavior? floatingLabelBehavior;
   final String? Function(String?)? validator;
 
   @override
@@ -119,10 +120,12 @@ class BreadTextField extends StatelessWidget {
         suffixStyle: suffixStyle,
         counterStyle: counterStyle,
         contentPadding: contentPadding,
+        floatingLabelBehavior: floatingLabelBehavior,
       ),
       onFieldSubmitted: onSubmitted,
       onChanged: onChanged,
       validator: validator,
+
     );
   }
 }

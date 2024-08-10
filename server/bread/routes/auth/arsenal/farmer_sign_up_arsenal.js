@@ -4,7 +4,7 @@ const InvitationKey = require("../../../model/invitation_key");
 
 async function findKey(farmerKey) {
     const key = await InvitationKey.findOne({ value: farmerKey });
-    console.log('Find Key: ' + farmerKey);
+    console.log('Found Key: ' + farmerKey);
 
 
     if (!key) {
@@ -22,9 +22,12 @@ async function findKey(farmerKey) {
     return key;
 }
 
-async function assignKey(key, email) {
-    key.ownerEmail = email;
+async function assignKey(key, email, name) {
+    key.ownerName = name,
+        key.ownerEmail = email;
     key.assigned = true;
+
+    return key;
 }
 
 module.exports = { findKey, assignKey };

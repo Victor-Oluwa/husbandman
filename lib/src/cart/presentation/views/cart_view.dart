@@ -3,8 +3,6 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:husbandman/src/cart/domain/entity/cart_entity.dart';
-import 'package:husbandman/src/cart/data/model/cart_item.dart';
 import 'package:husbandman/core/common/app/provider/state_notifier_providers/cart_provider.dart';
 import 'package:husbandman/core/common/app/provider/state_notifier_providers/user_provider.dart';
 import 'package:husbandman/core/common/widgets/hbm_text_widget.dart';
@@ -13,10 +11,17 @@ import 'package:husbandman/core/extensions/context_extension.dart';
 import 'package:husbandman/core/res/color.dart';
 import 'package:husbandman/core/res/fonts.dart';
 import 'package:husbandman/core/services/injection/cart/cart_injection.dart';
+import 'package:husbandman/core/services/injection/order/order_injection.dart';
+import 'package:husbandman/core/services/route_names.dart';
+import 'package:husbandman/src/auth/domain/entity/user/user_entity.dart';
+import 'package:husbandman/src/cart/domain/entity/cart_entity.dart';
 import 'package:husbandman/src/cart/domain/entity/cart_item_entity.dart';
 import 'package:husbandman/src/cart/presentation/bloc/cart_bloc.dart';
 import 'package:husbandman/src/cart/presentation/widgets/order_summary.dart';
+import 'package:husbandman/src/order/domain/entity/order_entity.dart';
+import 'package:husbandman/src/order/presentation/bloc/order_bloc.dart';
 import 'package:numberpicker/numberpicker.dart';
+
 final quantityProvider = StateProvider<int>((ref) => 1);
 
 class CartView extends ConsumerStatefulWidget {
@@ -27,54 +32,106 @@ class CartView extends ConsumerStatefulWidget {
 }
 
 class _CartViewState extends ConsumerState<CartView> {
-  late CartBloc cartBloc;
+  late CartBloc _cartBloc;
+  late OrderBloc _orderBloc;
+  late TextEditingController fieldController;
 
   @override
   void initState() {
-    cartBloc = ref.read(cartBlocProvider);
+    fieldController = TextEditingController();
+    _orderBloc = ref.read(orderBlocProvider);
+    _cartBloc = ref.read(cartBlocProvider);
     final user = ref.read(userProvider).id;
-    cartBloc.add(FetchCartEvent(ownerId: user));
+    _cartBloc.add(FetchCartEvent(ownerId: user));
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    _cartBloc.close();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     final cart = ref.watch(cartProvider);
+    final user = ref.watch(userProvider);
 
-    return BlocProvider(
-      create: (context) => cartBloc,
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(create: (context) => ref.read(cartBlocProvider)),
+        BlocProvider(create: (context) => ref.read(orderBlocProvider)),
+      ],
       child: Scaffold(
+        resizeToAvoidBottomInset: false,
         backgroundColor: HBMColors.coolGrey,
         appBar: AppBar(
           backgroundColor: Colors.transparent,
           elevation: 0,
           title: const HBMTextWidget(data: 'In Cart'),
         ),
-        body: BlocConsumer<CartBloc, CartState>(
-          listener: (context, state) {
-            if (state is FetchedCart) {
-              log('Fetched cart..');
-              cartBloc.add(SetCartEvent(cartEntity: state.cart));
-            } else if (state is DeletedCartItem) {
-              log('Delete item state response length: ${state.cart.items.length}');
-              cartBloc.add(SetCartEvent(cartEntity: state.cart));
-            } else if (state is CartSet) {
-              log('Cart set successfully');
-            } else if (state is CartError) {
-              log('Something went wrong. Try again later ${state.message}');
-            }
-          },
-          builder: (context, state) {
-            return Column(
-              children: [
-                Expanded(child: _buildCartList(context, cart)),
-                SizedBox(height: context.height * 0.03),
-                OrderSummaryWidget(cart: cart),
-                const SizedBox(height: 16),
-                _buildBottomButtons(context),
-              ],
-            );
-          },
+        body: MultiBlocListener(
+          listeners: [
+            BlocListener<OrderBloc, OrderState>(
+              listener: (context, state) {
+                if (state is OrderCreated) {
+                  log('New order created!: ${state.order}');
+                }
+                if (state is OrderError) {
+                  log('Order error: ${state.message}');
+                }
+              },
+            ),
+            BlocListener<CartBloc, CartState>(
+              listener: (context, state) {
+                if (state is FetchedCart) {
+                  log('Fetched cart..');
+                  _cartBloc.add(SetCartEvent(cartEntity: state.cart));
+                } else if (state is DeletedCartItem) {
+                  log('Delete item state response length: ${state.cart.items.length}');
+                  _cartBloc.add(SetCartEvent(cartEntity: state.cart));
+                } else if (state is DeletedCart) {
+                  final order = OrderEntity.fromCart(
+                    ownerId: ref.read(userProvider).id,
+                    cartItems: cart.items,
+                    orderName: 'Dorimo',
+                  );
+                  _orderBloc.add(CreateOrderEvent(order));
+                } else if (state is CartSet) {
+                  log('Cart set successfully');
+                } else if (state is CartError) {
+                  log('Cart error: ${state.message}');
+                }
+
+                if (state is UpdatedItemQuantity) {
+                  context.read<CartBloc>().add(
+                        SetCartEvent(
+                          cartEntity: state.cartItem,
+                        ),
+                      );
+                  HBMSnackBar.show(
+                      context: context, content: 'Quantity updated');
+                }
+              },
+            ),
+          ],
+          child: BlocBuilder<CartBloc, CartState>(
+            builder: (context, state) {
+              return Column(
+                children: [
+                  Expanded(child: _buildCartList(context, cart)),
+                  SizedBox(height: context.height * 0.03),
+                  OrderSummaryWidget(cart: cart),
+                  const SizedBox(height: 16),
+                  _buildBottomButtons(
+                    context: context,
+                    cart: cart,
+                    user: user,
+                  ),
+                ],
+              );
+            },
+          ),
         ),
       ),
     );
@@ -105,7 +162,11 @@ class _CartViewState extends ConsumerState<CartView> {
     );
   }
 
-  Widget _buildBottomButtons(BuildContext context) {
+  Widget _buildBottomButtons({
+    required BuildContext context,
+    required CartEntity cart,
+    required UserEntity user,
+  }) {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: context.width * 0.05),
       child: Row(
@@ -123,7 +184,7 @@ class _CartViewState extends ConsumerState<CartView> {
               backgroundColor: HBMColors.charcoalGrey,
             ),
             onPressed: () {
-              // Navigator.pushNamed(context, RouteNames.testWidgetView);
+              Navigator.pushNamed(context, RouteNames.checkOutView);
             },
             child: HBMTextWidget(
               data: 'CHECKOUT',
@@ -137,12 +198,12 @@ class _CartViewState extends ConsumerState<CartView> {
 }
 
 class CartItemWidget extends StatelessWidget {
-
   const CartItemWidget({
     required this.cartItem,
     required this.ref,
     super.key,
   });
+
   final CartItemEntity cartItem;
   final WidgetRef ref;
 
@@ -213,11 +274,11 @@ class CartItemWidget extends StatelessWidget {
                   icon: const Icon(Icons.delete_outline_rounded),
                   onPressed: () {
                     context.read<CartBloc>().add(
-                      DeleteCartItemEvent(
-                        ownerId: ref.read(userProvider).id,
-                        itemId: cartItem.id,
-                      ),
-                    );
+                          DeleteCartItemEvent(
+                            ownerId: ref.read(userProvider).id,
+                            itemId: cartItem.id,
+                          ),
+                        );
                   },
                   color: HBMColors.coolGrey,
                 ),
@@ -258,69 +319,50 @@ void showQuantityPickerDialog({
 }) {
   showDialog<AlertDialog>(
     context: context,
-    builder: (context) {
+    builder: (_) {
       final owner = ref.watch(userProvider);
-      return BlocProvider(
-        create: (context) => ref.read(cartBlocProvider),
-        child: BlocConsumer<CartBloc, CartState>(
-          listener: (context, state) {
-            if (state is UpdatedItemQuantity) {
-              context.read<CartBloc>().add(
-                SetCartEvent(
-                  cartEntity: state.cartItem,
+      return Align(
+        alignment: Alignment.topCenter,
+        child: Padding(
+          padding: EdgeInsets.only(
+            top: context.height * 0.23,
+            bottom: context.height * 0.27,
+          ),
+          child: AlertDialog(
+            title: Center(
+              child: HBMTextWidget(
+                data: 'Pick quantity',
+                fontSize: context.width * 0.05,
+              ),
+            ),
+            content: const QuantityPicker(),
+            backgroundColor: HBMColors.coolGrey,
+            actionsAlignment: MainAxisAlignment.spaceBetween,
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: const HBMTextWidget(data: 'Cancel'),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  context.read<CartBloc>().add(
+                        UpdateItemQuantityEvent(
+                          quantity: ref.watch(quantityProvider),
+                          ownerId: owner.id,
+                          itemId: cartItemId,
+                        ),
+                      );
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: HBMColors.mediumGrey,
                 ),
-              );
-            } else if (state is CartSet) {
-              Navigator.of(context).pop();
-              HBMSnackBar.show(context: context, content: 'Quantity updated');
-            }
-          },
-          builder: (context, state) {
-            return Align(
-              alignment: Alignment.topCenter,
-              child: Padding(
-                padding: EdgeInsets.only(
-                  top: context.height * 0.23,
-                  bottom: context.height * 0.27,
-                ),
-                child: AlertDialog(
-                  title: Center(
-                    child: HBMTextWidget(
-                      data: 'Pick quantity',
-                      fontSize: context.width * 0.05,
-                    ),
-                  ),
-                  content: const QuantityPicker(),
-                  backgroundColor: HBMColors.coolGrey,
-                  actionsAlignment: MainAxisAlignment.spaceBetween,
-                  actions: [
-                    TextButton(
-                      onPressed: () => Navigator.of(context).pop(),
-                      child: const HBMTextWidget(data: 'Cancel'),
-                    ),
-                    ElevatedButton(
-                      onPressed: () {
-                        context.read<CartBloc>().add(
-                          UpdateItemQuantityEvent(
-                            quantity: ref.watch(quantityProvider),
-                            ownerId: owner.id,
-                            itemId: cartItemId,
-                          ),
-                        );
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: HBMColors.mediumGrey,
-                      ),
-                      child: HBMTextWidget(
-                        data: 'Save',
-                        color: HBMColors.coolGrey,
-                      ),
-                    ),
-                  ],
+                child: HBMTextWidget(
+                  data: 'Save',
+                  color: HBMColors.coolGrey,
                 ),
               ),
-            );
-          },
+            ],
+          ),
         ),
       );
     },
@@ -392,7 +434,6 @@ class _QuantityPickerState extends ConsumerState<QuantityPicker> {
 }
 
 class OrderSummaryWidget extends StatelessWidget {
-
   const OrderSummaryWidget({
     Key? key,
     required this.cart,
@@ -435,3 +476,31 @@ class OrderItem {
   final int quantity;
   final String price;
 }
+
+
+ /*
+ * */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

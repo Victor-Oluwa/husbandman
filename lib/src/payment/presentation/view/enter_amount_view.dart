@@ -6,7 +6,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:husbandman/core/common/app/entities/payment_card_entity.dart';
 import 'package:husbandman/core/common/app/provider/argument_providers/card_funding_history_id_provider.dart';
 import 'package:husbandman/core/common/app/provider/argument_providers/selected_payment_card_provider.dart';
-import 'package:husbandman/core/common/app/provider/state_notifier_providers/payment_card_provider.dart';
 import 'package:husbandman/core/common/app/provider/state_notifier_providers/user_provider.dart';
 import 'package:husbandman/core/common/widgets/hbm_text_widget.dart';
 import 'package:husbandman/core/common/widgets/snack_bar.dart';
@@ -20,11 +19,388 @@ import 'package:husbandman/core/res/color.dart';
 import 'package:husbandman/core/res/fonts.dart';
 import 'package:husbandman/core/services/injection/payment/payment_injection.dart';
 import 'package:husbandman/core/services/route_names.dart';
-import 'package:husbandman/core/utils/typedef.dart';
-import 'package:husbandman/src/auth/domain/entity/user_entity.dart';
+import 'package:husbandman/src/auth/domain/entity/user/user_entity.dart';
 import 'package:husbandman/src/payment/domain/entity/card_funding_history_entity.dart';
 import 'package:husbandman/src/payment/domain/entity/initialize_card_funding_response_entity.dart';
 import 'package:husbandman/src/payment/presentation/bloc/payment_bloc.dart';
+
+// class EnterAmountView extends ConsumerStatefulWidget {
+//   const EnterAmountView({super.key});
+//
+//   @override
+//   ConsumerState<EnterAmountView> createState() => _EnterAmountViewState();
+// }
+//
+// class _EnterAmountViewState extends ConsumerState<EnterAmountView> {
+//   InitializeCardFundingResponseEntity initFundingResponse =
+//       const InitializeCardFundingResponseEntity.empty();
+//   HistoryUpdatedBy whoUpdatedHistory = HistoryUpdatedBy.init;
+//   String verificationStatus = '';
+//   late TextEditingController _controller;
+//   late FocusNode _focusNode;
+//
+//   @override
+//   void initState() {
+//     _controller = TextEditingController();
+//     _focusNode = FocusNode();
+//
+//     // Ensure the focus node is always focused
+//     WidgetsBinding.instance.addPostFrameCallback((_) {
+//       FocusScope.of(context).requestFocus(_focusNode);
+//     });
+//     super.initState();
+//   }
+//
+//   @override
+//   void didChangeDependencies() {
+//     super.didChangeDependencies();
+//   }
+//
+//   @override
+//   void dispose() {
+//     _controller.dispose();
+//     _focusNode.dispose();
+//     super.dispose();
+//   }
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     final card =
+//         ref.watch(selectedPaymentCardProvider) ?? PaymentCardEntity.empty();
+//     final user = ref.watch(userProvider);
+//     final historyId = ref.watch(cardFundingHistoryIdProvider);
+//     return BlocProvider(
+//       create: (context) => ref.read(paymentBlocProvider),
+//       child: Scaffold(
+//         resizeToAvoidBottomInset: false,
+//         backgroundColor: HBMColors.coolGrey,
+//         appBar: AppBar(
+//           backgroundColor: Colors.transparent,
+//           centerTitle: true,
+//           title: const HBMTextWidget(
+//             data: 'Enter Amount',
+//           ),
+//         ),
+//         body: BlocConsumer<PaymentBloc, PaymentState>(
+//           listener: (context, state) {
+//             if (state is InitializedCardFunding) {
+//               _handleInitializedCardFunding(context, state, card, user);
+//             } else if (state is AddedNewCardFundingHistory) {
+//               _handleAddedNewCardFundingHistory(context, state);
+//             } else if (state is VerifiedCardFunding) {
+//               _handleVerifiedCardFunding(context, state, historyId);
+//             } else if (state is PaymentHistoryError) {
+//               _handlePaymentHistoryError(context, state);
+//             } else if (state is PaymentError) {
+//               _handlePaymentError(context, state, card, user);
+//             }
+//           },
+//           builder: (context, state) {
+//             return Column(
+//               mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//               children: [
+//                 Padding(
+//                   padding: EdgeInsets.only(top: context.height * 0.09),
+//                   child: TextField(
+//                     focusNode: _focusNode,
+//                     controller: _controller,
+//                     cursorColor: HBMColors.mediumGrey,
+//                     style: TextStyle(
+//                       fontSize: context.width * 0.15,
+//                     ),
+//                     onChanged: (text) {
+//                       setState(() {});
+//                     },
+//                     textAlign: TextAlign.center,
+//                     keyboardType: TextInputType.number,
+//                     decoration: InputDecoration(
+//                       hintText: '0.00',
+//                       alignLabelWithHint: true,
+//                       hintStyle: TextStyle(
+//                         fontFamily: HBMFonts.exo2,
+//                         fontSize: context.width * 0.15,
+//                         color: HBMColors.grey,
+//                       ),
+//                       border: InputBorder.none,
+//                     ),
+//                   ),
+//                 ),
+//                 Padding(
+//                   padding: EdgeInsets.only(bottom: context.height * 0.04),
+//                   child: TextButton(
+//                     onPressed: () {
+//                       if (_controller.text.isEmpty ||
+//                           double.parse(_controller.text) < 1) {
+//                         HBMSnackBar.show(
+//                             context: context,
+//                             content: 'Please enter a valid amount');
+//                         return;
+//                       }
+//                       if (card == null) {
+//                         HBMSnackBar.show(
+//                             context: context, content: 'No card was selected');
+//                         return;
+//                       }
+//
+//                       context.read<PaymentBloc>().add(
+//                             InitializeCardFundingEvent(
+//                               cardNumber: card.number.replaceAll(' ', ''),
+//                               cvv: card.ccv,
+//                               expiryYear: card.expiryDate.substring(3, 5),
+//                               expiryMonth: card.expiryDate.substring(0, 2),
+//                               currency: 'NGN',
+//                               amount: _controller.text,
+//                               redirectUrl: 'www.google.com',
+//                               fullName: card.holderName,
+//                               email: 'gm.oluwafemi@gmail.com',
+//                               phone: '07058919193',
+//                               ref: DateTime.now()
+//                                   .microsecondsSinceEpoch
+//                                   .toString(),
+//                             ),
+//                           );
+//                     },
+//                     style: TextButton.styleFrom(
+//                         backgroundColor: _controller.text.isNotEmpty
+//                             ? HBMColors.charcoalGrey
+//                             : HBMColors.grey,
+//                         fixedSize:
+//                             Size(context.width * 0.80, context.height * 0.06)),
+//                     child: HBMTextWidget(
+//                       data: 'Continue',
+//                       color: HBMColors.coolGrey,
+//                     ),
+//                   ),
+//                 )
+//               ],
+//             );
+//           },
+//         ),
+//       ),
+//     );
+//   }
+//
+//   void _handleInitializedCardFunding(BuildContext context,
+//       InitializedCardFunding state, PaymentCardEntity card, UserEntity user) {
+//     ref.invalidate(cardFundingHistoryIdProvider);
+//     setState(() {
+//       initFundingResponse = state.response;
+//       whoUpdatedHistory = HistoryUpdatedBy.bloc1;
+//     });
+//
+//     log('Payment Initialized: ${initFundingResponse.message}');
+//
+//     final history = _createCardFundingHistory(
+//       status: FundingStatus.pending,
+//       failureMessage: '',
+//       failureStage: FailureStage.none,
+//       card: card,
+//       user: user,
+//     );
+//
+//     context
+//         .read<PaymentBloc>()
+//         .add(AddNewCardFundingHistoryEvent(history: history));
+//   }
+//
+//   void _handleAddedNewCardFundingHistory(
+//       BuildContext context, AddedNewCardFundingHistory state) {
+//     log('History written: ${state.historyId}');
+//     ref.read(cardFundingHistoryIdProvider.notifier).state = state.historyId;
+//
+//     switch (whoUpdatedHistory) {
+//       case HistoryUpdatedBy.bloc1:
+//         return _handleBloc1UpdatedHistory(context);
+//       case HistoryUpdatedBy.bloc2:
+//         return _handleBloc2UpdatedHistory(context);
+//       case HistoryUpdatedBy.bloc3:
+//         return _handleBloc3UpdatedHistory(context);
+//       default:
+//         return;
+//     }
+//   }
+//
+//   void _handleBloc1UpdatedHistory(BuildContext context) {
+//     final messageEnum = cardFundingAuthTypeEnumMap[initFundingResponse.message];
+//     final payload = initFundingResponse.payload;
+//
+//     switch (messageEnum) {
+//       case CardFundingAuthTypeEnum.pinRequired:
+//         Navigator.pushNamed(
+//           context,
+//           RouteNames.enterCardPinViewWIthArgs,
+//           arguments: payload,
+//         );
+//         return;
+//       case CardFundingAuthTypeEnum.redirecting:
+//         Navigator.pushNamed(
+//           context,
+//           RouteNames.breadBrowserViewWithArgs,
+//           arguments: initFundingResponse,
+//         );
+//         return;
+//       case CardFundingAuthTypeEnum.addressRequired:
+//         Navigator.pushNamed(context, RouteNames.enterCardAddressView,
+//             arguments: payload);
+//         return;
+//       case CardFundingAuthTypeEnum.verify:
+//         context.read<PaymentBloc>().add(
+//               CardFundingVerificationEvent(
+//                 transactionId: initFundingResponse.transactionId ?? '',
+//               ),
+//             );
+//         return;
+//       case null:
+//         _showErrorSnackBar(context,
+//             'Failed to initialize transaction. Please try again later');
+//         return;
+//     }
+//   }
+//
+//   void _handleBloc2UpdatedHistory(BuildContext context) {
+//     Navigator.pushNamedAndRemoveUntil(
+//         context,
+//         RouteNames.paymentSuccessfulViewWithArg,
+//         arguments: 'Declined',
+//         (Route<dynamic> route) => false,);
+//     return;
+//   }
+//
+//   void _handleBloc3UpdatedHistory(BuildContext context) {
+//     final fundingStatus = fundingStatusMap[verificationStatus];
+//
+//     switch (fundingStatus) {
+//       case FundingStatus.successful:
+//         Navigator.pushNamed(context, RouteNames.paymentSuccessfulViewWithArg);
+//         return;
+//       case FundingStatus.pending:
+//         Navigator.pushNamed(
+//           context,
+//           RouteNames.paymentSuccessfulViewWithArg,
+//           arguments: 'Pending',
+//         );
+//         return;
+//       case FundingStatus.failed:
+//         Navigator.pushNamed(
+//           context,
+//           RouteNames.paymentSuccessfulViewWithArg,
+//           arguments: 'Failed',
+//         );
+//         return;
+//       case null:
+//         Navigator.pushNamed(context, RouteNames.paymentSuccessfulViewWithArg,
+//             arguments: 'Failed');
+//         return;
+//       case FundingStatus.none:
+//         Navigator.pushNamed(
+//           context,
+//           RouteNames.paymentSuccessfulViewWithArg,
+//           arguments: 'Failed',
+//         );
+//     }
+//   }
+//
+//   void _handleVerifiedCardFunding(
+//     BuildContext context,
+//     VerifiedCardFunding state,
+//     String historyId,
+//   ) {
+//     setState(() {
+//       whoUpdatedHistory = HistoryUpdatedBy.bloc3;
+//       verificationStatus = state.status;
+//     });
+//
+//     final fundingStatus = fundingStatusMap[verificationStatus];
+//
+//     context.read<PaymentBloc>().add(
+//           UpdateCardFundingHistoryEvent(
+//             historyId: historyId,
+//             values: [
+//               initFundingResponse.transactionId ?? 'none',
+//               verificationStatus,
+//               DateTime.now().toIso8601String(),
+//               if (fundingStatus == FundingStatus.failed)
+//                 FailureStage.verification.name,
+//             ],
+//             culprits: [
+//               UpdateCardFundingHistoryCulprit.transactionId,
+//               UpdateCardFundingHistoryCulprit.fundingStatus,
+//               UpdateCardFundingHistoryCulprit.date,
+//               if (fundingStatus == FundingStatus.failed)
+//                 UpdateCardFundingHistoryCulprit.failureStage,
+//             ],
+//           ),
+//         );
+//   }
+//
+//   void _handlePaymentHistoryError(
+//       BuildContext context, PaymentHistoryError state) {
+//     log('EnterAmountScreen; PaymentHistory: ${state.message}');
+//     _showErrorSnackBar(context, 'Funding initialisation failed');
+//
+//     Future<void>.delayed(const Duration(seconds: 3), () {
+//       Navigator.pushNamedAndRemoveUntil(
+//         context,
+//         RouteNames.dashboard,
+//         (Route<dynamic> route) => false,
+//       );
+//     });
+//     return;
+//   }
+//
+//   void _handlePaymentError(
+//     BuildContext context,
+//     PaymentError state,
+//     PaymentCardEntity card,
+//     UserEntity user,
+//   ) {
+//     setState(() {
+//       whoUpdatedHistory = HistoryUpdatedBy.bloc2;
+//     });
+//     log('Init Payment Error: ${state.message}');
+//
+//     final history = _createCardFundingHistory(
+//       status: FundingStatus.failed,
+//       failureMessage: state.message,
+//       failureStage: FailureStage.initialization,
+//       card: card,
+//       user: user,
+//     );
+//
+//     context
+//         .read<PaymentBloc>()
+//         .add(AddNewCardFundingHistoryEvent(history: history));
+//   }
+//
+//   CardFundingHistoryEntity _createCardFundingHistory({
+//     required FundingStatus status,
+//     required String failureMessage,
+//     FailureStage? failureStage,
+//     required PaymentCardEntity card,
+//     required UserEntity user,
+//   }) {
+//     return CardFundingHistoryEntity(
+//       id: '',
+//       userId: user.id,
+//       transactionId: initFundingResponse.transactionId ?? 'none',
+//       cardHolderName: card.holderName ?? '',
+//       userEmail: user.email,
+//       cardNumber: card.number,
+//       fundingStatus: status,
+//       date: DateTime.now().toIso8601String(),
+//       time: DateTime.now().toIso8601String(),
+//       failureMessage: failureMessage,
+//       failureStage: failureStage,
+//     );
+//   }
+//
+//   void _showErrorSnackBar(BuildContext context, String content) {
+//     HBMSnackBar.show(
+//       context: context,
+//       content: content,
+//     );
+//   }
+// }
 
 class EnterAmountView extends ConsumerStatefulWidget {
   const EnterAmountView({super.key});
@@ -46,16 +422,11 @@ class _EnterAmountViewState extends ConsumerState<EnterAmountView> {
     _controller = TextEditingController();
     _focusNode = FocusNode();
 
-    // Ensure the focus node is always focused
     WidgetsBinding.instance.addPostFrameCallback((_) {
       FocusScope.of(context).requestFocus(_focusNode);
     });
-    super.initState();
-  }
 
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
+    super.initState();
   }
 
   @override
@@ -71,6 +442,7 @@ class _EnterAmountViewState extends ConsumerState<EnterAmountView> {
         ref.watch(selectedPaymentCardProvider) ?? PaymentCardEntity.empty();
     final user = ref.watch(userProvider);
     final historyId = ref.watch(cardFundingHistoryIdProvider);
+
     return BlocProvider(
       create: (context) => ref.read(paymentBlocProvider),
       child: Scaffold(
@@ -79,9 +451,7 @@ class _EnterAmountViewState extends ConsumerState<EnterAmountView> {
         appBar: AppBar(
           backgroundColor: Colors.transparent,
           centerTitle: true,
-          title: const HBMTextWidget(
-            data: 'Enter Amount',
-          ),
+          title: const HBMTextWidget(data: 'Enter Amount'),
         ),
         body: BlocConsumer<PaymentBloc, PaymentState>(
           listener: (context, state) {
@@ -107,12 +477,8 @@ class _EnterAmountViewState extends ConsumerState<EnterAmountView> {
                     focusNode: _focusNode,
                     controller: _controller,
                     cursorColor: HBMColors.mediumGrey,
-                    style: TextStyle(
-                      fontSize: context.width * 0.15,
-                    ),
-                    onChanged: (text) {
-                      setState(() {});
-                    },
+                    style: TextStyle(fontSize: context.width * 0.15),
+                    onChanged: (text) => setState(() {}),
                     textAlign: TextAlign.center,
                     keyboardType: TextInputType.number,
                     decoration: InputDecoration(
@@ -131,55 +497,55 @@ class _EnterAmountViewState extends ConsumerState<EnterAmountView> {
                   padding: EdgeInsets.only(bottom: context.height * 0.04),
                   child: TextButton(
                     onPressed: () {
-                      if (_controller.text.isEmpty ||
-                          double.parse(_controller.text) < 1) {
-                        HBMSnackBar.show(
-                            context: context,
-                            content: 'Please enter a valid amount');
-                        return;
-                      }
-                      if (card == null) {
-                        HBMSnackBar.show(
-                            context: context, content: 'No card was selected');
-                        return;
-                      }
-
-                      context.read<PaymentBloc>().add(
-                            InitializeCardFundingEvent(
-                              cardNumber: card.number.replaceAll(' ', ''),
-                              cvv: card.ccv,
-                              expiryYear: card.expiryDate.substring(3, 5),
-                              expiryMonth: card.expiryDate.substring(0, 2),
-                              currency: 'NGN',
-                              amount: _controller.text,
-                              redirectUrl: 'www.google.com',
-                              fullName: card.holderName,
-                              email: 'gm.oluwafemi@gmail.com',
-                              phone: '07058919193',
-                              ref: DateTime.now()
-                                  .microsecondsSinceEpoch
-                                  .toString(),
-                            ),
-                          );
+                      _handleContinuePressed(context, card);
                     },
                     style: TextButton.styleFrom(
-                        backgroundColor: _controller.text.isNotEmpty
-                            ? HBMColors.charcoalGrey
-                            : HBMColors.grey,
-                        fixedSize:
-                            Size(context.width * 0.80, context.height * 0.06)),
+                      backgroundColor: _controller.text.isNotEmpty
+                          ? HBMColors.charcoalGrey
+                          : HBMColors.grey,
+                      fixedSize:
+                          Size(context.width * 0.80, context.height * 0.06),
+                    ),
                     child: HBMTextWidget(
                       data: 'Continue',
                       color: HBMColors.coolGrey,
                     ),
                   ),
-                )
+                ),
               ],
             );
           },
         ),
       ),
     );
+  }
+
+  void _handleContinuePressed(BuildContext context, PaymentCardEntity card) {
+    if (_controller.text.isEmpty || double.parse(_controller.text) < 1) {
+      HBMSnackBar.show(
+          context: context, content: 'Please enter a valid amount');
+      return;
+    }
+    if (card == null) {
+      HBMSnackBar.show(context: context, content: 'No card was selected');
+      return;
+    }
+
+    context.read<PaymentBloc>().add(
+          InitializeCardFundingEvent(
+            cardNumber: card.number.replaceAll(' ', ''),
+            cvv: card.ccv,
+            expiryYear: card.expiryDate.substring(3, 5),
+            expiryMonth: card.expiryDate.substring(0, 2),
+            currency: 'NGN',
+            amount: _controller.text,
+            redirectUrl: 'www.google.com',
+            fullName: card.holderName,
+            email: 'gm.oluwafemi@gmail.com',
+            phone: '07058919193',
+            ref: DateTime.now().microsecondsSinceEpoch.toString(),
+          ),
+        );
   }
 
   void _handleInitializedCardFunding(BuildContext context,
@@ -199,10 +565,9 @@ class _EnterAmountViewState extends ConsumerState<EnterAmountView> {
       card: card,
       user: user,
     );
-
-    context
-        .read<PaymentBloc>()
-        .add(AddNewCardFundingHistoryEvent(history: history));
+    context.read<PaymentBloc>().add(
+          AddNewCardFundingHistoryEvent(history: history),
+        );
   }
 
   void _handleAddedNewCardFundingHistory(
@@ -212,13 +577,16 @@ class _EnterAmountViewState extends ConsumerState<EnterAmountView> {
 
     switch (whoUpdatedHistory) {
       case HistoryUpdatedBy.bloc1:
-        return _handleBloc1UpdatedHistory(context);
+        _handleBloc1UpdatedHistory(context);
+        break;
       case HistoryUpdatedBy.bloc2:
-        return _handleBloc2UpdatedHistory(context);
+        _handleBloc2UpdatedHistory(context);
+        break;
       case HistoryUpdatedBy.bloc3:
-        return _handleBloc3UpdatedHistory(context);
+        _handleBloc3UpdatedHistory(context);
+        break;
       default:
-        return;
+        break;
     }
   }
 
@@ -233,39 +601,38 @@ class _EnterAmountViewState extends ConsumerState<EnterAmountView> {
           RouteNames.enterCardPinViewWIthArgs,
           arguments: payload,
         );
-        return;
+        break;
       case CardFundingAuthTypeEnum.redirecting:
         Navigator.pushNamed(
           context,
           RouteNames.breadBrowserViewWithArgs,
           arguments: initFundingResponse,
         );
-        return;
+        break;
       case CardFundingAuthTypeEnum.addressRequired:
         Navigator.pushNamed(context, RouteNames.enterCardAddressView,
             arguments: payload);
-        return;
+        break;
       case CardFundingAuthTypeEnum.verify:
-        context.read<PaymentBloc>().add(
-              CardFundingVerificationEvent(
-                transactionId: initFundingResponse.transactionId ?? '',
-              ),
-            );
-        return;
+        context.read<PaymentBloc>().add(CardFundingVerificationEvent(
+            transactionId: initFundingResponse.transactionId ?? ''));
+        break;
       case null:
-        _showErrorSnackBar(context,
-            'Failed to initialize transaction. Please try again later');
-        return;
+        HBMSnackBar.show(
+            context: context,
+            content:
+                'Failed to initialize transaction. Please try again later');
+        break;
     }
   }
 
   void _handleBloc2UpdatedHistory(BuildContext context) {
     Navigator.pushNamedAndRemoveUntil(
-        context,
-        RouteNames.paymentSuccessfulViewWithArg,
-        arguments: 'Declined',
-        (Route<dynamic> route) => false,);
-    return;
+      context,
+      RouteNames.paymentSuccessfulViewWithArg,
+      arguments: 'Declined',
+      (Route<dynamic> route) => false,
+    );
   }
 
   void _handleBloc3UpdatedHistory(BuildContext context) {
@@ -274,39 +641,25 @@ class _EnterAmountViewState extends ConsumerState<EnterAmountView> {
     switch (fundingStatus) {
       case FundingStatus.successful:
         Navigator.pushNamed(context, RouteNames.paymentSuccessfulViewWithArg);
-        return;
+        break;
       case FundingStatus.pending:
-        Navigator.pushNamed(
-          context,
-          RouteNames.paymentSuccessfulViewWithArg,
-          arguments: 'Pending',
-        );
-        return;
+        Navigator.pushNamed(context, RouteNames.paymentSuccessfulViewWithArg,
+            arguments: 'Pending');
+        break;
       case FundingStatus.failed:
-        Navigator.pushNamed(
-          context,
-          RouteNames.paymentSuccessfulViewWithArg,
-          arguments: 'Failed',
-        );
-        return;
-      case null:
         Navigator.pushNamed(context, RouteNames.paymentSuccessfulViewWithArg,
             arguments: 'Failed');
-        return;
+        break;
+      case null:
       case FundingStatus.none:
-        Navigator.pushNamed(
-          context,
-          RouteNames.paymentSuccessfulViewWithArg,
-          arguments: 'Failed',
-        );
+        Navigator.pushNamed(context, RouteNames.paymentSuccessfulViewWithArg,
+            arguments: 'Failed');
+        break;
     }
   }
 
   void _handleVerifiedCardFunding(
-    BuildContext context,
-    VerifiedCardFunding state,
-    String historyId,
-  ) {
+      BuildContext context, VerifiedCardFunding state, String historyId) {
     setState(() {
       whoUpdatedHistory = HistoryUpdatedBy.bloc3;
       verificationStatus = state.status;
@@ -338,7 +691,8 @@ class _EnterAmountViewState extends ConsumerState<EnterAmountView> {
   void _handlePaymentHistoryError(
       BuildContext context, PaymentHistoryError state) {
     log('EnterAmountScreen; PaymentHistory: ${state.message}');
-    _showErrorSnackBar(context, 'Funding initialisation failed');
+    HBMSnackBar.show(
+        context: context, content: 'Funding initialisation failed');
 
     Future<void>.delayed(const Duration(seconds: 3), () {
       Navigator.pushNamedAndRemoveUntil(
@@ -347,7 +701,6 @@ class _EnterAmountViewState extends ConsumerState<EnterAmountView> {
         (Route<dynamic> route) => false,
       );
     });
-    return;
   }
 
   void _handlePaymentError(
@@ -368,18 +721,17 @@ class _EnterAmountViewState extends ConsumerState<EnterAmountView> {
       card: card,
       user: user,
     );
-
-    context
-        .read<PaymentBloc>()
-        .add(AddNewCardFundingHistoryEvent(history: history));
+    context.read<PaymentBloc>().add(
+          AddNewCardFundingHistoryEvent(history: history),
+        );
   }
 
   CardFundingHistoryEntity _createCardFundingHistory({
     required FundingStatus status,
     required String failureMessage,
-    FailureStage? failureStage,
     required PaymentCardEntity card,
     required UserEntity user,
+    FailureStage? failureStage,
   }) {
     return CardFundingHistoryEntity(
       id: '',
@@ -393,13 +745,6 @@ class _EnterAmountViewState extends ConsumerState<EnterAmountView> {
       time: DateTime.now().toIso8601String(),
       failureMessage: failureMessage,
       failureStage: failureStage,
-    );
-  }
-
-  void _showErrorSnackBar(BuildContext context, String content) {
-    HBMSnackBar.show(
-      context: context,
-      content: content,
     );
   }
 }

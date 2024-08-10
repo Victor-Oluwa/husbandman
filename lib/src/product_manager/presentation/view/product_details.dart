@@ -1,6 +1,5 @@
 import 'dart:developer';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -132,7 +131,7 @@ class ProductDetailsView extends ConsumerWidget {
                                           ),
                                           HBMTextWidget(
                                             data:
-                                                '${user.customers.length} customers',
+                                                '${user.customer.childCustomer.length} customers',
                                             fontSize: context.width * 0.04,
                                           ),
                                         ],

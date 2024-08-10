@@ -1,7 +1,7 @@
 
 module.exports = {
     //Auth
-    BUYER_SIGNUP: '/buyer/sign-up',
+    SIGNUP: '/sign-up',
     FARMER_SIGNUP: '/farmer/sign-up',
     AUTHENTICATE_RESET_PASSWORD_TOKEN: '/admin/password/token/send',
     RESET_PASSWORD: '/user/password/reset',
@@ -52,6 +52,12 @@ module.exports = {
     ADD_NEW_CARD_FUNDING_HISTORY: '/card/funding/new-history',
     UPDATE_CARD_FUNDING_HISTORY: '/card/funding/edit-history',
     FETCH_CARD_FUNDING_HISTORY: '/card/funding/history',
+
+    //Order
+    CREATE_ORDER: '/order/create-new',
+    DELETE_ORDER: '/order/orderItems/delete-one',
+    FETCH_ORDER: '/order/fetch',
+    MARK_ORDER_ITEM_AS_DELIVERED: '/order/orderItems/mark-one-as-delivered',
 
 }
 

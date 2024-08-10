@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:husbandman/core/common/app/models/user/user_model.dart';
 import 'package:husbandman/core/common/app/public_methods/loading/loading_controller.dart';
 import 'package:husbandman/core/common/strings/hbm_strings.dart';
 import 'package:husbandman/core/common/widgets/hbm_text_widget.dart';
@@ -16,6 +15,7 @@ import 'package:husbandman/core/services/injection/auth/auth_injection.dart';
 import 'package:husbandman/core/services/route_names.dart';
 import 'package:husbandman/core/utils/constants.dart';
 import 'package:husbandman/core/utils/core_utils.dart';
+import 'package:husbandman/src/auth/domain/entity/user/buyer/buyer_entity.dart';
 import 'package:husbandman/src/auth/presentation/bloc/auth_bloc.dart';
 
 class BuyerSignUpScreen extends ConsumerStatefulWidget {
@@ -56,11 +56,11 @@ class _FarmerSignUpScreenState extends ConsumerState<BuyerSignUpScreen> {
         backgroundColor: HBMColors.coolGrey,
         body: BlocConsumer<AuthBloc, AuthState>(
           listener: (context, state) {
-            if (state is BuyerSignedUp) {
-              final user = state.user as UserModel;
+            if (state is SignedUp) {
+              final user = state.user;
               context.read<AuthBloc>().add(
                 SetUserEvent(
-                  user: user.toMap(),
+                  user: user,
                 ),
               );
               return;
@@ -68,8 +68,9 @@ class _FarmerSignUpScreenState extends ConsumerState<BuyerSignUpScreen> {
 
             if (state is UserSet) {
               LoadingIndicatorController.instance.hide();
+              final user = BuyerEntity.fromJson(state.user);
               context.read<AuthBloc>().add(
-                CacheUserTokenEvent(token: state.user.token),
+                CacheUserTokenEvent(token: user.token),
               );
               return;
             }
@@ -88,6 +89,7 @@ class _FarmerSignUpScreenState extends ConsumerState<BuyerSignUpScreen> {
                 message: state.message,
                 context: context,
               );
+              log('SignUp error: ${state.message}');
               return;
             }
           },
@@ -313,14 +315,10 @@ class _FarmerSignUpScreenState extends ConsumerState<BuyerSignUpScreen> {
                           left: sidePadding,
                         ),
                         child: TextButton(
-                          style: ButtonStyle(
-                            minimumSize: MaterialStateProperty.all(
-                              Size(context.width * 0.35, context.height * 0.06),
-                            ),
-                            foregroundColor:
-                            MaterialStateProperty.all(Colors.white),
-                            backgroundColor:
-                            MaterialStateProperty.all(HBMColors.charcoalGrey),
+                          style: TextButton.styleFrom(
+                            fixedSize: Size(context.width * 0.35, context.height * 0.06),
+                            foregroundColor: Colors.white,
+                            backgroundColor: HBMColors.charcoalGrey,
                           ),
                           onPressed: () {
                             LoadingIndicatorController.instance.show();
@@ -353,7 +351,7 @@ class _FarmerSignUpScreenState extends ConsumerState<BuyerSignUpScreen> {
                             }
 
                             context.read<AuthBloc>().add(
-                              BuyerSignUpEvent(
+                              SignUpEvent(
                                 name: _nameController.text,
                                 email: _emailController.text,
                                 password: _passwordController.text,
@@ -364,6 +362,7 @@ class _FarmerSignUpScreenState extends ConsumerState<BuyerSignUpScreen> {
                           },
                           child: HBMTextWidget(
                             data: HBMStrings.signUp,
+                            color: HBMColors.coolGrey,
                             fontFamily: HBMFonts.exo2,
                           ),
                         ),

@@ -33,8 +33,8 @@ class SignOutEvent extends AuthEvent{
   List<Object?> get props => [];
 }
 
-class BuyerSignUpEvent extends AuthEvent {
-  const BuyerSignUpEvent({
+class SignUpEvent extends AuthEvent {
+  const SignUpEvent({
     required this.name,
     required this.email,
     required this.password,

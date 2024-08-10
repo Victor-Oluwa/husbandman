@@ -1,6 +1,6 @@
 
 module.exports = {
 
-    kDefaultTokenEmail: 'hbmdemoemail@gmail.com',
+    kDefaultTokenEmail: 'breadhahahuhuhuemail@gmail.com',
 
 }

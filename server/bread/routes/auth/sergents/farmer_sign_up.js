@@ -1,47 +1,37 @@
 const express = require('express');
 const authMW = require('../../../middlewere/auth_middlewere');
 const endpoints = require('../../../endpoints');
-const arsenal = require('../arsenal/buyer_sign_up_arsenal');
-const Farmer = require('../../../model/farmer');
+const arsenal = require('../arsenal/sign_up_arsenal');
 const farmerArsenal = require('../arsenal/farmer_sign_up_arsenal');
 const InvitationKey = require('../../../model/invitation_key');
+const Seller = require('../../../model/seller');
 
 const router = express.Router();
 
 router.post(endpoints.FARMER_SIGNUP, async (req, res) => {
 
     try {
-        const { name, email, password, address, invitationKey } = req.body;
+        const { name, email, password, type, invitationKey, } = req.body;
 
         console.log('Passed Key: ' + invitationKey);
-        await arsenal.checkIfUserAlreadyExist(email);
+        await arsenal.checkIfUserAlreadyExist(email, type);
 
         let hashedPassword = await arsenal.hashPassword(password);
 
         const key = await farmerArsenal.findKey(invitationKey);
-        await farmerArsenal.assignKey(key, email);
+        let assignedKey = await farmerArsenal.assignKey(key, email, name);
 
-        let newKey = new InvitationKey({
-            ownerEmail: email,
-            assigned: true,
-            value: key
-        });
-
-        newKey = await newKey.save();
-
-        let newFarmer = new Farmer({
+        assignedKey = await assignedKey.save();
+        let newSeller = new Seller({
             name: name,
             email: email,
             password: hashedPassword,
-            address: address,
-
         });
 
 
-        newFarmer = await newFarmer.save();
-        let token = await arsenal.createJWT(newFarmer);
-
-        res.status(200).json({ token, ...newFarmer._doc });
+        newSeller = await newSeller.save();
+        let token = await arsenal.createJWT(newSeller);
+        res.status(200).json({ token, ...newSeller._doc });
 
     } catch (error) {
         arsenal.reportError(error, res);

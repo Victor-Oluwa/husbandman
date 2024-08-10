@@ -6,7 +6,7 @@ import 'package:husbandman/src/auth/data/datasource/auth_datasource_impl.dart';
 import 'package:husbandman/src/auth/data/repo/auth_repo_impl.dart';
 import 'package:husbandman/src/auth/domain/repo/auth_repo.dart';
 import 'package:husbandman/src/auth/domain/use-cases/authenticate_reset_password_token.dart';
-import 'package:husbandman/src/auth/domain/use-cases/buyer_signup.dart';
+import 'package:husbandman/src/auth/domain/use-cases/signup.dart';
 import 'package:husbandman/src/auth/domain/use-cases/cache_user_token.dart';
 import 'package:husbandman/src/auth/domain/use-cases/cache_verified_invitation_token.dart';
 import 'package:husbandman/src/auth/domain/use-cases/farmer_signup.dart';
@@ -28,7 +28,7 @@ final authBlocProvider = Provider.autoDispose<AuthBloc>((ref) {
     signIn: ref.read(signInProvider),
     signOut: ref.read(signOutProvider),
     farmerSignUp: ref.read(farmerSignUpProvider),
-    buyerSignUp: ref.read(buyerSignUpProvider),
+    signUp: ref.read(buyerSignUpProvider),
     cacheUserToken: ref.read(cacheUserTokenProvider),
     cacheVerifiedInvitationToken:
     ref.read(cacheVerifiedInvitationTokenProvider),
@@ -73,8 +73,8 @@ final farmerSignUpProvider = Provider<FarmerSignUp>((ref) {
   return FarmerSignUp(ref.read(authRepoProvider));
 });
 
-final buyerSignUpProvider = Provider<BuyerSignUp>((ref) {
-  return BuyerSignUp(ref.read(authRepoProvider));
+final buyerSignUpProvider = Provider<SignUp>((ref) {
+  return SignUp(ref.read(authRepoProvider));
 });
 
 final cacheUserTokenProvider = Provider<CacheUserToken>((ref) {

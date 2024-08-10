@@ -3,9 +3,9 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:husbandman/core/common/app/entities/invitation_token_entity.dart';
-import 'package:husbandman/core/common/app/entities/order_entity.dart';
 import 'package:husbandman/core/enums/filter_user.dart';
 import 'package:husbandman/core/enums/search_user.dart';
+import 'package:husbandman/core/utils/typedef.dart';
 import 'package:husbandman/src/admin/domain/use-cases/block_account.dart';
 import 'package:husbandman/src/admin/domain/use-cases/change_farmer_badge.dart';
 import 'package:husbandman/src/admin/domain/use-cases/delete_account.dart';
@@ -15,7 +15,6 @@ import 'package:husbandman/src/admin/domain/use-cases/filter_user.dart';
 import 'package:husbandman/src/admin/domain/use-cases/generate_unique_invitation_token.dart';
 import 'package:husbandman/src/admin/domain/use-cases/save_invitation_token.dart';
 import 'package:husbandman/src/admin/domain/use-cases/search_user.dart';
-import 'package:husbandman/src/auth/domain/entity/user_entity.dart';
 
 part 'admin_event.dart';
 

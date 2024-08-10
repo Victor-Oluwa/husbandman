@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:husbandman/core/common/app/models/user/user_model.dart';
 import 'package:husbandman/core/common/strings/hbm_strings.dart';
 import 'package:husbandman/core/common/widgets/hbm_text_widget.dart';
 import 'package:husbandman/core/extensions/context_extension.dart';
@@ -14,6 +13,7 @@ import 'package:husbandman/core/res/media_res.dart';
 import 'package:husbandman/core/services/route_names.dart';
 import 'package:husbandman/core/utils/constants.dart';
 import 'package:husbandman/core/utils/core_utils.dart';
+import 'package:husbandman/src/auth/domain/entity/user/seller/seller_entity.dart';
 import 'package:husbandman/src/auth/presentation/bloc/auth_bloc.dart';
 
 class FarmerSignUpScreen extends ConsumerStatefulWidget {
@@ -57,22 +57,23 @@ class _FarmerSignUpScreenState extends ConsumerState<FarmerSignUpScreen> {
             child: BlocListener<AuthBloc, AuthState>(
               listener: (context, state) {
                 if (state is FarmerSignedUp) {
-                  final user = state.user as UserModel;
+                  final user = state.user;
                   context
                       .read<AuthBloc>()
-                      .add(SetUserEvent(user: user.toMap()));
+                      .add(SetUserEvent(user: user.toJson()));
                 } else if (state is AuthError) {
                   CoreUtils.showSnackBar(
                     message: state.message,
                     context: context,
                   );
-                  log('Farmer sign up error: ${state.message}');
+                  log('Seller sign up error: ${state.message}');
 
                 }
 
                 if (state is UserSet) {
+                  final user = SellerEntity.fromJson(state.user);
                   context.read<AuthBloc>().add(
-                        CacheUserTokenEvent(token: state.user.token),
+                        CacheUserTokenEvent(token: user.token,),
                       );
                 } else if (state is AuthError) {
                   CoreUtils.showSnackBar(
@@ -371,7 +372,7 @@ class _FarmerSignUpScreenState extends ConsumerState<FarmerSignUpScreen> {
                                 email: _emailController.text,
                                 password: _passwordController.text,
                                 address: _addressController.text,
-                                type: HBMStrings.farmer,
+                                type: 'Seller',
                                 invitationKey: _invitationKeyController.text,
                               ),
                             );

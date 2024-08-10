@@ -52,11 +52,7 @@ class _ProductViewByCategoryState extends ConsumerState<ProductViewByCategory> {
           (product) => product.id,
         )
         .toList();
-    CoreUtils.hbmLogTerminal(
-      message:
-          'fetchProductsByCategory called; Items already in category product provider $fetchedProduct',
-      fromClass: 'ProductViewByCategory',
-    );
+
     productManagerBloc.add(
       FetchProductsByCategoryEvent(
         category: widget.category,
@@ -69,7 +65,6 @@ class _ProductViewByCategoryState extends ConsumerState<ProductViewByCategory> {
       _isLoading = false;
     });
 
-    // productManagerBloc.
   }
 
   Future<void> fetchProducts() async {

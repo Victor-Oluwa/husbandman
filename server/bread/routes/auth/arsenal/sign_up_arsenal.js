@@ -1,34 +1,44 @@
 const bcryptjs = require("bcryptjs");
 const Buyer = require('../../../model/buyer');
-const Farmer = require('../../../model/farmer');
 const Admin = require('../../../model/admin');
 const error = require('../../../error');
 const status = require("../../../status");
 const jwt = require('jsonwebtoken');
+const Seller = require("../../../model/seller");
+
+function confirmUser(user) {
+    if (user) {
+        throw new Error(error.USER_ALREADY_EXIST);
+    }
+}
 
 
-async function checkIfUserAlreadyExist(email) {
-    console.log('Email: ' + email);
+async function checkIfUserAlreadyExist(email, type) {
+
     if (!email) {
         throw new Error(error.BAD_EMAIL);
     }
 
-    let user = await Buyer.findOne({ email: email });
-
-    if (!user) {
-        user = await Farmer.findOne({ email: email });
-    } else if (user) {
-        throw new Error(error.USER_ALREADY_EXIST);
+    if (!type) {
+        throw new Error('Invalid user type');
     }
 
-    if (!user) {
-        user = await Admin.findOne({ email: email });
-    } else if (user) {
-        throw new Error(error.USER_ALREADY_EXIST);
-    }
+    switch (type) {
+        case 'Admin':
+            let admin = await Admin.findOne({ email: email });
+            return confirmUser(admin);
 
-    if (user) {
-        throw new Error(error.USER_ALREADY_EXIST);
+        case 'Buyer':
+            let buyer = await Buyer.findOne({ email: email });
+            return confirmUser(buyer);
+
+        case 'Seller':
+            let seller = await Seller.findOne({ email: email });
+            return confirmUser(seller);
+
+        default:
+            throw new Error('Invalid user type');
+
     }
 
 }

@@ -17,7 +17,8 @@ router.post(endpoints.VALIDATE_USER, authMW, async (req, res) => {
         res.status(200).json({ token: req.token, ...user._doc });
 
     } catch (e) {
-        arsenal.reportError(e, res);
+        console.log();
+        res.status(500).json(e.message);
     }
 });
 

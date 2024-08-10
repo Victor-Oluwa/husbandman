@@ -1,7 +1,7 @@
 import 'package:husbandman/core/common/app/entities/invitation_token_entity.dart';
-import 'package:husbandman/core/common/app/models/user/user_model.dart';
 import 'package:husbandman/core/enums/filter_user.dart';
 import 'package:husbandman/core/enums/search_user.dart';
+import 'package:husbandman/core/utils/typedef.dart';
 
 abstract class AdminDatasource{
   const AdminDatasource();
@@ -18,9 +18,9 @@ abstract class AdminDatasource{
 
   Future<List<InvitationTokenEntity>> fetchAllInvitationToken();
 
-  Future<List<UserModel>> fetchAllUsers();
+  Future<List<DataMap>> fetchAllUsers();
 
-  Future<List<UserModel>> filterUser({
+  Future<List<DataMap>> filterUser({
     required FilterUserProperty property,
     required dynamic value,
   });
@@ -36,7 +36,7 @@ abstract class AdminDatasource{
     required String token,
   });
 
-  Future<List<UserModel>> searchUser({
+  Future<List<DataMap>> searchUser({
     required String query,
     required SearchUserProperty property,
   });

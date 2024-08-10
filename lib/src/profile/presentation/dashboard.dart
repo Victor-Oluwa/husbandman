@@ -12,7 +12,6 @@ import 'package:husbandman/core/res/color.dart';
 import 'package:husbandman/core/res/fonts.dart';
 import 'package:husbandman/core/res/media_res.dart';
 import 'package:husbandman/core/services/injection/auth/auth_injection.dart';
-import 'package:husbandman/core/services/route_names.dart';
 import 'package:husbandman/src/auth/presentation/bloc/auth_bloc.dart';
 
 class Dashboard extends ConsumerStatefulWidget {
@@ -23,6 +22,8 @@ class Dashboard extends ConsumerStatefulWidget {
 }
 
 class _DashboardState extends ConsumerState<Dashboard> {
+  final darkTextColor = HBMColors.charcoalGrey;
+  final lightTextColor = HBMColors.lightGrey;
   final _advancedDrawerController = AdvancedDrawerController();
 
   void _handleMenuButtonPressed() {
@@ -38,149 +39,12 @@ class _DashboardState extends ConsumerState<Dashboard> {
           // TODO: implement listener
         },
         builder: (context, state) {
-          return AdvancedDrawer(
-            backdrop: _buildBackdrop(),
-            controller: _advancedDrawerController,
-            animationCurve: Curves.easeInOut,
-            animationDuration: const Duration(milliseconds: 300),
-            childDecoration: const BoxDecoration(
-              boxShadow: <BoxShadow>[BoxShadow(color: Colors.black12)],
-              borderRadius: BorderRadius.all(Radius.circular(16)),
-            ),
-            drawer: _buildDrawer(context),
-            child: Scaffold(
-              backgroundColor: HBMColors.coolGrey,
-              appBar: _buildAppBar(context),
-              body: _buildBody(context),
-            ),
+          return Scaffold(
+            backgroundColor: HBMColors.coolGrey,
+            appBar: _buildAppBar(context),
+            body: _buildBody(context),
           );
         },
-      ),
-    );
-  }
-
-  Container _buildBackdrop() {
-    return Container(
-      width: double.infinity,
-      height: double.infinity,
-      decoration: BoxDecoration(color: HBMColors.charcoalGrey),
-    );
-  }
-
-  SafeArea _buildDrawer(BuildContext context) {
-    return SafeArea(
-      child: Align(
-        alignment: Alignment.topCenter,
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              _buildDrawerHeader(context),
-              const Divider(),
-              _buildDrawerItems(context),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Padding _buildDrawerHeader(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.only(
-        left: context.width * 0.04,
-        top: context.height * 0.06,
-      ),
-      child: Row(
-        children: [
-          CircleAvatar(
-            minRadius: context.width * 0.09,
-            backgroundImage: NetworkImage(
-              ref.read(generalProductProvider)[1].images[0],
-            ),
-          ),
-          SizedBox(width: context.width * 0.04),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              HBMTextWidget(
-                data: ref.read(userProvider).name,
-                fontSize: context.width * 0.04,
-                fontFamily: HBMFonts.quicksandBold,
-                color: HBMColors.coolGrey,
-              ),
-              HBMTextWidget(
-                data: 'View Profile',
-                fontSize: context.width * 0.03,
-                color: HBMColors.coolGrey,
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  ListTileTheme _buildDrawerItems(BuildContext context) {
-    return ListTileTheme(
-      dense: true,
-      textColor: HBMColors.mediumGrey,
-      tileColor: HBMColors.mediumGrey,
-      iconColor: HBMColors.coolGrey,
-      contentPadding: EdgeInsets.only(left: context.width * 0.04),
-      child: Column(
-        children: [
-          _buildDrawerItem(context, 'Customers', Icons.history),
-          _buildDrawerItem(context, 'Deposit History', Icons.history),
-          _buildDrawerItem(context, 'Withdraw History', Icons.history),
-          _buildDrawerItem(context, 'Chat', Icons.history),
-          _buildDrawerItem(context, 'Settings', Icons.history),
-          _buildDrawerItem(context, 'Invoices', Icons.history),
-          _buildDrawerItem(
-            context,
-            'Log Out',
-            Icons.history,
-            onTap: () {
-              context.read<AuthBloc>().add(const SignOutEvent());
-            },
-          ),
-          _buildDrawerItem(
-            context,
-            'Cart',
-            Icons.history,
-            onTap: () {},
-          ),
-          _buildDrawerItem(
-            context,
-            'Card',
-            Icons.payment,
-            onTap: () {
-              Navigator.pushNamed(context, RouteNames.allCardView);
-            },
-          ),
-        ],
-      ),
-    );
-  }
-
-  ListTile _buildDrawerItem(
-    BuildContext context,
-    String title,
-    IconData icon, {
-    VoidCallback? onTap,
-  }) {
-    return ListTile(
-      onTap: onTap ?? () {},
-      leading: Icon(icon, size: context.width * 0.06),
-      trailing: Icon(
-        Icons.arrow_forward_ios_rounded,
-        color: HBMColors.coolGrey,
-        size: context.width * 0.03,
-      ),
-      title: HBMTextWidget(
-        data: title,
-        fontFamily: HBMFonts.quicksandNormal,
-        fontSize: context.width * 0.04,
-        color: HBMColors.coolGrey,
       ),
     );
   }
@@ -243,7 +107,7 @@ class _DashboardState extends ConsumerState<Dashboard> {
       width: context.width * 0.95,
       child: Card(
         elevation: 0,
-        color: HBMColors.transparent,
+        color: HBMColors.charcoalGrey,
         shape: RoundedRectangleBorder(
           side: BorderSide(color: HBMColors.grey),
           borderRadius: BorderRadius.circular(context.width * 0.05),
@@ -275,13 +139,13 @@ class _DashboardState extends ConsumerState<Dashboard> {
       children: [
         HBMTextWidget(
           data: '₦50,300,255',
-          color: HBMColors.mediumGrey,
+          color: lightTextColor,
           fontSize: context.width * 0.06,
           fontFamily: HBMFonts.quicksandBold,
         ),
         HBMTextWidget(
           data: 'Current Balance',
-          color: HBMColors.mediumGrey,
+          color: lightTextColor,
           fontSize: context.width * 0.03,
         ),
       ],
@@ -304,13 +168,13 @@ class _DashboardState extends ConsumerState<Dashboard> {
       children: [
         HBMTextWidget(
           data: amount,
-          color: HBMColors.mediumGrey,
+          color: lightTextColor,
           fontSize: context.width * 0.04,
           fontFamily: HBMFonts.quicksandBold,
         ),
         HBMTextWidget(
           data: label,
-          color: HBMColors.mediumGrey,
+          color: lightTextColor,
           fontSize: context.width * 0.03,
           fontFamily: HBMFonts.quicksandNormal,
         ),
@@ -440,8 +304,8 @@ class _DashboardState extends ConsumerState<Dashboard> {
       height: context.height * 0.28,
       width: context.width,
       decoration: BoxDecoration(
-        color: HBMColors.lightGrey,
-        border: Border.fromBorderSide(BorderSide(color: HBMColors.lightGrey)),
+        color: HBMColors.transparent,
+        border: Border.fromBorderSide(BorderSide(color: HBMColors.transparent)),
         borderRadius: BorderRadius.only(
           topRight: Radius.circular(
             context.width * 0.04,
@@ -457,7 +321,7 @@ class _DashboardState extends ConsumerState<Dashboard> {
         child: ListView.separated(
           itemBuilder: _buildOrderItem,
           separatorBuilder: (context, index) =>
-              Divider(color: HBMColors.mediumGrey),
+              Divider(color: HBMColors.lightGrey),
           itemCount: 4,
         ),
       ),
@@ -480,7 +344,7 @@ class _DashboardState extends ConsumerState<Dashboard> {
 
   Widget _buildOrderIcon(BuildContext context, String imageUrl) {
     return FaIcon(
-      FontAwesomeIcons.road,
+      FontAwesomeIcons.truck,
       color: HBMColors.mediumGrey,
     );
   }

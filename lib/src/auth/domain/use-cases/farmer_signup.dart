@@ -1,10 +1,10 @@
 import 'package:equatable/equatable.dart';
 import 'package:husbandman/core/usecases/usecases.dart';
 import 'package:husbandman/core/utils/typedef.dart';
-import 'package:husbandman/src/auth/domain/entity/user_entity.dart';
+import 'package:husbandman/src/auth/domain/entity/user/seller/seller_entity.dart';
 import 'package:husbandman/src/auth/domain/repo/auth_repo.dart';
 
-class FarmerSignUp extends UseCaseWithParams<UserEntity, FarmerSignUpParams> {
+class FarmerSignUp extends UseCaseWithParams<SellerEntity, FarmerSignUpParams> {
   const FarmerSignUp(
     this._authRepo,
   );
@@ -12,7 +12,7 @@ class FarmerSignUp extends UseCaseWithParams<UserEntity, FarmerSignUpParams> {
   final AuthRepo _authRepo;
 
   @override
-  ResultFuture<UserEntity> call(FarmerSignUpParams params) {
+  ResultFuture<SellerEntity> call(FarmerSignUpParams params) {
    return _authRepo.farmerSignUp(
       name: params.name,
       email: params.email,

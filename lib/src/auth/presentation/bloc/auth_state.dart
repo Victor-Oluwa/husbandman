@@ -18,27 +18,23 @@ class AuthLoading extends AuthState {
 class SignedIn extends AuthState {
   const SignedIn(this.user);
 
-  final UserEntity user;
+  final DataMap user;
 
   @override
   List<Object> get props => [user];
 }
 
-class BuyerSignedUp extends AuthState {
-  const BuyerSignedUp(this.user);
-  final UserEntity user;
+class SignedUp extends AuthState {
+  const SignedUp(this.user);
+  final DataMap user;
 
   @override
   List<Object> get props => [user];
-}
-
-class BuyerSigningUp extends AuthState{
-  const BuyerSigningUp();
 }
 
 class FarmerSignedUp extends AuthState {
   const FarmerSignedUp(this.user);
-  final UserEntity user;
+  final SellerEntity user;
 
   @override
   List<Object> get props => [user];
@@ -72,7 +68,7 @@ class PasswordReset extends AuthState {
 class UserSet extends AuthState {
   const UserSet(this.user);
 
-  final UserEntity user;
+  final DataMap user;
   @override
   List<Object> get props => [user];
 }
@@ -80,7 +76,7 @@ class UserSet extends AuthState {
 class UserValidated extends AuthState {
   const UserValidated(this.user);
 
-  final UserEntity user;
+  final DataMap user;
 
   @override
   List<Object> get props => [user];
@@ -102,7 +98,7 @@ class ResetPasswordTokenSent extends AuthState {
 class UserUpdated extends AuthState {
   const UserUpdated(this.user);
 
-  final UserEntity user;
+  final DataMap user;
 
   @override
   List<Object> get props => [user];

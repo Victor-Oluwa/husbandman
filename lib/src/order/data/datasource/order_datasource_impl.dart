@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:dio/dio.dart';
 import 'package:husbandman/core/error/exceptions.dart';
@@ -8,9 +9,9 @@ import 'package:husbandman/src/order/data/datasource/order_datasource.dart';
 import 'package:husbandman/src/order/data/model/order_model.dart';
 import 'package:husbandman/src/order/domain/entity/order_entity.dart';
 
-const String kCreateOrderEndpoint = 'order/create-new';
-const String kDeleteOrderEndpoint = 'order/orderItems/delete-one';
-const String kFetchOrdersEndpoint = 'order/fetch';
+const String kCreateOrderEndpoint = '/order/create-new';
+const String kDeleteOrderEndpoint = '/order/orderItems/delete-one';
+const String kFetchOrdersEndpoint = '/order/fetch';
 const String kMarkOrderItemAsDelivered =
     'order/orderItems/mark-one-as-delivered';
 
@@ -21,6 +22,7 @@ class OrderDatasourceImpl implements OrderDatasource {
 
   @override
   Future<OrderModel> createOrder({required OrderEntity order}) async {
+    log('Order: ${order.toMap()}');
     try {
       final response = await _dio.post<DataMap>(
         '$kBaseUrl$kCreateOrderEndpoint',
@@ -33,6 +35,7 @@ class OrderDatasourceImpl implements OrderDatasource {
           order.toMap(),
         ),
       );
+      log('Create order called');
 
       final responseData = response.data;
 
@@ -52,18 +55,18 @@ class OrderDatasourceImpl implements OrderDatasource {
       return OrderModel.fromMap(responseData);
     } on OrderException catch (_) {
       rethrow;
-    } on DioException catch (e) {
-      if (e.response?.data != null) {
-        throw OrderException(
-          message: e.response?.data.toString() ?? '',
-          statusCode: 500,
-        );
-      } else {
-        throw OrderException(
-          message: e.message ?? '',
-          statusCode: 500,
-        );
-      }
+      // } on DioException catch (e) {
+      //   if (e.response?.data != null) {
+      //     throw OrderException(
+      //       message: e.response?.data.toString() ?? '',
+      //       statusCode: 500,
+      //     );
+      //   } else {
+      //     throw OrderException(
+      //       message: e.message ?? '',
+      //       statusCode: 500,
+      //     );
+      //   }
     } catch (e) {
       throw OrderException(
         message: e.toString(),

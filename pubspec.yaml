@@ -51,7 +51,7 @@ dependencies:
   path_provider: ^2.1.2
   flutter_riverpod: ^2.4.10
   shared_preferences: ^2.2.2
-  smooth_page_indicator: ^1.1.0
+  smooth_page_indicator: ^1.2.0+3
   swipe_to: ^1.0.5
   url_launcher: ^6.2.4
   youtube_metadata: ^1.0.1
@@ -81,6 +81,9 @@ dependencies:
   flutter_credit_card: ^4.0.1
   credit_card_validator: ^2.1.0
   flutter_inappwebview: ^6.0.0
+  country_picker: ^2.0.26
+  intl_phone_number_input: ^0.7.4
+  json_annotation: ^4.9.0
 
 
 dev_dependencies:
@@ -93,6 +96,8 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   very_good_analysis: ^5.1.0
+  json_serializable: ^6.8.0
+  build_runner: ^2.4.11
   flutter_lints: ^2.0.0
 
 # For information on the generic Dart part of this file, see the

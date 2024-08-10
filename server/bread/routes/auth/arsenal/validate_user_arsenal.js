@@ -1,9 +1,9 @@
 const error = require('../../../error');
 const Buyer = require('../../../model/buyer');
-const Farmer = require('../../../model/farmer');
 const Admin = require('../../../model/admin');
 const status = require('../../../status');
 const jwt = require('jsonwebtoken');
+const Seller = require('../../../model/seller');
 
 async function getToken(req) {
     // console.log('Hahha' + process.env.AUTH_TOKEN_KEY)
@@ -20,6 +20,7 @@ async function verifyToken(token) {
     const verified = jwt.verify(token, process.env.PASSWORD_KEY);
     if (!verified) throw new Error(error.BAD_TOKEN);
     let user = await getUser(verified.id);
+    if (!user) throw new Error(error.USER_DOES_NOT_EXIST);
     user.token = token;
     return user;
 }
@@ -28,7 +29,7 @@ async function getUser(id) {
     let user = await Buyer.findById(id);
 
     if (!user) {
-        user = await Farmer.findById(id);
+        user = await Seller.findById(id);
     }
 
     if (!user) {

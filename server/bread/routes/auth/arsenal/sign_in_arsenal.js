@@ -1,10 +1,10 @@
 const bcryptjs = require("bcryptjs");
 const Buyer = require('../../../model/buyer');
-const Farmer = require('../../../model/farmer');
 const Admin = require('../../../model/admin');
 const error = require('../../../error');
 const status = require("../../../status");
 const InvitationKey = require("../../../model/invitation_key");
+const Seller = require("../../../model/seller");
 
 async function checkIfUserIsRegistered(email) {
     if (!email) {
@@ -12,7 +12,7 @@ async function checkIfUserIsRegistered(email) {
     }
     let user = await Buyer.findOne({ email: email });
     if (!user) {
-        user = await Farmer.findOne({ email: email });
+        user = await Seller.findOne({ email: email });
     }
 
     if (!user) {
@@ -27,7 +27,7 @@ async function checkIfUserIsRegistered(email) {
 }
 
 async function verifySellerToken(email) {
-    let seller = await Farmer.findOne({ email: email });
+    let seller = await Seller.findOne({ email: email });
     if (!seller) {
         console.log('User is not a seller');
         return;

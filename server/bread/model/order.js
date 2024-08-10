@@ -5,10 +5,9 @@ const mongoose = require('mongoose');
 const ordersItemsSchema = new mongoose.Schema({
     itemName: { type: String, required: true },
     itemImage: { type: String, required: true },
-    itemDescription: { type: String, required: true },
     itemPrice: { type: Number, required: true },
     isItemDelivered: { type: Boolean, required: true },
-    itemPercentage: { type: Number, required: true },
+    deductible: { type: Number, required: true },
     itemQuantity: { type: Number, required: true }
 });
 

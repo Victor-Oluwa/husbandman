@@ -2,7 +2,7 @@ import 'package:dartz/dartz.dart';
 import 'package:husbandman/core/error/failure.dart';
 import 'package:husbandman/src/auth/domain/entity/user_entity.dart';
 import 'package:husbandman/src/auth/domain/repo/auth_repo.dart';
-import 'package:husbandman/src/auth/domain/use-cases/buyer_signup.dart';
+import 'package:husbandman/src/auth/domain/use-cases/signup.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';
 
@@ -10,21 +10,21 @@ import 'auth_repo.mock.dart';
 
 void main() {
   late AuthRepo authRepo;
-  late BuyerSignUp usecase;
+  late SignUp usecase;
 
-  const buyerSignUpParams = BuyerSignUpParams.empty();
+  const buyerSignUpParams = SignUpParams.empty();
   final tUserEntity = UserEntity.empty();
 
   setUp(() {
     authRepo = MockAuthRepo();
-    usecase = BuyerSignUp(authRepo);
+    usecase = SignUp(authRepo);
   });
 
   test('BuyerSignUp use case Should return [Right(void)] when successful',
       () async {
 
     when(
-      () => authRepo.buyerSignUp(
+      () => authRepo.signUp(
         name: any(named: 'name'),
         email: any(named: 'email'),
         password: any(named: 'password'),
@@ -40,7 +40,7 @@ void main() {
     expect(result, equals( Right<dynamic, UserEntity>(tUserEntity)));
 
     verify(
-      () => authRepo.buyerSignUp(
+      () => authRepo.signUp(
         name: buyerSignUpParams.name,
         email: buyerSignUpParams.email,
         password: buyerSignUpParams.password,
@@ -54,7 +54,7 @@ void main() {
   test('BuyerSignUp should return [Left(ServerFailure)] when unsuccessful ',
       () async {
     when(
-      () => authRepo.buyerSignUp(
+      () => authRepo.signUp(
         name: any(named: 'name'),
         email: any(named: 'email'),
         password: any(named: 'password'),
@@ -76,7 +76,7 @@ void main() {
     );
 
     verify(
-      () => authRepo.buyerSignUp(
+      () => authRepo.signUp(
         name: buyerSignUpParams.name,
         email: buyerSignUpParams.email,
         password: buyerSignUpParams.password,

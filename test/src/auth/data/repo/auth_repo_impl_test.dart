@@ -111,7 +111,7 @@ void main() {
   group('Buyer Sign Up', () {
     test('Should return [Right(null)] when successful', () async {
       when(
-        () => authDataSource.buyerSignUp(
+        () => authDataSource.signUp(
           name: any(named: 'name'),
           email: any(named: 'email'),
           password: any(named: 'password'),
@@ -120,7 +120,7 @@ void main() {
         ),
       ).thenAnswer((_) async => tBuyerUser);
 
-      final result = await authRepoImpl.buyerSignUp(
+      final result = await authRepoImpl.signUp(
         name: farmerSignUpParams.name,
         email: farmerSignUpParams.email,
         password: farmerSignUpParams.password,
@@ -131,7 +131,7 @@ void main() {
       expect(result, equals(Right<dynamic, BuyerModel>(tBuyerUser)));
 
       verify(
-        () => authDataSource.buyerSignUp(
+        () => authDataSource.signUp(
           name: farmerSignUpParams.name,
           email: farmerSignUpParams.email,
           password: farmerSignUpParams.password,
@@ -145,7 +145,7 @@ void main() {
 
     test('Should return [Left(AuthFailure)] when successful', () async {
       when(
-        () => authDataSource.buyerSignUp(
+        () => authDataSource.signUp(
           name: any(named: 'name'),
           email: any(named: 'email'),
           password: any(named: 'password'),
@@ -159,7 +159,7 @@ void main() {
         ),
       );
 
-      final result = await authRepoImpl.buyerSignUp(
+      final result = await authRepoImpl.signUp(
         name: farmerSignUpParams.name,
         email: farmerSignUpParams.email,
         password: farmerSignUpParams.password,
@@ -180,7 +180,7 @@ void main() {
       );
 
       verify(
-        () => authDataSource.buyerSignUp(
+        () => authDataSource.signUp(
           name: farmerSignUpParams.name,
           email: farmerSignUpParams.email,
           password: farmerSignUpParams.password,

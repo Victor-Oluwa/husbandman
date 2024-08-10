@@ -7,6 +7,7 @@ const adminRouter = require('./bread/routes/admin/commander/admin');
 const productManagerRouter = require('./bread/routes/product-manager/commander/product_manager');
 const cartRoute = require('./bread/routes/cart/commander/cart');
 const paymentRoute = require('./bread/routes/payment/commandar/payment');
+const orderRoute = require('./bread/routes/order/commander/order');
 
 //IMPORTS FROM OTHER FILES
 
@@ -21,6 +22,7 @@ app.use(adminRouter);
 app.use(productManagerRouter);
 app.use(cartRoute);
 app.use(paymentRoute);
+app.use(orderRoute);
 
 //Connections
 mongoose.connect(process.env.MONGODB_URI, {

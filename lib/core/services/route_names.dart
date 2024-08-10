@@ -26,5 +26,6 @@ class RouteNames {
   static const enterCardAddressView = 'enter-card-address';
   static const enterOTPViewWithArgs = 'enter-otp-view';
   static const paymentSuccessfulViewWithArg = 'payment-successful-view';
+  static const checkOutView = 'checkOutView';
 
 }

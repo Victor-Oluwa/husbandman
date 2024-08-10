@@ -1,7 +1,5 @@
 const express = require('express');
 const endpoints = require('../../../endpoints');
-const InvitationKey = require('../../../model/invitation_key');
-const error = require('../../../error');
 const arsenal = require('../arsenal/validate_invitation_key_arsenal');
 
 const router = express.Router();

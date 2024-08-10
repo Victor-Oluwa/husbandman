@@ -3,15 +3,15 @@ import 'package:husbandman/src/cart/domain/entity/cart_item_entity.dart';
 
 class OrderItemsEntity extends Equatable {
   const OrderItemsEntity({
-
-    required this.id,
     required this.itemName,
     required this.itemImage,
     required this.itemDescription,
     required this.itemPrice,
     required this.isItemDelivered,
-    required this.itemPercentage,
+    required this.deductible,
     required this.itemQuantity,
+    this.id = '',
+
   });
 
   factory OrderItemsEntity.fromMap(Map<String, dynamic> map) {
@@ -22,20 +22,19 @@ class OrderItemsEntity extends Equatable {
       itemDescription: map['itemDescription'] as String? ?? '',
       itemPrice: (map['itemPrice'] as num?)?.toDouble() ?? 0,
       isItemDelivered: map['isItemDelivered'] as bool? ?? false,
-      itemPercentage: (map['itemPercentage'] as num?)?.toDouble() ?? 0,
+      deductible: (map['deductible'] as num?)?.toDouble() ?? 0,
       itemQuantity: map['itemQuantity'] as int? ?? 0,
     );
   }
 
   factory OrderItemsEntity.fromCartItem(CartItemEntity cartItem) {
     return OrderItemsEntity(
-      id: '',
       itemName: cartItem.productName,
       itemImage: cartItem.productImage,
       itemDescription: '',
       itemPrice: cartItem.productPrice,
       isItemDelivered: false,
-      itemPercentage: cartItem.percentage,
+      deductible: cartItem.percentage,
       itemQuantity: cartItem.productQuantity,
     );
   }
@@ -47,7 +46,7 @@ class OrderItemsEntity extends Equatable {
     itemDescription: '',
     itemPrice: 0,
     isItemDelivered: false,
-    itemPercentage: 0,
+    deductible: 0,
     itemQuantity: 0,
   );
 
@@ -57,18 +56,17 @@ class OrderItemsEntity extends Equatable {
   final String itemDescription;
   final double itemPrice;
   final bool isItemDelivered;
-  final double itemPercentage;
+  final double deductible;
   final int itemQuantity;
 
   Map<String, dynamic> toMap() {
     return {
-      '_id': id,
       'itemName': itemName,
       'itemImage': itemImage,
       'itemDescription': itemDescription,
       'itemPrice': itemPrice,
       'isItemDelivered': isItemDelivered,
-      'itemPercentage': itemPercentage,
+      'deductible': deductible,
       'itemQuantity': itemQuantity,
     };
   }
@@ -81,7 +79,7 @@ class OrderItemsEntity extends Equatable {
     itemDescription,
     itemPrice,
     isItemDelivered,
-    itemPercentage,
+    deductible,
     itemQuantity,
   ];
 }

@@ -23,7 +23,7 @@ class MediaRes {
   static const greyBagImage = '$_baseIcon/greyBagImage.png';
   static const charcoalUserImage = '$_baseIcon/charcoalUserImage.png';
   static const greyUserImage = '$_baseIcon/greyUserImage.png';
-  static const darkWithdrawIcon = '$_baseIcon/dark_withdraw-bitcoin.svg';
+  static const darkWithdrawIcon = '$_baseIcon/withdraw.svg';
   static const greyWithdrawImage = '$_baseIcon/geryWithdrawImage.png';
   static const coolGreyOrderIcon = '$_baseIcon/orders_cool_grey.svg';
 

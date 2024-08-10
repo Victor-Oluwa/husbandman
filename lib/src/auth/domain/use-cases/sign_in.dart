@@ -1,16 +1,15 @@
 import 'package:equatable/equatable.dart';
 import 'package:husbandman/core/usecases/usecases.dart';
 import 'package:husbandman/core/utils/typedef.dart';
-import 'package:husbandman/src/auth/domain/entity/user_entity.dart';
 import 'package:husbandman/src/auth/domain/repo/auth_repo.dart';
 
-class SignIn extends UseCaseWithParams<UserEntity, SignInParams> {
+class SignIn extends UseCaseWithParams<DataMap, SignInParams> {
   const SignIn(this._authRepo);
 
   final AuthRepo _authRepo;
 
   @override
-  ResultFuture<UserEntity> call(SignInParams params) => _authRepo.signIn(
+  ResultFuture<DataMap> call(SignInParams params) => _authRepo.signIn(
         email: params.email,
         password: params.password,
       );

@@ -6,9 +6,10 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:husbandman/core/enums/update_user.dart';
 import 'package:husbandman/core/utils/typedef.dart';
-import 'package:husbandman/src/auth/domain/entity/user_entity.dart';
+import 'package:husbandman/src/auth/domain/entity/user/buyer/buyer_entity.dart';
+import 'package:husbandman/src/auth/domain/entity/user/seller/seller_entity.dart';
 import 'package:husbandman/src/auth/domain/use-cases/authenticate_reset_password_token.dart';
-import 'package:husbandman/src/auth/domain/use-cases/buyer_signup.dart';
+import 'package:husbandman/src/auth/domain/use-cases/signup.dart';
 import 'package:husbandman/src/auth/domain/use-cases/cache_user_token.dart';
 import 'package:husbandman/src/auth/domain/use-cases/cache_verified_invitation_token.dart';
 import 'package:husbandman/src/auth/domain/use-cases/farmer_signup.dart';
@@ -32,7 +33,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     required SignIn signIn,
     required SignOut signOut,
     required FarmerSignUp farmerSignUp,
-    required BuyerSignUp buyerSignUp,
+    required SignUp signUp,
     required CacheUserToken cacheUserToken,
     required CacheVerifiedInvitationToken cacheVerifiedInvitationToken,
     required SetUser setUser,
@@ -46,7 +47,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         _signIn = signIn,
         _signOut = signOut,
         _farmerSignUp = farmerSignUp,
-        _buyerSignUp = buyerSignUp,
+        _signUp = signUp,
         _cacheUserToken = cacheUserToken,
         _cacheVerifiedInvitationToken = cacheVerifiedInvitationToken,
         _setUser = setUser,
@@ -65,7 +66,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     );
     on<SignInEvent>(_signInHandler);
     on<SignOutEvent>(_signOutHandler);
-    on<BuyerSignUpEvent>(_buyerSignUpHandler);
+    on<SignUpEvent>(_signUpHandler);
     on<FarmerSignUpEvent>(_farmerSignUpHandler);
     on<CacheUserTokenEvent>(_cacheUserTokenHandler);
     on<CacheVerifiedInvitationTokenEvent>(_cacheVerifiedInvitationTokenHandler);
@@ -81,7 +82,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final AuthenticateResetPasswordToken _authenticateResetPasswordToken;
   final SignIn _signIn;
   final SignOut _signOut;
-  final BuyerSignUp _buyerSignUp;
+  final SignUp _signUp;
   final FarmerSignUp _farmerSignUp;
   final CacheUserToken _cacheUserToken;
   final CacheVerifiedInvitationToken _cacheVerifiedInvitationToken;
@@ -140,12 +141,12 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     );
   }
 
-  Future<void> _buyerSignUpHandler(
-    BuyerSignUpEvent event,
+  Future<void> _signUpHandler(
+    SignUpEvent event,
     Emitter<AuthState> emit,
   ) async {
-    final result = await _buyerSignUp(
-      BuyerSignUpParams(
+    final result = await _signUp(
+      SignUpParams(
         name: event.name,
         email: event.email,
         password: event.password,
@@ -157,7 +158,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     result.fold(
       (l) => emit( AuthError(l.errorMessage)),
       (r) => emit(
-        BuyerSignedUp(r),
+        SignedUp(r),
       ),
     );
   }

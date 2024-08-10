@@ -19,6 +19,7 @@ import 'package:husbandman/core/services/routes.dart';
 import 'package:husbandman/core/services/shared_preference.dart';
 import 'package:husbandman/core/utils/constants.dart';
 import 'package:cloudinary/cloudinary.dart';
+import 'package:husbandman/src/auth/presentation/view/home_screen.dart';
 import 'package:lottie/lottie.dart';
 
 import 'core/common/app/public_methods/loading/loading_controller.dart';

@@ -120,39 +120,44 @@ import 'package:husbandman/src/order/domain/entity/order_items_entity.dart';
 
 class OrderEntity extends Equatable {
   const OrderEntity({
-    required this.id,
     required this.ownerId,
     required this.grandTotal,
     required this.orders,
+    this.id = '',
   });
 
   factory OrderEntity.fromMap(Map<String, dynamic> map) {
     return OrderEntity(
       id: map['_id'] as String? ?? '',
       ownerId: map['ownerId'] as String? ?? '',
-      grandTotal:( map['grandTotal'] as num?)?.toDouble() ?? 0.0,
+      grandTotal: (map['grandTotal'] as num?)?.toDouble() ?? 0.0,
       orders: (map['orders'] as List<dynamic>?)
-              ?.map((item) => AllOrdersEntity.fromMap(item as Map<String, dynamic>),)
+              ?.map(
+                (item) => AllOrdersEntity.fromMap(item as Map<String, dynamic>),
+              )
               .toList() ??
           [],
     );
   }
 
-  factory OrderEntity.fromCart(String ownerId, List<CartItemEntity> cartItems) {
-
+  factory OrderEntity.fromCart({
+    required String ownerId,
+    required List<CartItemEntity> cartItems,
+    required String orderName,
+  }) {
     final orderItems =
         cartItems.map((item) => OrderItemsEntity.fromCartItem(item)).toList();
 
-        final allOrdersEntity = AllOrdersEntity(
-    id: '',
+    final allOrdersEntity = AllOrdersEntity(
       grossTotal: orderItems.fold(
           0, (sum, item) => sum + item.itemPrice * item.itemQuantity),
-      orderName: 'Sample Order',
+      orderName: orderName,
+      totalPercentage:
+          orderItems.fold(0, (sum, item) => sum + item.deductible*item.itemQuantity),
       orderItems: orderItems,
     );
 
     return OrderEntity(
-      id: 'order_id',
       ownerId: ownerId,
       grandTotal: allOrdersEntity.grossTotal,
       orders: [allOrdersEntity],
@@ -173,7 +178,6 @@ class OrderEntity extends Equatable {
 
   Map<String, dynamic> toMap() {
     return {
-      '_id': id,
       'ownerId': ownerId,
       'grandTotal': grandTotal,
       'orders': orders.map((order) => order.toMap()).toList(),

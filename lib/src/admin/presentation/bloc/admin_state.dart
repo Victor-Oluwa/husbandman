@@ -39,7 +39,7 @@ class FetchedInvitationToken extends AdminState {
 class FetchedAllUsers extends AdminState {
   const FetchedAllUsers(this.users);
 
-  final List<UserEntity> users;
+  final List<DataMap> users;
 
   @override
   List<Object> get props => [users];
@@ -48,7 +48,7 @@ class FetchedAllUsers extends AdminState {
 class FilteredUser extends AdminState {
   const FilteredUser(this.users);
 
-  final List<UserEntity> users;
+  final List<DataMap> users;
 
   @override
   List<Object> get props => [users];
@@ -66,7 +66,7 @@ class InvitationTokenGenerated extends AdminState {
 class FoundUsers extends AdminState {
   const FoundUsers(this.users);
 
-  final List<UserEntity> users;
+  final List<DataMap> users;
 
   @override
   List<Object> get props => [users];

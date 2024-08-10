@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 import 'package:husbandman/core/common/app/models/invitation_token_model.dart';
-import 'package:husbandman/core/common/app/models/user/user_model.dart';
 import 'package:husbandman/core/common/app/public_methods/token-generator/token_generator.dart';
 import 'package:husbandman/core/common/strings/error_messages.dart';
 import 'package:husbandman/core/enums/filter_user.dart';
@@ -146,7 +145,7 @@ class AdminDatasourceImpl implements AdminDatasource {
   }
 
   @override
-  Future<List<UserModel>> fetchAllUsers() async {
+  Future<List<DataMap>> fetchAllUsers() async {
     try {
       final response = await _client.get(
         Uri.parse(
@@ -164,11 +163,9 @@ class AdminDatasourceImpl implements AdminDatasource {
         );
       }
 
-      final result = List<DataMap>.from(jsonDecode(response.body) as List)
-          .map(UserModel.fromMap)
-          .toList();
-
+      final result = jsonDecode(response.body) as List<DataMap>;
       return result;
+
     } on AdminException catch (_) {
       rethrow;
     } catch (e) {
@@ -180,7 +177,7 @@ class AdminDatasourceImpl implements AdminDatasource {
   }
 
   @override
-  Future<List<UserModel>> filterUser({
+  Future<List<DataMap>> filterUser({
     required FilterUserProperty property,
     required dynamic value,
   }) async {
@@ -205,9 +202,7 @@ class AdminDatasourceImpl implements AdminDatasource {
         );
       }
 
-      final result = List<DataMap>.from(jsonDecode(response.body) as List)
-          .map(UserModel.fromMap)
-          .toList();
+      final result = jsonDecode(response.body) as List<DataMap>;
 
       return result;
     } on AdminException catch (_) {
@@ -241,7 +236,7 @@ class AdminDatasourceImpl implements AdminDatasource {
   }
 
   @override
-  Future<List<UserModel>> searchUser({
+  Future<List<DataMap>> searchUser({
     required String query,
     required SearchUserProperty property,
   }) async {
@@ -264,10 +259,7 @@ class AdminDatasourceImpl implements AdminDatasource {
         );
       }
 
-      final result = List<DataMap>.from(jsonDecode(response.body) as List)
-          .map(UserModel.fromMap)
-          .toList();
-
+      final result = jsonDecode(response.body) as List<DataMap>;
       return result;
     } on AdminException catch (_) {
       rethrow;

@@ -1,11 +1,12 @@
 import 'package:dartz/dartz.dart';
-import 'package:husbandman/core/common/app/models/user/user_model.dart';
 import 'package:husbandman/core/enums/update_user.dart';
 import 'package:husbandman/core/error/exceptions.dart';
 import 'package:husbandman/core/error/failure.dart';
 import 'package:husbandman/core/utils/typedef.dart';
 import 'package:husbandman/src/auth/data/datasource/auth_datasource.dart';
-import 'package:husbandman/src/auth/domain/entity/user_entity.dart';
+import 'package:husbandman/src/auth/data/model/buyer/buyer_model.dart';
+import 'package:husbandman/src/auth/data/model/seller/seller_model.dart';
+import 'package:husbandman/src/auth/domain/entity/user/seller/seller_entity.dart';
 import 'package:husbandman/src/auth/domain/repo/auth_repo.dart';
 
 class AuthRepoImpl implements AuthRepo {
@@ -29,7 +30,7 @@ class AuthRepoImpl implements AuthRepo {
   }
 
   @override
-  ResultFuture<UserModel> buyerSignUp({
+  ResultFuture<DataMap> signUp({
     required String name,
     required String email,
     required String password,
@@ -37,7 +38,7 @@ class AuthRepoImpl implements AuthRepo {
     required String address,
   }) async {
     try {
-      final result = await _authDataSource.buyerSignUp(
+      final result = await _authDataSource.signUp(
         name: name,
         email: email,
         password: password,
@@ -76,7 +77,7 @@ class AuthRepoImpl implements AuthRepo {
   }
 
   @override
-  ResultFuture<UserModel> farmerSignUp({
+  ResultFuture<SellerEntity> farmerSignUp({
     required String name,
     required String email,
     required String password,
@@ -140,7 +141,7 @@ class AuthRepoImpl implements AuthRepo {
   }
 
   @override
-  ResultFuture<UserModel> setUser({required DataMap user}) async {
+  ResultFuture<DataMap> setUser({required DataMap user}) async {
     try {
       final result = await _authDataSource.setUser(user: user);
       return Right(result);
@@ -152,7 +153,7 @@ class AuthRepoImpl implements AuthRepo {
   }
 
   @override
-  ResultFuture<UserModel> signIn({
+  ResultFuture<DataMap> signIn({
     required String email,
     required String password,
   }) async {
@@ -180,7 +181,7 @@ class AuthRepoImpl implements AuthRepo {
   }
 
   @override
-  ResultFuture<UserModel> updateUser({
+  ResultFuture<DataMap> updateUser({
     required dynamic newData,
     required UpdateUserCulprit culprit,
   }) async {
@@ -198,7 +199,7 @@ class AuthRepoImpl implements AuthRepo {
   }
 
   @override
-  ResultFuture<UserModel> validateUser({required String token}) async {
+  ResultFuture<DataMap> validateUser({required String token}) async {
     try {
       final result = await _authDataSource.validateUser(token: token);
       return Right(result);

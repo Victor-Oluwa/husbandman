@@ -111,7 +111,7 @@ void main() {
         ),
       );
 
-      final result = await authDatasource.buyerSignUp(
+      final result = await authDatasource.signUp(
         name: 'name',
         email: 'email',
         password: 'password',
@@ -149,7 +149,7 @@ void main() {
         (_) async => http.Response('User already exist', 400),
       );
 
-      final methodCall = authDatasource.buyerSignUp;
+      final methodCall = authDatasource.signUp;
 
       expect(
         () async => methodCall(

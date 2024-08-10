@@ -29,7 +29,7 @@ class _UserVerificationPageState extends ConsumerState<UserVerificationPage> {
   @override
   void initState() {
     onboardingCubit = ref.read(onboardingCubitProvider);
-    log('User Verification init state here.');
+    log('User Verification init state.');
     //Checks if the user is using the app for the first time
     onboardingCubit.checkIfUserIsFirstTimer();
     super.initState();
@@ -84,7 +84,7 @@ class _UserVerificationPageState extends ConsumerState<UserVerificationPage> {
                   //If the user token is valid. The user object is saved in the state
                   context.read<AuthBloc>().add(
                         SetUserEvent(
-                          user: state.user.toMap(),
+                          user: state.user,
                         ),
                       );
                 }
@@ -93,7 +93,7 @@ class _UserVerificationPageState extends ConsumerState<UserVerificationPage> {
                   log('User Set');
                   // If the user object is saved successfully.User is navigated to the home screen
                   final user = ref.read(userProvider);
-                  user.type == HBMStrings.admin
+                  user.userType == HBMStrings.admin
                       ? Navigator.pushNamedAndRemoveUntil(
                           context,
                           RouteNames.adminHome,

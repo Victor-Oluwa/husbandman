@@ -1,6 +1,5 @@
 import 'package:dartz/dartz.dart';
 import 'package:husbandman/core/common/app/entities/invitation_token_entity.dart';
-import 'package:husbandman/core/common/app/models/user/user_model.dart';
 import 'package:husbandman/core/enums/filter_user.dart';
 import 'package:husbandman/core/enums/search_user.dart';
 import 'package:husbandman/core/error/exceptions.dart';
@@ -71,7 +70,7 @@ class AdminRepoImpl implements AdminRepo {
   }
 
   @override
-  ResultFuture<List<UserModel>> fetchAllUsers() async {
+  ResultFuture<List<DataMap>> fetchAllUsers() async {
     try {
       final result = await _adminDatasource.fetchAllUsers();
       return Right(result);
@@ -81,7 +80,7 @@ class AdminRepoImpl implements AdminRepo {
   }
 
   @override
-  ResultFuture<List<UserModel>> filterUser({
+  ResultFuture<List<DataMap>> filterUser({
     required FilterUserProperty property,
     required dynamic value,
   }) async {
@@ -107,7 +106,7 @@ class AdminRepoImpl implements AdminRepo {
   }
 
   @override
-  ResultFuture<List<UserModel>> searchUser({
+  ResultFuture<List<DataMap>> searchUser({
     required String query,
     required SearchUserProperty property,
   }) async {

@@ -118,10 +118,10 @@ import 'package:husbandman/src/order/domain/entity/order_entity.dart';
 
 class OrderModel extends OrderEntity {
   const OrderModel({
-    required super.id,
     required super.ownerId,
     required super.grandTotal,
     required List<AllOrdersModel> super.orders,
+    super.id,
   });
 
   factory OrderModel.fromMap(Map<String, dynamic> map) {
@@ -147,15 +147,14 @@ class OrderModel extends OrderEntity {
         cartItems.map((item) => OrderItemsModel.fromCartItem(item)).toList();
 
     final allOrdersModel = AllOrdersModel(
-      id: '',
       grossTotal: orderItems.fold(
           0, (sum, item) => sum + item.itemPrice * item.itemQuantity),
       orderName: orderName,
+      totalPercentage: orderItems.fold(0, (sum, item)=> sum + item.deductible*item.itemQuantity),
       orderItems: orderItems,
     );
 
     return OrderModel(
-      id: '',
       ownerId: ownerId,
       grandTotal: allOrdersModel.grossTotal,
       orders: [allOrdersModel],
@@ -169,9 +168,9 @@ class OrderModel extends OrderEntity {
     orders: [AllOrdersModel.empty],
   );
 
+  @override
   Map<String, dynamic> toMap() {
     return {
-      '_id': id,
       'ownerId': ownerId,
       'grandTotal': grandTotal,
       'orders': orders.map((order) => order.toMap()).toList(),

@@ -9,7 +9,7 @@ const HomeCategoryContent({
   });
 
 const HomeCategoryContent.all():this(
-  name: 'All',
+  name: 'General',
   icon: '',
 );
 
