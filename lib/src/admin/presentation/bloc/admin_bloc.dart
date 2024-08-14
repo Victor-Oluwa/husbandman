@@ -1,8 +1,9 @@
 import 'dart:async';
+import 'dart:developer';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:husbandman/core/common/app/entities/invitation_token_entity.dart';
+import 'package:husbandman/src/admin/domain/entity/invitation_token_entity.dart';
 import 'package:husbandman/core/enums/filter_user.dart';
 import 'package:husbandman/core/enums/search_user.dart';
 import 'package:husbandman/core/utils/typedef.dart';
@@ -162,7 +163,7 @@ class AdminBloc extends Bloc<AdminEvent, AdminState> {
     GenerateUniqueInvitationTokenEvent event,
     Emitter<AdminState> emit,
   ) async {
-    final result = await _generateUniqueInvitationToken();
+    final result = await _generateUniqueInvitationToken(event.generatedToken);
 
     result.fold(
       (l) => emit(AdminError(l.errorMessage)),
@@ -195,12 +196,12 @@ class AdminBloc extends Bloc<AdminEvent, AdminState> {
     SaveInvitationTokenEvent event,
     Emitter<AdminState> emit,
   ) async {
-    emit(const SavingInvitationToken());
     final result = await _saveInvitationToken(event.key);
-
     result.fold(
-      (l) => AdminError(l.errorMessage),
-      (_) => const InvitationTokenSaved(),
+      (l) => emit(AdminError(l.errorMessage)),
+      (_) => emit(
+        const InvitationTokenSaved(),
+      ),
     );
   }
 }

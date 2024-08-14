@@ -1,7 +1,7 @@
 import 'dart:developer';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:husbandman/core/common/app/models/product_model.dart';
+import 'package:husbandman/src/product_manager/data/model/product_model.dart';
 import 'package:husbandman/core/utils/typedef.dart';
 
 final generalProductProvider =
@@ -25,7 +25,7 @@ class GeneralProductNotifier extends StateNotifier<List<ProductModel>> {
       final products = <ProductModel>[];
 
       for (final element in newProductMap) {
-        final newProduct = ProductModel.fromMap(element);
+        final newProduct = ProductModel.fromJson(element);
         products.add(newProduct);
       }
       state.addAll(products);
@@ -48,7 +48,7 @@ class GeneralProductNotifier extends StateNotifier<List<ProductModel>> {
     }
 
     if (mScapeGoat != null) {
-      final scapegoat = ProductModel.fromMap(mScapeGoat.first);
+      final scapegoat = ProductModel.fromJson(mScapeGoat.first);
       final index = state.indexOf(scapegoat);
       if (index != -1) {
         state.removeAt(index);
@@ -75,7 +75,7 @@ class GeneralProductNotifier extends StateNotifier<List<ProductModel>> {
     }
 
     if (mNewProduct != null) {
-      final newProduct = ProductModel.fromMap(mNewProduct.first);
+      final newProduct = ProductModel.fromJson(mNewProduct.first);
       final index = state.indexWhere((product) => product.id == newProduct.id);
 
       if (index != -1) {
@@ -99,7 +99,7 @@ class GeneralProductNotifier extends StateNotifier<List<ProductModel>> {
 
     if (mProductList != null) {
       state =
-          List<DataMap>.from(mProductList).map(ProductModel.fromMap).toList();
+          List<DataMap>.from(mProductList).map(ProductModel.fromJson).toList();
       return;
     }
 

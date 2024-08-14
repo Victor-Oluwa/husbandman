@@ -10,30 +10,30 @@ part 'user_entity.g.dart';
 @JsonSerializable(explicitToJson: true)
 class UserEntity extends Equatable {
   const UserEntity({
-    this.id = '',
     required this.userType,
     required this.name,
     required this.email,
     required this.password,
-    required this.token,
+    this.token = '',
+    this.id = '',
     this.profilePicture = '',
     this.lastSeen = '',
     this.phone = const [],
     this.address = const AddressEntity.empty(),
-    this.dateJoined =  'Date mot set',
+    this.dateJoined = 'Date not set',
     this.balance = 0,
     this.pendingFunds = 0,
     this.totalWithdrawal = 0,
     this.orderHistoryId = 'Optional',
     this.withdrawHistoryId = 'Optional',
-    this.fundingHistoryIds = const['Optional'],
+    this.fundingHistoryIds = const ['Optional'],
     this.about = 'Optional',
     this.notification = const NotificationEntity.empty(),
     this.customer = const CustomerEntity.empty(),
     this.bannerImage = 'Optional',
     this.cartId = 'Optional',
     this.orderId = 'Optional',
-    this.pendingPaymentEntity,
+    this.pendingPayment = PendingPaymentEntity.empty,
   });
 
   factory UserEntity.fromJson(Map<String, dynamic> json) =>
@@ -63,7 +63,7 @@ class UserEntity extends Equatable {
   final String bannerImage;
   final String cartId;
   final String orderId;
-  final PendingPaymentEntity? pendingPaymentEntity;
+  final PendingPaymentEntity pendingPayment;
 
   @override
   List<Object?> get props => [
@@ -77,4 +77,3 @@ class UserEntity extends Equatable {
 
   Map<String, dynamic> toJson() => _$UserEntityToJson(this);
 }
-

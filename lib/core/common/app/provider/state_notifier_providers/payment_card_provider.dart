@@ -1,6 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:husbandman/core/common/app/entities/payment_card_entity.dart';
-import 'package:husbandman/core/common/app/models/payment_card_model.dart';
 
 final paymentCardProvider =
     StateNotifierProvider.autoDispose<PaymentCardNotifier, List<PaymentCardEntity>>(

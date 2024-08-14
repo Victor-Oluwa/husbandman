@@ -13,7 +13,7 @@ function confirmUser(user) {
 }
 
 
-async function checkIfUserAlreadyExist(email, type) {
+async function checkIfUserAlreadyExist(email, type, session) {
 
     if (!email) {
         throw new Error(error.BAD_EMAIL);
@@ -25,15 +25,15 @@ async function checkIfUserAlreadyExist(email, type) {
 
     switch (type) {
         case 'Admin':
-            let admin = await Admin.findOne({ email: email });
+            let admin = await Admin.findOne({ email: email }).session(session);
             return confirmUser(admin);
 
         case 'Buyer':
-            let buyer = await Buyer.findOne({ email: email });
+            let buyer = await Buyer.findOne({ email: email }).session(session);
             return confirmUser(buyer);
 
         case 'Seller':
-            let seller = await Seller.findOne({ email: email });
+            let seller = await Seller.findOne({ email: email }).session(session);
             return confirmUser(seller);
 
         default:

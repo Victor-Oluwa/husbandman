@@ -18,10 +18,10 @@ router.post(endpoints.ADD_PRODUCT_TO_CART, async (req, res) => {
             productId: product._id,
             productName: product.name,
             productImage: product.images[0],
-            quantity: quantity,
+            productQuantity: quantity,
             sellerName: product.sellerName,
             sellerEmail: product.sellerEmail,
-            price: product.price,
+            productPrice: product.price,
             percentage: product.price * 0.10
         };
 

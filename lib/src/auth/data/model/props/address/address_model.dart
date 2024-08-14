@@ -5,7 +5,7 @@ part 'address_model.g.dart';
 
 @JsonSerializable()
 class AddressModel extends AddressEntity {
-  AddressModel({
+  const AddressModel({
     required super.id,
     required super.fullAddress,
     required super.city,
@@ -14,6 +14,18 @@ class AddressModel extends AddressEntity {
     required super.zipCode,
   });
 
-  factory AddressModel.fromJson(Map<String, dynamic> json) => _$AddressModelFromJson(json);
-  Map<String, dynamic> toJson()=> _$AddressModelToJson(this);
+  factory AddressModel.fromJson(Map<String, dynamic> json) =>
+      _$AddressModelFromJson(json);
+
+  static const empty = AddressModel(
+    id: '',
+    fullAddress: '',
+    city: '',
+    state: '',
+    country: '',
+    zipCode: '',
+  );
+
+  @override
+  Map<String, dynamic> toJson() => _$AddressModelToJson(this);
 }

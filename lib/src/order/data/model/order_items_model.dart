@@ -1,45 +1,51 @@
+import 'package:husbandman/core/utils/typedef.dart';
 import 'package:husbandman/src/cart/domain/entity/cart_item_entity.dart';
 import 'package:husbandman/src/order/domain/entity/order_items_entity.dart';
+import 'package:json_annotation/json_annotation.dart';
 
+part 'order_items_model.g.dart';
+
+@JsonSerializable()
 class OrderItemsModel extends OrderItemsEntity {
   const OrderItemsModel({
+    required super.itemId,
     required super.itemName,
     required super.itemImage,
     required super.itemDescription,
     required super.itemPrice,
+    required super.buyerId,
+    required super.sellerId,
+    required super.itemDeliveryDate,
     required super.isItemDelivered,
     required super.deductible,
     required super.itemQuantity,
-    super.id= '',
+    super.id = '',
   });
-
-  factory OrderItemsModel.fromMap(Map<String, dynamic> map) {
-    return OrderItemsModel(
-      id: map['_id'] as String? ?? '',
-      itemName: map['itemName'] as String? ?? '',
-      itemImage: map['itemImage'] as String? ?? '',
-      itemDescription: map['itemDescription'] as String? ?? '',
-      itemPrice: (map['itemPrice'] as num?)?.toDouble() ?? 0,
-      isItemDelivered: map['isItemDelivered'] as bool? ?? false,
-      deductible: (map['deductible'] as num?)?.toDouble() ?? 0,
-      itemQuantity: map['itemQuantity'] as int? ?? 0,
-    );
-  }
 
   factory OrderItemsModel.fromCartItem(CartItemEntity cartItem) {
     return OrderItemsModel(
+      itemId: cartItem.productId,
       itemName: cartItem.productName,
       itemImage: cartItem.productImage,
       itemDescription: '',
       itemPrice: cartItem.productPrice,
+      sellerId: cartItem.sellerId,
+      buyerId: cartItem.buyerId,
+      itemDeliveryDate: cartItem.deliveryDate,
       isItemDelivered: false,
       deductible: cartItem.percentage,
       itemQuantity: cartItem.productQuantity,
     );
   }
 
+  factory OrderItemsModel.fromJson(DataMap json) =>
+      _$OrderItemsModelFromJson(json);
+
+  @override
+  DataMap toJson() => _$OrderItemsModelToJson(this);
+
   static const empty = OrderItemsModel(
-    id: '',
+    itemId: '',
     itemName: '',
     itemImage: '',
     itemDescription: '',
@@ -47,30 +53,24 @@ class OrderItemsModel extends OrderItemsEntity {
     isItemDelivered: false,
     deductible: 0,
     itemQuantity: 0,
+    sellerId: '',
+    buyerId: '',
+    itemDeliveryDate: '',
   );
-
-  @override
-  Map<String, dynamic> toMap() {
-    return {
-      'itemName': itemName,
-      'itemImage': itemImage,
-      'itemDescription': itemDescription,
-      'itemPrice': itemPrice,
-      'isItemDelivered': isItemDelivered,
-      'deductible': deductible,
-      'itemQuantity': itemQuantity,
-    };
-  }
 
   @override
   List<Object?> get props => [
     id,
-        itemName,
-        itemImage,
-        itemDescription,
-        itemPrice,
-        isItemDelivered,
-        deductible,
-        itemQuantity,
+    itemId,
+    itemName,
+    itemImage,
+    buyerId,
+    sellerId,
+    itemDescription,
+    itemPrice,
+    isItemDelivered,
+    itemDeliveryDate,
+    deductible,
+    itemQuantity,
       ];
 }

@@ -1,7 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:husbandman/core/usecases/usecases.dart';
 import 'package:husbandman/core/utils/typedef.dart';
-import 'package:husbandman/src/auth/domain/entity/user/buyer/buyer_entity.dart';
 import 'package:husbandman/src/auth/domain/repo/auth_repo.dart';
 
 class SignUp extends UseCaseWithParams<DataMap, SignUpParams> {

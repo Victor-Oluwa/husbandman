@@ -41,6 +41,8 @@ class BreadTextField extends StatelessWidget {
     this.textStyle,
     this.inputFormatters,
     this.validator, this.floatingLabelBehavior,
+    this.textAlign = TextAlign.start,
+    this.maxLine,
   });
 
   final TextEditingController fieldController;
@@ -81,10 +83,14 @@ class BreadTextField extends StatelessWidget {
   final List<TextInputFormatter>? inputFormatters;
   final FloatingLabelBehavior? floatingLabelBehavior;
   final String? Function(String?)? validator;
+  final TextAlign textAlign;
+  final int? maxLine;
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      maxLines: maxLine,
+      textAlign: textAlign,
       readOnly: readOnly,
       controller: fieldController,
       keyboardType: keyboardType,

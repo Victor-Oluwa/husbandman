@@ -12,42 +12,68 @@ part 'seller_entity.g.dart';
 @JsonSerializable(explicitToJson: true)
 class SellerEntity extends UserEntity {
   const SellerEntity({
-    required super.id,
     required super.userType,
     required super.name,
     required super.email,
     required super.password,
-    required super.phone,
-    required super.address,
-    required super.dateJoined,
-    required super.balance,
-    required super.pendingFunds,
-    required super.totalWithdrawal,
-    required super.orderHistoryId,
-    required super.withdrawHistoryId,
-    required super.fundingHistoryIds,
-    required super.about,
-    required super.token,
-    required super.profilePicture,
-    required super.notification,
-    required super.customer,
-    required super.lastSeen,
-    required super.bannerImage,
-    required super.cartId,
-    required super.orderId,
-    this.pendingOrderFunds,
-    this.ordered,
-    super.pendingPaymentEntity,
+    super.id,
+     super.phone,
+     super.address,
+     super.dateJoined,
+     super.balance,
+     super.pendingFunds,
+     super.totalWithdrawal,
+     super.orderHistoryId,
+     super.withdrawHistoryId,
+     super.fundingHistoryIds,
+     super.about,
+     super.token,
+     super.profilePicture,
+     super.notification,
+     super.customer,
+     super.lastSeen,
+     super.bannerImage,
+     super.cartId,
+     super.orderId,
+    this.pendingOrderFunds = PendingOrderFundsEntity.empty,
+    this.ordered = OrderedEntity.empty,
+    super.pendingPayment,
   });
 
   factory SellerEntity.fromJson(Map<String, dynamic> json) =>
       _$SellerEntityFromJson(json);
 
-  final OrderedEntity? ordered;
-  final PendingOrderFundsEntity? pendingOrderFunds;
+  final OrderedEntity ordered;
+  final PendingOrderFundsEntity pendingOrderFunds;
 
   @override
   Map<String, dynamic> toJson() => _$SellerEntityToJson(this);
+
+  static const empty = SellerEntity(
+    id: '',
+    userType: '',
+    name: '',
+    email: '',
+    password: '',
+    phone: [],
+    address: AddressEntity.empty(),
+    dateJoined: '',
+    balance: 0,
+    pendingFunds: 0,
+    totalWithdrawal: 0,
+    orderHistoryId: '',
+    withdrawHistoryId: '',
+    fundingHistoryIds: [],
+    about: '',
+    token: '',
+    profilePicture: '',
+    notification: NotificationEntity.empty(),
+    customer: CustomerEntity.empty(),
+    lastSeen: '',
+    bannerImage: '',
+    cartId: '',
+    orderId: '',
+  );
 
   @override
   List<Object?> get props => super.props + [ordered];
@@ -56,18 +82,20 @@ class SellerEntity extends UserEntity {
 @JsonSerializable(explicitToJson: true)
 class PendingOrderFundsEntity extends Equatable {
   const PendingOrderFundsEntity({
-    this.id = '',
     required this.funds,
+    this.id = '',
   });
+
+  factory PendingOrderFundsEntity.fromJson(DataMap json) =>
+      _$PendingOrderFundsEntityFromJson(json);
 
   @JsonKey(name: '_id')
   final String id;
   final List<FundEntity> funds;
 
-  factory PendingOrderFundsEntity.fromJson(DataMap json) =>
-      _$PendingOrderFundsEntityFromJson(json);
-
   DataMap toJson() => _$PendingOrderFundsEntityToJson(this);
+
+  static const empty = PendingOrderFundsEntity(funds: []);
 
   @override
   List<dynamic> get props => [id, funds];
@@ -76,30 +104,27 @@ class PendingOrderFundsEntity extends Equatable {
 @JsonSerializable()
 class FundEntity extends Equatable {
   const FundEntity({
-    this.id = '',
-    required this.orderId,
     required this.buyerId,
     required this.productId,
     required this.productName,
     required this.amountPending,
+    this.id = '',
   });
+
+  factory FundEntity.fromJson(DataMap json) => _$FundEntityFromJson(json);
 
   @JsonKey(name: '_id')
   final String id;
-  final String orderId;
   final String buyerId;
   final String productId;
   final String productName;
   final double amountPending;
-
-  factory FundEntity.fromJson(DataMap json) => _$FundEntityFromJson(json);
 
   DataMap toJson() => _$FundEntityToJson(this);
 
   @override
   List<Object> get props => [
         id,
-        orderId,
         buyerId,
         productId,
         productName,
@@ -110,10 +135,10 @@ class FundEntity extends Equatable {
 @JsonSerializable(explicitToJson: true)
 class OrderedEntity extends Equatable {
   const OrderedEntity({
-    this.id = '',
     required this.totalEarning,
     required this.totalDeductible,
     required this.orderedItems,
+    this.id = '',
   });
 
   factory OrderedEntity.fromJson(Map<String, dynamic> json) =>
@@ -127,6 +152,12 @@ class OrderedEntity extends Equatable {
 
   Map<String, dynamic> toJson() => _$OrderedEntityToJson(this);
 
+  static const empty = OrderedEntity(
+    totalEarning: 0,
+    totalDeductible: 0,
+    orderedItems: [],
+  );
+
   @override
   List<Object?> get props => [id, totalEarning, totalDeductible, orderedItems];
 }
@@ -134,7 +165,6 @@ class OrderedEntity extends Equatable {
 @JsonSerializable()
 class OrderedItemEntity extends Equatable {
   const OrderedItemEntity({
-    required this.sellerId,
     required this.buyerId,
     required this.buyerName,
     required this.buyerImage,
@@ -155,7 +185,6 @@ class OrderedItemEntity extends Equatable {
 
   @JsonKey(name: '_id')
   final String id;
-  final String sellerId;
   final String buyerId;
   final String buyerName;
   final String buyerImage;
@@ -173,7 +202,6 @@ class OrderedItemEntity extends Equatable {
 
   @override
   List<Object?> get props => [
-        sellerId,
         buyerId,
         buyerName,
         buyerImage,

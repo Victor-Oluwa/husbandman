@@ -5,7 +5,7 @@ part 'admin_model.g.dart';
 
 @JsonSerializable()
 class AdminModel extends AdminEntity {
-  AdminModel({
+  const AdminModel({
     required super.id,
     required super.userType,
     required super.name,
@@ -17,5 +17,6 @@ class AdminModel extends AdminEntity {
   });
 
   factory AdminModel.fromJson(Map<String, dynamic>json)=> _$AdminModelFromJson(json);
+  @override
   Map<String, dynamic> toJson()=> _$AdminModelToJson(this);
 }

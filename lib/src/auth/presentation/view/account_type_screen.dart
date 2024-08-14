@@ -19,7 +19,7 @@ class AccountTypeScreen extends StatelessWidget {
         child: Center(
           child: Padding(
             padding: EdgeInsets.only(
-                bottom: context.width * 0.25, top: context.height * 0.02),
+                bottom: context.width * 0.25, top: context.height * 0.02,),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -60,7 +60,7 @@ class AccountTypeScreen extends StatelessWidget {
 
                     ],
                   ),
-                )
+                ),
               ],
             ),
           ),

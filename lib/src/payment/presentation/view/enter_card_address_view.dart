@@ -143,7 +143,7 @@ class _EnterCardAddressViewState extends ConsumerState<EnterCardAddressView> {
                       const HBMTextWidget(
                           textAlign: TextAlign.center,
                           data:
-                              'Kindly enter your address to authenticate this transaction'),
+                              'Kindly enter your address to authenticate this transaction',),
                       SizedBox(height: context.height * 0.05),
                       Padding(
                         padding: EdgeInsets.symmetric(
@@ -160,13 +160,13 @@ class _EnterCardAddressViewState extends ConsumerState<EnterCardAddressView> {
                                   borderSide:
                                       BorderSide(color: HBMColors.mediumGrey),
                                   borderRadius: BorderRadius.circular(
-                                      context.width * 0.03),
+                                      context.width * 0.03,),
                                 ),
                                 focusedBorder: OutlineInputBorder(
                                   borderSide:
                                       BorderSide(color: HBMColors.charcoalGrey),
                                   borderRadius: BorderRadius.circular(
-                                      context.width * 0.02),
+                                      context.width * 0.02,),
                                 ),
                                 hintText: 'City',
                                 hintStyle: TextStyle(
@@ -174,7 +174,7 @@ class _EnterCardAddressViewState extends ConsumerState<EnterCardAddressView> {
                                   color: HBMColors.grey,
                                 ),
                                 textStyle: TextStyle(
-                                    fontFamily: HBMFonts.quicksandNormal),
+                                    fontFamily: HBMFonts.quicksandNormal,),
                                 icon: Icon(
                                   Icons.location_city,
                                   color: HBMColors.charcoalGrey,
@@ -189,13 +189,13 @@ class _EnterCardAddressViewState extends ConsumerState<EnterCardAddressView> {
                                   borderSide:
                                       BorderSide(color: HBMColors.mediumGrey),
                                   borderRadius: BorderRadius.circular(
-                                      context.width * 0.03),
+                                      context.width * 0.03,),
                                 ),
                                 focusedBorder: OutlineInputBorder(
                                   borderSide:
                                       BorderSide(color: HBMColors.charcoalGrey),
                                   borderRadius: BorderRadius.circular(
-                                      context.width * 0.02),
+                                      context.width * 0.02,),
                                 ),
                                 hintText: 'Street',
                                 hintStyle: TextStyle(
@@ -203,7 +203,7 @@ class _EnterCardAddressViewState extends ConsumerState<EnterCardAddressView> {
                                   color: HBMColors.grey,
                                 ),
                                 textStyle: TextStyle(
-                                    fontFamily: HBMFonts.quicksandNormal),
+                                    fontFamily: HBMFonts.quicksandNormal,),
                                 icon: Icon(
                                   Icons.streetview_rounded,
                                   color: HBMColors.charcoalGrey,
@@ -218,13 +218,13 @@ class _EnterCardAddressViewState extends ConsumerState<EnterCardAddressView> {
                                   borderSide:
                                       BorderSide(color: HBMColors.mediumGrey),
                                   borderRadius: BorderRadius.circular(
-                                      context.width * 0.03),
+                                      context.width * 0.03,),
                                 ),
                                 focusedBorder: OutlineInputBorder(
                                   borderSide:
                                       BorderSide(color: HBMColors.charcoalGrey),
                                   borderRadius: BorderRadius.circular(
-                                      context.width * 0.02),
+                                      context.width * 0.02,),
                                 ),
                                 hintText: 'State',
                                 hintStyle: TextStyle(
@@ -232,7 +232,7 @@ class _EnterCardAddressViewState extends ConsumerState<EnterCardAddressView> {
                                   color: HBMColors.grey,
                                 ),
                                 textStyle: TextStyle(
-                                    fontFamily: HBMFonts.quicksandNormal),
+                                    fontFamily: HBMFonts.quicksandNormal,),
                                 icon: Icon(
                                   Icons.location_searching,
                                   color: HBMColors.charcoalGrey,
@@ -247,13 +247,13 @@ class _EnterCardAddressViewState extends ConsumerState<EnterCardAddressView> {
                                   borderSide:
                                       BorderSide(color: HBMColors.mediumGrey),
                                   borderRadius: BorderRadius.circular(
-                                      context.width * 0.03),
+                                      context.width * 0.03,),
                                 ),
                                 focusedBorder: OutlineInputBorder(
                                   borderSide:
                                       BorderSide(color: HBMColors.charcoalGrey),
                                   borderRadius: BorderRadius.circular(
-                                      context.width * 0.02),
+                                      context.width * 0.02,),
                                 ),
                                 hintText: 'Country',
                                 hintStyle: TextStyle(
@@ -261,7 +261,7 @@ class _EnterCardAddressViewState extends ConsumerState<EnterCardAddressView> {
                                   color: HBMColors.grey,
                                 ),
                                 textStyle: TextStyle(
-                                    fontFamily: HBMFonts.quicksandNormal),
+                                    fontFamily: HBMFonts.quicksandNormal,),
                                 icon: Icon(
                                   Icons.map,
                                   color: HBMColors.charcoalGrey,
@@ -276,13 +276,13 @@ class _EnterCardAddressViewState extends ConsumerState<EnterCardAddressView> {
                                   borderSide:
                                       BorderSide(color: HBMColors.mediumGrey),
                                   borderRadius: BorderRadius.circular(
-                                      context.width * 0.03),
+                                      context.width * 0.03,),
                                 ),
                                 focusedBorder: OutlineInputBorder(
                                   borderSide:
                                       BorderSide(color: HBMColors.charcoalGrey),
                                   borderRadius: BorderRadius.circular(
-                                      context.width * 0.02),
+                                      context.width * 0.02,),
                                 ),
                                 hintText: 'Zipcode',
                                 hintStyle: TextStyle(
@@ -290,7 +290,7 @@ class _EnterCardAddressViewState extends ConsumerState<EnterCardAddressView> {
                                   color: HBMColors.grey,
                                 ),
                                 textStyle: TextStyle(
-                                    fontFamily: HBMFonts.quicksandNormal),
+                                    fontFamily: HBMFonts.quicksandNormal,),
                                 icon: Icon(
                                   Icons.my_location_rounded,
                                   color: HBMColors.charcoalGrey,
@@ -410,7 +410,7 @@ class _EnterCardAddressViewState extends ConsumerState<EnterCardAddressView> {
         return;
       case null:
         Navigator.pushNamed(context, RouteNames.paymentSuccessfulViewWithArg,
-            arguments: 'Failed');
+            arguments: 'Failed',);
         return;
       case FundingStatus.none:
         Navigator.pushNamed(
@@ -463,7 +463,7 @@ class _EnterCardAddressViewState extends ConsumerState<EnterCardAddressView> {
   }
 
   void _handlePaymentHistoryError(
-      BuildContext context, PaymentHistoryError state) {
+      BuildContext context, PaymentHistoryError state,) {
     log('Update History Error: ${state.message}');
     HBMSnackBar.show(
       context: context,

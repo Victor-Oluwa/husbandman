@@ -84,6 +84,8 @@ dependencies:
   country_picker: ^2.0.26
   intl_phone_number_input: ^0.7.4
   json_annotation: ^4.9.0
+  crypto: ^3.0.3
+  fl_chart: ^0.68.0
 
 
 dev_dependencies:

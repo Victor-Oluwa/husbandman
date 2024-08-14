@@ -32,7 +32,7 @@ void main() {
           () => repo.getProductImageUrl(
               compressedFile: any(named: 'compressedFile'),
               sellerName: any(named: 'sellerName'),
-              isByte: any(named: 'isByte')),
+              isByte: any(named: 'isByte'),),
         ).thenAnswer(
           (_) async => const Right(
             tProductImageUrls,

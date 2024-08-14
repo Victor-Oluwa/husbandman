@@ -1,5 +1,3 @@
-import 'package:equatable/equatable.dart';
-import 'package:husbandman/core/utils/typedef.dart';
 import 'package:husbandman/src/auth/domain/entity/user/props/address/address_entity.dart';
 import 'package:husbandman/src/auth/domain/entity/user/props/customer/customer_entity.dart';
 import 'package:husbandman/src/auth/domain/entity/user/props/notification/notification_entity.dart';
@@ -35,7 +33,7 @@ class BuyerEntity extends UserEntity {
     super.bannerImage,
     super.cartId,
     super.orderId,
-    super.pendingPaymentEntity,
+    super.pendingPayment,
   });
 
   BuyerEntity.empty()

@@ -1,6 +1,5 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
-import 'package:husbandman/core/res/color.dart';
 
 class HBMTextWidget extends StatelessWidget {
   const HBMTextWidget({
@@ -13,6 +12,7 @@ class HBMTextWidget extends StatelessWidget {
     this.fontWeight,
     this.overflow,
     this.textAlign,
+    this.letterSpacing
   });
   final String data;
   final double? fontSize;
@@ -22,12 +22,14 @@ class HBMTextWidget extends StatelessWidget {
   final FontWeight? fontWeight;
   final TextOverflow? overflow;
   final TextAlign? textAlign;
+  final double? letterSpacing;
 
   @override
   Widget build(BuildContext context) {
     return Text(
       data,
       style: TextStyle(
+        letterSpacing: letterSpacing,
         fontSize: fontSize,
         color: color,
         fontFamily: fontFamily,

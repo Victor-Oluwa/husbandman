@@ -12,7 +12,7 @@ AdminModel _$AdminModelFromJson(Map<String, dynamic> json) => AdminModel(
       name: json['name'] as String,
       email: json['email'] as String,
       password: json['password'] as String,
-      token: json['token'] as String,
+      token: json['token'] as String? ?? '',
       profilePicture: json['profilePicture'] as String? ?? '',
       lastSeen: json['lastSeen'] as String? ?? '',
     );

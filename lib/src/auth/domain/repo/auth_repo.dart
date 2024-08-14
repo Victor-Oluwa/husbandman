@@ -1,6 +1,5 @@
 import 'package:husbandman/core/enums/update_user.dart';
 import 'package:husbandman/core/utils/typedef.dart';
-import 'package:husbandman/src/auth/domain/entity/user/buyer/buyer_entity.dart';
 import 'package:husbandman/src/auth/domain/entity/user/seller/seller_entity.dart';
 
 abstract class AuthRepo {
@@ -21,11 +20,7 @@ abstract class AuthRepo {
   ResultFuture<void> cacheVerifiedInvitationToken({required String token});
 
   ResultFuture<SellerEntity> farmerSignUp({
-    required String name,
-    required String email,
-    required String password,
-    required String address,
-    required String type,
+   required SellerEntity seller,
     required String invitationKey,
   });
 

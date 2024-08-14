@@ -20,7 +20,7 @@ import 'package:husbandman/src/product_manager/presentation/view/upload_product/
 import 'package:husbandman/src/product_manager/presentation/view/upload_product/upload_product_form.dart';
 
 class ProductUploadBlocConsumerWidget extends StatelessWidget {
-  const ProductUploadBlocConsumerWidget({super.key, required this.ref});
+  const ProductUploadBlocConsumerWidget({required this.ref, super.key});
 
   final WidgetRef ref;
 
@@ -66,7 +66,7 @@ class ProductUploadBlocConsumerWidget extends StatelessWidget {
               ref.read(selectedProductCategoryProvider) == items[0]) {
             HBMSnackBar.show(
                 context: context,
-                content: 'Kindly attend to all fields correctly');
+                content: 'Kindly attend to all fields correctly',);
             return;
           }
 

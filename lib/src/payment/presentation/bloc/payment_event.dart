@@ -128,7 +128,7 @@ class InitializeCardFundingEvent extends PaymentEvent {
       required this.fullName,
       required this.email,
       required this.phone,
-      required this.ref});
+      required this.ref,});
 
   final String cardNumber;
   final String cvv;

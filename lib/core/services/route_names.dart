@@ -14,9 +14,8 @@ class RouteNames {
   static const addProduct = 'add-product-view';
   static const dashboard = 'dash-board';
   static const productDetails = 'product-details';
-  static const buyerProfile = 'buyer-profile';
+  static const profileView = 'profile-view';
   static const cartView = 'cart-page';
-  static const productViewByCategory = 'product-view-by-category';
   static const testWidgetView = 'test-widget-view';
   static const addCardView = 'selectCardView';
   static const allCardView = 'allCardView';

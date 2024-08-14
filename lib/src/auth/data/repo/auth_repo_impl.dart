@@ -4,7 +4,6 @@ import 'package:husbandman/core/error/exceptions.dart';
 import 'package:husbandman/core/error/failure.dart';
 import 'package:husbandman/core/utils/typedef.dart';
 import 'package:husbandman/src/auth/data/datasource/auth_datasource.dart';
-import 'package:husbandman/src/auth/data/model/buyer/buyer_model.dart';
 import 'package:husbandman/src/auth/data/model/seller/seller_model.dart';
 import 'package:husbandman/src/auth/domain/entity/user/seller/seller_entity.dart';
 import 'package:husbandman/src/auth/domain/repo/auth_repo.dart';
@@ -78,20 +77,12 @@ class AuthRepoImpl implements AuthRepo {
 
   @override
   ResultFuture<SellerEntity> farmerSignUp({
-    required String name,
-    required String email,
-    required String password,
-    required String address,
-    required String type,
+    required SellerEntity seller,
     required String invitationKey,
   }) async {
     try {
-    final result = await _authDataSource.farmerSignUp(
-        name: name,
-        email: email,
-        password: password,
-        address: address,
-        type: type,
+      final result = await _authDataSource.farmerSignUp(
+        seller: seller,
         invitationKey: invitationKey,
       );
       return Right(result);
@@ -171,7 +162,7 @@ class AuthRepoImpl implements AuthRepo {
   }
 
   @override
-  ResultFuture<void> signOut()async {
+  ResultFuture<void> signOut() async {
     try {
       final result = await _authDataSource.signOut();
       return Right(result);

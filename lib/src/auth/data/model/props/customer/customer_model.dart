@@ -5,7 +5,7 @@ part 'customer_model.g.dart';
 
 @JsonSerializable(explicitToJson: true)
 class CustomerModel extends CustomerEntity {
-  CustomerModel({
+  const CustomerModel({
     required super.id,
     required super.ownerId,
     required List<ChildCustomerModel> super.childCustomer,
@@ -14,6 +14,13 @@ class CustomerModel extends CustomerEntity {
   factory CustomerModel.fromJson(Map<String, dynamic> json) =>
       _$CustomerModelFromJson(json);
 
+  static const empty = CustomerModel(
+    id: '',
+    ownerId: '',
+    childCustomer: [],
+  );
+
+  @override
   Map<String, dynamic> toJson() => _$CustomerModelToJson(this);
 }
 
@@ -28,6 +35,9 @@ class ChildCustomerModel extends ChildCustomerEntity {
     required super.customerPhone,
   });
 
-  factory ChildCustomerModel.fromJson(Map<String, dynamic> json) =>  _$ChildCustomerModelFromJson(json);
-  Map<String, dynamic> toJson()=> _$ChildCustomerModelToJson(this);
+  factory ChildCustomerModel.fromJson(Map<String, dynamic> json) =>
+      _$ChildCustomerModelFromJson(json);
+
+  @override
+  Map<String, dynamic> toJson() => _$ChildCustomerModelToJson(this);
 }

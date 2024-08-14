@@ -11,7 +11,7 @@ BuyerEntity _$BuyerEntityFromJson(Map<String, dynamic> json) => BuyerEntity(
       name: json['name'] as String,
       email: json['email'] as String,
       password: json['password'] as String,
-      token: json['token'] as String,
+      token: json['token'] as String? ?? '',
       id: json['_id'] as String? ?? '',
       phone:
           (json['phone'] as List<dynamic>?)?.map((e) => e as String).toList() ??
@@ -19,7 +19,7 @@ BuyerEntity _$BuyerEntityFromJson(Map<String, dynamic> json) => BuyerEntity(
       address: json['address'] == null
           ? const AddressEntity.empty()
           : AddressEntity.fromJson(json['address'] as Map<String, dynamic>),
-      dateJoined: json['dateJoined'] as String? ?? 'Date mot set',
+      dateJoined: json['dateJoined'] as String? ?? 'Date not set',
       balance: (json['balance'] as num?)?.toDouble() ?? 0,
       pendingFunds: (json['pendingFunds'] as num?)?.toDouble() ?? 0,
       totalWithdrawal: (json['totalWithdrawal'] as num?)?.toDouble() ?? 0,
@@ -42,10 +42,10 @@ BuyerEntity _$BuyerEntityFromJson(Map<String, dynamic> json) => BuyerEntity(
       bannerImage: json['bannerImage'] as String? ?? 'Optional',
       cartId: json['cartId'] as String? ?? 'Optional',
       orderId: json['orderId'] as String? ?? 'Optional',
-      pendingPaymentEntity: json['pendingPaymentEntity'] == null
-          ? null
+      pendingPayment: json['pendingPayment'] == null
+          ? PendingPaymentEntity.empty
           : PendingPaymentEntity.fromJson(
-              json['pendingPaymentEntity'] as Map<String, dynamic>),
+              json['pendingPayment'] as Map<String, dynamic>),
     );
 
 Map<String, dynamic> _$BuyerEntityToJson(BuyerEntity instance) =>
@@ -73,5 +73,5 @@ Map<String, dynamic> _$BuyerEntityToJson(BuyerEntity instance) =>
       'bannerImage': instance.bannerImage,
       'cartId': instance.cartId,
       'orderId': instance.orderId,
-      'pendingPaymentEntity': instance.pendingPaymentEntity?.toJson(),
+      'pendingPayment': instance.pendingPayment.toJson(),
     };

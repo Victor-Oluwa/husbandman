@@ -1,5 +1,5 @@
 import 'package:dartz/dartz.dart';
-import 'package:husbandman/core/common/app/entities/invitation_token_entity.dart';
+import 'package:husbandman/src/admin/domain/entity/invitation_token_entity.dart';
 import 'package:husbandman/core/enums/filter_user.dart';
 import 'package:husbandman/core/enums/search_user.dart';
 import 'package:husbandman/core/error/exceptions.dart';
@@ -96,9 +96,12 @@ class AdminRepoImpl implements AdminRepo {
   }
 
   @override
-  ResultFuture<String> generateUniqueInvitationToken() async {
+  ResultFuture<String> generateUniqueInvitationToken({
+    required List<int> generatedToken,
+  }) async {
     try {
-      final result = await _adminDatasource.generateUniqueInvitationToken();
+      final result = await _adminDatasource.generateUniqueInvitationToken(
+          generatedToken: generatedToken);
       return Right(result);
     } on AdminException catch (e) {
       return Left(AdminFailure.fromException(e));
@@ -138,22 +141,23 @@ class AdminRepoImpl implements AdminRepo {
   }
 
   @override
-  ResultFuture<void> shareInvitationTokenToWhatsApp({required String token}) async{
-   try{
-     await _adminDatasource.shareInvitationTokenToWhatsApp(token: token);
-     return const Right(null);
-   } on AdminException catch(e){
-     return Left(AdminFailure.fromException(e));
-   }
+  ResultFuture<void> shareInvitationTokenToWhatsApp(
+      {required String token}) async {
+    try {
+      await _adminDatasource.shareInvitationTokenToWhatsApp(token: token);
+      return const Right(null);
+    } on AdminException catch (e) {
+      return Left(AdminFailure.fromException(e));
+    }
   }
 
   @override
-  ResultFuture<void> saveInvitationToken({required String key})async {
- try{
-   final result = await _adminDatasource.saveInvitationToken(key: key);
-   return Right(result);
- } on AdminException catch(e){
-   return Left(AdminFailure.fromException(e));
- }
+  ResultFuture<void> saveInvitationToken({required String key}) async {
+    try {
+       await _adminDatasource.saveInvitationToken(key: key);
+      return const Right(null);
+    } on AdminException catch (e) {
+      return Left(AdminFailure.fromException(e));
+    }
   }
 }

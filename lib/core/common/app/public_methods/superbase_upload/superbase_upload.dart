@@ -1,9 +1,7 @@
-import 'dart:developer';
 import 'dart:io';
 
 import 'package:husbandman/core/error/exceptions.dart';
 import 'package:husbandman/core/services/superbase.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart';
 
 class SuperBaseUpload {

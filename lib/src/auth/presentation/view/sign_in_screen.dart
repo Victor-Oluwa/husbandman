@@ -139,7 +139,7 @@ class _FarmerSignUpScreenState extends ConsumerState<SignInScreen> {
                         height: context.height * 0.34,
                         child: Padding(
                           padding: EdgeInsets.symmetric(
-                              horizontal: sidePadding),
+                              horizontal: sidePadding,),
                           child: Form(
                             key: formKey,
                             child: Column(
@@ -174,7 +174,7 @@ class _FarmerSignUpScreenState extends ConsumerState<SignInScreen> {
                                   decoration: InputDecoration(
                                     hintText: HBMStrings.password,
                                     hintStyle: TextStyle(
-                                        fontFamily: HBMFonts.quicksandNormal),
+                                        fontFamily: HBMFonts.quicksandNormal,),
                                     enabledBorder: const UnderlineInputBorder(),
                                     disabledBorder: const UnderlineInputBorder(),
                                     focusedBorder: const UnderlineInputBorder(),
@@ -225,7 +225,7 @@ class _FarmerSignUpScreenState extends ConsumerState<SignInScreen> {
                               data: HBMStrings.signIn,
                               fontFamily: HBMFonts.exo2,
                               fontSize: context.width * 0.04,
-                              color: HBMColors.grey),
+                              color: HBMColors.grey,),
                         ),
                       ),
                     ],

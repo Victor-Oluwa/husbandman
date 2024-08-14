@@ -52,7 +52,7 @@ abstract class PaymentRepo {
       required String city,
       required String state,
       required String country,
-      required String zipCode});
+      required String zipCode,});
 
   ResultFuture<String> cardFundingOtpValidation({
     required String otp,

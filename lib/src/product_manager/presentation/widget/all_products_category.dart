@@ -1,6 +1,4 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:husbandman/core/common/widgets/hbm_text_widget.dart';
 import 'package:husbandman/core/common/widgets/home_search_widget.dart';
@@ -25,7 +23,7 @@ class AllProductsCategories extends StatelessWidget {
       ),
       child: Column(
         children: [
-          SearchField(
+          const SearchField(
             isElevated: true,
             hintText: 'Search product..',
           ),
@@ -42,10 +40,9 @@ class AllProductsCategories extends StatelessWidget {
               itemBuilder: (context, index) {
                 return GestureDetector(
                     onTap: () {
-                      Navigator.pushNamed(
-                        context, RouteNames.productViewByCategory,);
+                     
                     },
-                    child: const StackedCategoryFolder());
+                    child: const StackedCategoryFolder(),);
               },
             ),
           ),
@@ -140,7 +137,7 @@ class StackedCategoryFolder extends StatelessWidget {
                     Icon(
                       Icons.more_vert,
                       color: HBMColors.charcoalGrey,
-                    )
+                    ),
                   ],
                 ),
               ),

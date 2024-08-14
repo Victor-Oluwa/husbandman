@@ -21,15 +21,6 @@ async function checkForDuplicate(key) {
     return true;
 }
 
-function reportError(e, res) {
-    console.log(e.message);
 
-    if (e.message == error.DUPLICATE_INVITATION_KEY) {
-        res.status(status.DUPLICATE_INVITATION_KEY).json(e.message);
-        return;
-    }
 
-    res.status(500).json(e);
-}
-
-module.exports = { saveKey, checkForDuplicate, reportError };
+module.exports = { saveKey, checkForDuplicate };

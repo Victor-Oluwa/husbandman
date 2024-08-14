@@ -1,8 +1,7 @@
-import 'package:husbandman/core/common/app/entities/invitation_token_entity.dart';
+import 'package:husbandman/src/admin/domain/entity/invitation_token_entity.dart';
 import 'package:husbandman/core/enums/filter_user.dart';
 import 'package:husbandman/core/enums/search_user.dart';
 import 'package:husbandman/core/utils/typedef.dart';
-import 'package:husbandman/src/auth/data/model/buyer/buyer_model.dart';
 // String uniqueKey = UniqueKey().toString();
 
 abstract class AdminRepo {
@@ -15,7 +14,6 @@ abstract class AdminRepo {
 
   ResultFuture<void> deleteAccount({required String userId});
 
-
   ResultFuture<List<InvitationTokenEntity>> fetchAllInvitationToken();
 
   ResultFuture<List<DataMap>> fetchAllUsers();
@@ -25,7 +23,9 @@ abstract class AdminRepo {
     required dynamic value,
   });
 
-  ResultFuture<String> generateUniqueInvitationToken();
+  ResultFuture<String> generateUniqueInvitationToken({
+    required List<int> generatedToken,
+  });
 
   ResultFuture<void> shareInvitationTokenToEmail({
     required String token,

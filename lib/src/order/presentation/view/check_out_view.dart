@@ -7,8 +7,6 @@ import 'package:husbandman/core/common/widgets/hbm_text_widget.dart';
 import 'package:husbandman/core/extensions/context_extension.dart';
 import 'package:husbandman/core/res/color.dart';
 import 'package:husbandman/core/res/fonts.dart';
-import 'package:husbandman/src/auth/domain/entity/user/props/address/address_entity.dart';
-import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 
 // class CheckOutView extends StatefulWidget {
 //   const CheckOutView({super.key});
@@ -451,14 +449,14 @@ _phoneNumberController.dispose();
           backgroundColor: HBMColors.coolGrey,
           textStyle: TextStyle(
               fontSize: context.width * 0.04, color: HBMColors.mediumGrey,
-              fontFamily: HBMFonts.quicksandNormal
+              fontFamily: HBMFonts.quicksandNormal,
           ),
           bottomSheetHeight: 500,
           // Optional. Country list modal height
           //Optional. Sets the border radius for the bottomsheet.
-          borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(20.0),
-            topRight: Radius.circular(20.0),
+          borderRadius: const BorderRadius.only(
+            topLeft: Radius.circular(20),
+            topRight: Radius.circular(20),
           ),
           //Optional. Styles the search field.
           inputDecoration: InputDecoration(

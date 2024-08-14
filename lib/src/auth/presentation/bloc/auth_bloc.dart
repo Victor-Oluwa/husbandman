@@ -6,10 +6,8 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:husbandman/core/enums/update_user.dart';
 import 'package:husbandman/core/utils/typedef.dart';
-import 'package:husbandman/src/auth/domain/entity/user/buyer/buyer_entity.dart';
 import 'package:husbandman/src/auth/domain/entity/user/seller/seller_entity.dart';
 import 'package:husbandman/src/auth/domain/use-cases/authenticate_reset_password_token.dart';
-import 'package:husbandman/src/auth/domain/use-cases/signup.dart';
 import 'package:husbandman/src/auth/domain/use-cases/cache_user_token.dart';
 import 'package:husbandman/src/auth/domain/use-cases/cache_verified_invitation_token.dart';
 import 'package:husbandman/src/auth/domain/use-cases/farmer_signup.dart';
@@ -19,6 +17,7 @@ import 'package:husbandman/src/auth/domain/use-cases/send_reset_password_token.d
 import 'package:husbandman/src/auth/domain/use-cases/set_user.dart';
 import 'package:husbandman/src/auth/domain/use-cases/sign_in.dart';
 import 'package:husbandman/src/auth/domain/use-cases/sign_out.dart';
+import 'package:husbandman/src/auth/domain/use-cases/signup.dart';
 import 'package:husbandman/src/auth/domain/use-cases/update_user.dart';
 import 'package:husbandman/src/auth/domain/use-cases/validate_farmer_invitation_key.dart';
 import 'package:husbandman/src/auth/domain/use-cases/validate_user.dart';
@@ -156,7 +155,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     );
 
     result.fold(
-      (l) => emit( AuthError(l.errorMessage)),
+      (l) => emit(AuthError(l.errorMessage)),
       (r) => emit(
         SignedUp(r),
       ),
@@ -169,11 +168,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   ) async {
     final result = await _farmerSignUp(
       FarmerSignUpParams(
-        name: event.name,
-        email: event.email,
-        password: event.password,
-        address: event.address,
-        type: event.type,
+        seller: event.seller,
         invitationKey: event.invitationKey,
       ),
     );

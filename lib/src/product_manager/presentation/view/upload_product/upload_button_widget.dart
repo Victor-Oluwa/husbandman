@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
 import 'package:husbandman/core/common/app/provider/argument_providers/picked_product_image_provider.dart';
-import 'package:husbandman/core/common/app/provider/indicator_providers/product_image_uploaded_notifier.dart';
-import 'package:husbandman/core/common/app/provider/argument_providers/product_image_url_provider.dart';
 import 'package:husbandman/core/common/app/provider/argument_providers/selected_product_category_provider.dart';
 import 'package:husbandman/core/common/app/provider/state_notifier_providers/user_provider.dart';
 import 'package:husbandman/core/common/app/public_methods/loading/loading_controller.dart';
@@ -76,14 +73,14 @@ class UploadButtonWidget extends StatelessWidget {
             ref.read(selectedProductCategoryProvider) == items[0]) {
           HBMSnackBar.show(
               context: context,
-              content: 'Kindly attend to all fields correctly');
+              content: 'Kindly attend to all fields correctly',);
           return;
         }
 
         // Check if an image has been picked
         if (ref.read(pickedProductImageProvider) == null) {
           HBMSnackBar.show(
-              context: context, content: 'You have not picked an image');
+              context: context, content: 'You have not picked an image',);
           return;
         }
 
@@ -109,11 +106,11 @@ class UploadButtonWidget extends StatelessWidget {
         // Set background color
         shape: RoundedRectangleBorder(
             borderRadius:
-                BorderRadius.circular(15)), // Set shape with rounded corners
+                BorderRadius.circular(15),), // Set shape with rounded corners
       ),
       child: HBMTextWidget(
           data: 'Upload',
-          color: HBMColors.coolGrey), // Set button text and color
+          color: HBMColors.coolGrey,), // Set button text and color
     );
   }
 }

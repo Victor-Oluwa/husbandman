@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:husbandman/core/common/app/provider/state_notifier_providers/user_provider.dart';
@@ -23,7 +22,7 @@ class PopUpTextField {
         return Align(
           alignment: Alignment.topCenter,
           child: Padding(
-            padding: EdgeInsets.only(
+            padding: const EdgeInsets.only(
                 // top: context.height*0.23,
                 // bottom: context.height * 0.27,
                 ),

@@ -60,7 +60,9 @@ class FilterUserEvent extends AdminEvent {
 }
 
 class GenerateUniqueInvitationTokenEvent extends AdminEvent {
-  const GenerateUniqueInvitationTokenEvent();
+  const GenerateUniqueInvitationTokenEvent({required this.generatedToken});
+
+ final List<int> generatedToken;
 }
 
 class SearchUserEvent extends AdminEvent {

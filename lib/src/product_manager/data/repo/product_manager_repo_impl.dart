@@ -2,14 +2,14 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:dartz/dartz.dart';
-import 'package:husbandman/src/cart/domain/entity/cart_entity.dart';
-import 'package:husbandman/core/common/app/entities/product_entity.dart';
-import 'package:husbandman/core/common/app/models/product_model.dart';
+import 'package:husbandman/src/product_manager/data/model/product_model.dart';
+import 'package:husbandman/src/product_manager/domain/entity/product_entity.dart';
 import 'package:husbandman/core/enums/set_product_type.dart';
 import 'package:husbandman/core/enums/update_product.dart';
 import 'package:husbandman/core/error/exceptions.dart';
 import 'package:husbandman/core/error/failure.dart';
 import 'package:husbandman/core/utils/typedef.dart';
+import 'package:husbandman/src/cart/domain/entity/cart_entity.dart';
 import 'package:husbandman/src/product_manager/data/datasource/product_manager_datasource.dart';
 import 'package:husbandman/src/product_manager/domain/repo/product_manager_repo.dart';
 
@@ -48,7 +48,7 @@ class ProductManagerRepoImpl implements ProductManagerRepo {
   }
 
   @override
-  ResultFuture<List<ProductEntity>> deleteProduct(String id) async {
+  ResultFuture<List<ProductModel>> deleteProduct(String id) async {
     try {
       final result = await _productManagerDatasource.deleteProduct(id);
       return Right(result);
@@ -58,7 +58,7 @@ class ProductManagerRepoImpl implements ProductManagerRepo {
   }
 
   @override
-  ResultFuture<List<ProductEntity>> fetchProducts({
+  ResultFuture<List<ProductModel>> fetchProducts({
     required int limit,
     required List<String> fetched,
   }) async {
@@ -79,7 +79,7 @@ class ProductManagerRepoImpl implements ProductManagerRepo {
   }
 
   @override
-  ResultFuture<List<ProductEntity>> fetchProductsByCategory({
+  ResultFuture<List<ProductModel>> fetchProductsByCategory({
     required String category,
     required int limit,
     required List<String> fetched,
@@ -97,7 +97,7 @@ class ProductManagerRepoImpl implements ProductManagerRepo {
   }
 
   @override
-  ResultFuture<List<ProductEntity>> fetchFarmerProducts(
+  ResultFuture<List<ProductModel>> fetchFarmerProducts(
     String farmerEmail,
   ) async {
     try {
@@ -131,7 +131,7 @@ class ProductManagerRepoImpl implements ProductManagerRepo {
   }
 
   @override
-  ResultFuture<ProductEntity> likeProduct(String id) async {
+  ResultFuture<ProductModel> likeProduct(String id) async {
     try {
       final result = await _productManagerDatasource.likeProduct(id);
       return Right(result);
@@ -153,7 +153,7 @@ class ProductManagerRepoImpl implements ProductManagerRepo {
   }
 
   @override
-  ResultFuture<ProductEntity> rateProduct(String id) async {
+  ResultFuture<ProductModel> rateProduct(String id) async {
     try {
       final result = await _productManagerDatasource.rateProduct(id);
       return Right(result);
@@ -163,7 +163,7 @@ class ProductManagerRepoImpl implements ProductManagerRepo {
   }
 
   @override
-  ResultFuture<List<ProductEntity>> searchProduct({
+  ResultFuture<List<ProductModel>> searchProduct({
     required String userId,
     required String query,
     required String searchBy,
@@ -181,7 +181,7 @@ class ProductManagerRepoImpl implements ProductManagerRepo {
   }
 
   @override
-  ResultFuture<ProductEntity> setSellerProduct({
+  ResultFuture<ProductModel> setSellerProduct({
     required SetProductType setProductType,
     List<DataMap>? productMap,
     List<ProductEntity>? productObject,
@@ -217,7 +217,7 @@ class ProductManagerRepoImpl implements ProductManagerRepo {
   }
 
   @override
-  ResultFuture<ProductEntity> updateProduct({
+  ResultFuture<ProductModel> updateProduct({
     required dynamic newData,
     required UpdateProductCulprit culprit,
   }) async {
@@ -233,7 +233,7 @@ class ProductManagerRepoImpl implements ProductManagerRepo {
   }
 
   @override
-  ResultFuture<ProductEntity> uploadProduct({
+  ResultFuture<ProductModel> uploadProduct({
     required String name,
     required String video,
     required List<String> image,

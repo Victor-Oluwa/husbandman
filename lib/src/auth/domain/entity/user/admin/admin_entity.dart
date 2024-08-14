@@ -5,7 +5,7 @@ part 'admin_entity.g.dart';
 
 @JsonSerializable()
 class AdminEntity extends UserEntity {
-   AdminEntity({
+   const AdminEntity({
     required super.id,
     required super.userType,
     required super.name,
@@ -16,9 +16,10 @@ class AdminEntity extends UserEntity {
     required super.lastSeen,
   });
 
+  factory AdminEntity.fromJson(Map<String, dynamic>json)=> _$AdminEntityFromJson(json);
+
   @override
   List<dynamic> get props => super.props;
-
-  factory AdminEntity.fromJson(Map<String, dynamic>json)=> _$AdminEntityFromJson(json);
+  @override
   Map<String, dynamic> toJson()=> _$AdminEntityToJson(this);
 }

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:husbandman/core/common/app/models/product_model.dart';
+import 'package:husbandman/src/product_manager/data/model/product_model.dart';
 import 'package:husbandman/core/common/views/page_under_construction.dart';
 import 'package:husbandman/core/common/widgets/bread_browser.dart';
 import 'package:husbandman/core/services/route_names.dart';
@@ -18,20 +18,19 @@ import 'package:husbandman/src/order/presentation/view/check_out_view.dart';
 import 'package:husbandman/src/payment/domain/entity/card_funding_address_auth_response_entity.dart';
 import 'package:husbandman/src/payment/domain/entity/card_funding_pin_auth_response_entity.dart';
 import 'package:husbandman/src/payment/domain/entity/initialize_card_funding_response_entity.dart';
-import 'package:husbandman/src/payment/presentation/view/all_cards_view.dart';
 import 'package:husbandman/src/payment/presentation/view/add_card_view.dart';
+import 'package:husbandman/src/payment/presentation/view/all_cards_view.dart';
 import 'package:husbandman/src/payment/presentation/view/enter_amount_view.dart';
 import 'package:husbandman/src/payment/presentation/view/enter_card_address_view.dart';
 import 'package:husbandman/src/payment/presentation/view/enter_card_pin_view.dart';
 import 'package:husbandman/src/payment/presentation/view/enter_otp_view.dart';
 import 'package:husbandman/src/payment/presentation/view/payment_successful_view.dart';
 import 'package:husbandman/src/product_manager/presentation/view/product_details.dart';
-import 'package:husbandman/src/product_manager/presentation/view/product_view_by_category.dart';
-import 'package:husbandman/src/product_manager/presentation/view/upload_product/upload_product_main_widget.dart';
-import 'package:husbandman/src/product_manager/presentation/view/seller_products_view.dart';
 import 'package:husbandman/src/product_manager/presentation/view/seller_product_view_by_category.dart';
-import 'package:husbandman/src/profile/presentation/buyer_profile_view.dart';
-import 'package:husbandman/src/profile/presentation/dashboard.dart';
+import 'package:husbandman/src/product_manager/presentation/view/seller_products_view.dart';
+import 'package:husbandman/src/product_manager/presentation/view/upload_product/upload_product_main_widget.dart';
+import 'package:husbandman/src/profile/presentation/view/profile_view.dart';
+import 'package:husbandman/src/profile/presentation/view/dashboard.dart';
 
 Route<dynamic> generateRoute(RouteSettings settings) {
   switch (settings.name) {
@@ -114,7 +113,7 @@ Route<dynamic> generateRoute(RouteSettings settings) {
 
     case RouteNames.dashboard:
       return _pageBuilder(
-        (p0) => Dashboard(),
+        (p0) => const Dashboard(),
         settings: settings,
       );
     case RouteNames.productDetails:
@@ -125,9 +124,9 @@ Route<dynamic> generateRoute(RouteSettings settings) {
         ),
         settings: settings,
       );
-    case RouteNames.buyerProfile:
+    case RouteNames.profileView:
       return _pageBuilder(
-        (p0) => const BuyerProfileView(),
+        (p0) => const ProfileView(),
         settings: settings,
       );
     case RouteNames.cartView:
@@ -164,12 +163,7 @@ Route<dynamic> generateRoute(RouteSettings settings) {
         ),
         settings: settings,
       );
-    case RouteNames.productViewByCategory:
-      final category = settings.arguments! as String;
-      return _pageBuilder(
-        (p0) => ProductViewByCategory(category: category),
-        settings: settings,
-      );
+
     case RouteNames.enterOTPViewWithArgs:
       if (settings.arguments == null) {
         return _pageBuilder(

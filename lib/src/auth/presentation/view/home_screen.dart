@@ -1,332 +1,3 @@
-// class HomeScreen extends ConsumerStatefulWidget {
-//   const HomeScreen({super.key});
-//
-//   @override
-//   ConsumerState<HomeScreen> createState() => _HomeScreenState();
-// }
-//
-// class _HomeScreenState extends ConsumerState<HomeScreen> {
-//
-
-//   @override
-//   Widget build(BuildContext context) {
-//     final horizontalPadding = context.width * 0.06;
-//     return AdvancedDrawer(
-//       backdrop: Container(
-//         width: double.infinity,
-//         height: double.infinity,
-//         decoration: BoxDecoration(color: HBMColors.charcoalGrey),
-//       ),
-//       controller: _advancedDrawerController,
-//       animationCurve: Curves.easeInOut,
-//       animationDuration: const Duration(milliseconds: 300),
-//       animateChildDecoration: true,
-//       rtlOpening: false,
-//       childDecoration: const BoxDecoration(
-//         boxShadow: <BoxShadow>[
-//           BoxShadow(color: Colors.black12, blurRadius: 0.0),
-//         ],
-//         borderRadius: BorderRadius.all(Radius.circular(16)),
-//       ),
-//       drawer: buildDrawer(context),
-//       child: buildBody(context, horizontalPadding),
-//     );
-//   }
-//
-//   Widget buildBody(BuildContext context, double horizontalPadding) {
-//     final allProducts = ref.watch(generalProductProvider);
-//
-//     return MultiBlocProvider(
-//       providers: [
-//         BlocProvider(create: (context) => ref.read(authBlocProvider)),
-//         BlocProvider(create: (context) => ref.read(productManagerBlocProvider)),
-//       ],
-//       child: Scaffold(
-//         backgroundColor: Colors.grey.shade200,
-//         appBar: buildAppBar(context),
-//         body: MultiBlocListener(
-//           listeners: [
-//             BlocListener<AuthBloc, AuthState>(
-//               listener: (context, state) {
-//                 if (state is SignedOut) {
-//                   Navigator.pushNamedAndRemoveUntil(
-//                       context, RouteNames.signInScreen, (route) => false);
-//                 }
-//               },
-//             ),
-//             BlocListener<ProductManagerBloc, ProductManagerState>(
-//               listener: (context, state) {
-//                 if (state is FetchedProduct) {
-//                   log('product fetched from home');
-//                   final products = <ProductModel>[];
-//
-//                   for (final element in state.products) {
-//                     products.add(element as ProductModel);
-//                   }
-//
-//                   context.read<ProductManagerBloc>().add(SetGeneralProductEvent(
-//                         setProductType: SetProductType.insertNew,
-//                         productObject: products,
-//                       ));
-//                 }
-//
-//                 if (state is GeneralProductSet) {
-//                   log('general product set');
-//                 }
-//
-//                 if (state is ProductManagerError) {
-//                   log('An error occurred: ${state.message}');
-//                 }
-//               },
-//             ),
-//           ],
-//           child: BlocBuilder<ProductManagerBloc, ProductManagerState>(
-//             builder: (context, state) {
-//               return BlocBuilder<AuthBloc, AuthState>(
-//                 builder: (context, state) {
-//                   return Center(
-//                     child: Container(
-//                       decoration: BoxDecoration(
-//                         color: HBMColors.lightGrey,
-//                         borderRadius: const BorderRadius.only(
-//                           topLeft: Radius.circular(20),
-//                           topRight: Radius.circular(20),
-//                         ),
-//                       ),
-//                       child: GestureDetector(
-//                         onTap: () {
-//                           // context.read<AuthBloc>().add(const SignOutEvent());
-//                         },
-//                         child: Column(
-//                           children: [
-//                             SizedBox(height: context.height * 0.03),
-//                             Padding(
-//                               padding: EdgeInsets.symmetric(
-//                                   horizontal: horizontalPadding),
-//                               child: const SearchField(
-//                                   isElevated: false,
-//                                   hintText: 'Search anything...'),
-//                             ),
-//                             SizedBox(height: context.height * 0.03),
-//                             SizedBox(
-//                               height: context.height * 0.15,
-//                               child: ListView(
-//                                 scrollDirection: Axis.horizontal,
-//                                 children: [
-//                                   CategoryWidget(
-//                                     content: const HomeCategoryContent.all(),
-//                                     color: HBMColors.white,
-//                                     leftPadding: context.width * 0.06,
-//                                     onTap: () {
-//                                       Navigator.pushNamed(context,
-//                                           RouteNames.productViewByCategory,
-//                                           arguments:
-//                                               const HomeCategoryContent.all()
-//                                                   .name);
-//                                     },
-//                                   ),
-//                                   CategoryWidget(
-//                                     content: const HomeCategoryContent.grain(),
-//                                     color: HBMColors.white,
-//                                     leftPadding: 0,
-//                                     onTap: () {
-//                                       Navigator.pushNamed(
-//                                         context,
-//                                         RouteNames.productViewByCategory,
-//                                         arguments:
-//                                             const HomeCategoryContent.grain()
-//                                                 .name,
-//                                       );
-//                                     },
-//                                   ),
-//                                   CategoryWidget(
-//                                     content: const HomeCategoryContent.herbs(),
-//                                     color: HBMColors.white,
-//                                     leftPadding: 0,
-//                                     onTap: () {
-//                                       Navigator.pushNamed(
-//                                         context,
-//                                         RouteNames.productViewByCategory,
-//                                         arguments:
-//                                             const HomeCategoryContent.herbs()
-//                                                 .name,
-//                                       );
-//                                     },
-//                                   ),
-//                                   CategoryWidget(
-//                                     content:
-//                                         const HomeCategoryContent.powdered(),
-//                                     color: HBMColors.white,
-//                                     leftPadding: 0,
-//                                     onTap: () {
-//                                       Navigator.pushNamed(context,
-//                                           RouteNames.productViewByCategory,
-//                                           arguments: const HomeCategoryContent
-//                                                   .powdered()
-//                                               .name);
-//                                     },
-//                                   ),
-//                                   CategoryWidget(
-//                                     content:
-//                                         const HomeCategoryContent.vegetables(),
-//                                     color: HBMColors.white,
-//                                     leftPadding: 0,
-//                                     onTap: () {
-//                                       Navigator.pushNamed(context,
-//                                           RouteNames.productViewByCategory,
-//                                           arguments: const HomeCategoryContent
-//                                                   .vegetables()
-//                                               .name);
-//                                     },
-//                                   ),
-//                                   CategoryWidget(
-//                                     content: const HomeCategoryContent.fruits(),
-//                                     color: HBMColors.white,
-//                                     leftPadding: 0,
-//                                     onTap: () {
-//                                       Navigator.pushNamed(
-//                                         context,
-//                                         RouteNames.productViewByCategory,
-//                                         arguments:
-//                                             const HomeCategoryContent.fruits()
-//                                                 .name,
-//                                       );
-//                                     },
-//                                   ),
-//                                   CategoryWidget(
-//                                     content: const HomeCategoryContent.tuber(),
-//                                     color: HBMColors.white,
-//                                     leftPadding: 0,
-//                                     onTap: () {
-//                                       Navigator.pushNamed(
-//                                         context,
-//                                         RouteNames.productViewByCategory,
-//                                         arguments:
-//                                             const HomeCategoryContent.tuber()
-//                                                 .name,
-//                                       );
-//                                     },
-//                                   ),
-//                                   CategoryWidget(
-//                                     content: const HomeCategoryContent.others(),
-//                                     color: HBMColors.white,
-//                                     leftPadding: 0,
-//                                     onTap: () {
-//                                       Navigator.pushNamed(
-//                                         context,
-//                                         RouteNames.productViewByCategory,
-//                                         arguments:
-//                                             const HomeCategoryContent.others()
-//                                                 .name,
-//                                       );
-//                                     },
-//                                   ),
-//                                 ],
-//                               ),
-//                             ),
-//                             Expanded(
-//                               child: ListView.separated(
-//                                 itemCount: allProducts.length,
-//                                 controller: _scrollController,
-//                                 padding: EdgeInsets.symmetric(
-//                                     horizontal: horizontalPadding),
-//                                 itemBuilder: (BuildContext context, index) {
-//                                   final product = allProducts[index];
-//
-//                                   if (index == allProducts.length) {
-//                                     return _isLoading
-//                                         ? const Center(
-//                                             child: CircularProgressIndicator())
-//                                         : const SizedBox.shrink();
-//                                   }
-//                                   return GestureDetector(
-//                                     onTap: () {
-//                                       Navigator.pushNamed(
-//                                           context, RouteNames.productDetails,
-//                                           arguments: product);
-//                                     },
-//                                     child: Hero(
-//                                       tag: index,
-//                                       child: ProductListingWidget(
-//                                           product: product, index: index),
-//                                     ),
-//                                   );
-//                                 },
-//                                 separatorBuilder:
-//                                     (BuildContext context, int index) {
-//                                   return SizedBox(
-//                                       height: context.height * 0.04);
-//                                 },
-//                               ),
-//                             ),
-//                           ],
-//                         ),
-//                       ),
-//                     ),
-//                   );
-//                 },
-//               );
-//             },
-//           ),
-//         ),
-//       ),
-//     );
-//   }
-//
-//
-//   AppBar buildAppBar(BuildContext context) {
-//     return AppBar(
-//       backgroundColor: Colors.transparent,
-//       elevation: 0,
-//       toolbarHeight: context.width * 0.20,
-//       centerTitle: true,
-//       title: GestureDetector(
-//         onTap: () {
-//           final fetchedProduct = ref
-//               .watch(generalProductProvider)
-//               .map((product) => product.id)
-//               .toList();
-//           log('Tapped');
-//           context
-//               .read<ProductManagerBloc>()
-//               .add(FetchProductsEvent(limit: 1, fetched: fetchedProduct));
-//         },
-//         onDoubleTap: () {
-//           LoadingIndicatorController.instance.hide();
-//         },
-//         child: Column(
-//           children: [
-//             HBMTextWidget(
-//               data: 'Welcome',
-//               fontSize: context.width * 0.03,
-//               fontFamily: HBMFonts.exoLight,
-//               color: Colors.grey,
-//             ),
-//             HBMTextWidget(
-//               data: ref.read(userProvider).name,
-//               fontSize: context.width * 0.05,
-//               fontFamily: HBMFonts.exoLight,
-//             ),
-//           ],
-//         ),
-//       ),
-//       leading: IconButton(
-//         onPressed: _handleMenuButtonPressed,
-//         icon: ValueListenableBuilder<AdvancedDrawerValue>(
-//           valueListenable: _advancedDrawerController,
-//           builder: (_, value, __) {
-//             return AnimatedSwitcher(
-//               duration: const Duration(milliseconds: 250),
-//               child: Icon(value.visible ? Icons.clear : Icons.menu,
-//                   key: ValueKey<bool>(value.visible)),
-//             );
-//           },
-//         ),
-//       ),
-//     );
-//   }
-// }
-
 import 'dart:async';
 import 'dart:developer';
 
@@ -334,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_advanced_drawer/flutter_advanced_drawer.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:husbandman/core/common/app/models/product_model.dart';
 import 'package:husbandman/core/common/app/provider/state_notifier_providers/general_product_provider.dart';
 import 'package:husbandman/core/common/app/provider/state_notifier_providers/user_provider.dart';
 import 'package:husbandman/core/common/widgets/bread_text_field.dart';
@@ -347,7 +17,9 @@ import 'package:husbandman/core/services/injection/auth/auth_injection.dart';
 import 'package:husbandman/core/services/injection/product_manager/product_manager_injection.dart';
 import 'package:husbandman/core/services/route_names.dart';
 import 'package:husbandman/src/auth/domain/entity/home_category_content.dart';
+import 'package:husbandman/src/auth/presentation/bloc/auth_bloc.dart';
 import 'package:husbandman/src/auth/presentation/widgets/drawer.dart';
+import 'package:husbandman/src/product_manager/data/model/product_model.dart';
 import 'package:husbandman/src/product_manager/presentation/bloc/product_manager_bloc.dart';
 
 final currentCategoryProvider = StateProvider<String>((_) => 'General');
@@ -367,9 +39,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
   late TextEditingController searchController;
   final _advancedDrawerController = AdvancedDrawerController();
   final ScrollController _productGridScrollController = ScrollController();
-
-  // late AnimationController _animationController;
-  bool _isLoading = false;
 
   final options = [
     const HomeCategoryContent.all().name,
@@ -434,7 +103,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
     if (category == options[0]) {
       productManagerBloc
           .add(FetchProductsEvent(limit: 8, fetched: fetchedProduct));
-      setState(() => _isLoading = false);
+      setState(() {});
     } else {
       productManagerBloc.add(
         FetchProductsByCategoryEvent(
@@ -443,19 +112,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
           fetched: fetchedProduct,
         ),
       );
-      setState(() => _isLoading = false);
+      setState(() {});
     }
-  }
-
-  void addProductToCart(ProductModel product) {
-    final userId = ref.read(userProvider).id;
-    context.read<ProductManagerBloc>().add(
-          AddProductToCartEvent(
-            productId: product.id,
-            quantity: product.quantity,
-            cartOwnerId: userId,
-          ),
-        );
   }
 
   void _scrollListener() {
@@ -490,105 +148,123 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
         BlocProvider(create: (context) => ref.read(productManagerBlocProvider)),
         BlocProvider(create: (context) => ref.read(authBlocProvider)),
       ],
-      child: BreadDrawer(
-        advancedDrawerController: _advancedDrawerController,
-        tileOneName: 'Dashboard',
-        tileOneCallback: () {
-          Navigator.pushNamed(context, RouteNames.dashboard);
+      child: BlocConsumer<AuthBloc, AuthState>(
+        listener: (context, state) {
+          if (state is SignedOut) {
+            log('User signed out');
+            Navigator.pushNamedAndRemoveUntil(
+              context,
+              RouteNames.signInScreen,
+              (Route<dynamic> route) => false,
+            );
+          }
         },
-        tileTwoName: 'Cart',
-        tileTwoCallback: () {
-          Navigator.pushNamed(context, RouteNames.cartView);
-        },
-        tileThreeName: 'Orders',
-        tileThreeCallback: () {},
-        tileFourName: 'Profile',
-        tileFourCallback: () {},
-        tileFiveName: 'Notification',
-        tileFiveCallback: () {},
-        tileSixName: 'Logout',
-        tileSixCallback: () {},
-        pageBody: Scaffold(
-          body: BlocConsumer<ProductManagerBloc, ProductManagerState>(
-            listener: (context, state) {
-              if (state is FetchedProduct) {
-                log('product fetched from home');
-                final products =
-                    state.products.map((e) => e as ProductModel).toList();
-                context.read<ProductManagerBloc>().add(
-                      SetGeneralProductEvent(
-                        setProductType: SetProductType.insertNew,
-                        productObject: products,
-                      ),
-                    );
-              }
-              if (state is FetchedProductByCategory) {
-                final products =
-                    state.products.map((e) => e as ProductModel).toList();
-                context.read<ProductManagerBloc>().add(
-                      SetGeneralProductEvent(
-                        setProductType: SetProductType.insertNew,
-                        productObject: products,
-                      ),
-                    );
-              }
-              if(state is AddProductToCartEvent){
-                log('Product added to cart');
-              }
-              if (state is ProductManagerError) {
-                log('An error occurreddd: ${state.message}');
-              }
+        builder: (context, state) {
+          return BreadDrawer(
+            advancedDrawerController: _advancedDrawerController,
+            tileOneName: 'Dashboard',
+            tileOneCallback: () {
+              Navigator.pushNamed(context, RouteNames.dashboard);
             },
-            builder: (context, state) {
-              return Container(
-                constraints: const BoxConstraints.expand(),
-                color: HBMColors.coolGrey,
-                child: Stack(
-                  children: [
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.end,
+            tileTwoName: 'Cart',
+            tileTwoCallback: () {
+              Navigator.pushNamed(context, RouteNames.cartView);
+            },
+            tileThreeName: 'Orders',
+            tileThreeCallback: () {},
+            tileFourName: 'Profile',
+            tileFourCallback: () {
+              Navigator.pushNamed(context, RouteNames.profileView);
+            },
+            tileFiveName: 'Notifications',
+            tileFiveCallback: () {},
+            tileSixName: 'Logout',
+            tileSixCallback: () {
+              context.read<AuthBloc>().add(const SignOutEvent());
+            },
+            pageBody: Scaffold(
+              body: BlocConsumer<ProductManagerBloc, ProductManagerState>(
+                listener: (context, state) {
+                  if (state is FetchedProduct) {
+                    log('product fetched from home');
+                    final products =
+                        state.products.map((e) => e as ProductModel).toList();
+                    context.read<ProductManagerBloc>().add(
+                          SetGeneralProductEvent(
+                            setProductType: SetProductType.insertNew,
+                            productObject: products,
+                          ),
+                        );
+                  }
+                  if (state is FetchedProductByCategory) {
+                    final products =
+                        state.products.map((e) => e as ProductModel).toList();
+                    context.read<ProductManagerBloc>().add(
+                          SetGeneralProductEvent(
+                            setProductType: SetProductType.insertNew,
+                            productObject: products,
+                          ),
+                        );
+                  }
+                  if (state is AddProductToCartEvent) {
+                    log('Product added to cart');
+                  }
+                  if (state is ProductManagerError) {
+                    log('An error occurred: ${state.message}');
+                  }
+                },
+                builder: (context, state) {
+                  return Container(
+                    constraints: const BoxConstraints.expand(),
+                    color: HBMColors.coolGrey,
+                    child: Stack(
                       children: [
-                        SideMenu(
-                          ref: ref,
-                          options: options,
-                          currentCategory: currentCategory,
-                          checkCurrentCategory: _checkCurrentCategory,
-                          changeCategoryColor: _changeCategoryColor,
-                          onMenuButtonPressed: _handleMenuButtonPressed,
-                          fetchProductsByCategory: fetchProductsByCategory,
-                          updateCurrentCategoryProvider:
-                              _updateCurrentCategoryProvider,
-                          invalidateProductsProvider:
-                              _invalidateProductProvider,
-                          invalidateCurrentCategoryProvider:
-                              _invalidateCurrentCategoryProvider,
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            SideMenu(
+                              ref: ref,
+                              options: options,
+                              currentCategory: currentCategory,
+                              checkCurrentCategory: _checkCurrentCategory,
+                              changeCategoryColor: _changeCategoryColor,
+                              onMenuButtonPressed: _handleMenuButtonPressed,
+                              fetchProductsByCategory: fetchProductsByCategory,
+                              updateCurrentCategoryProvider:
+                                  _updateCurrentCategoryProvider,
+                              invalidateProductsProvider:
+                                  _invalidateProductProvider,
+                              invalidateCurrentCategoryProvider:
+                                  _invalidateCurrentCategoryProvider,
+                            ),
+                            Expanded(
+                              child: ProductGrid(
+                                ref: ref,
+                                products: products,
+                                productGridScrollController:
+                                    _productGridScrollController,
+                              ),
+                            ),
+                          ],
                         ),
-                        Expanded(
-                          child: ProductGrid(
-                            ref: ref,
-                            products: products,
-                            productGridScrollController:
-                                _productGridScrollController,
+                        Align(
+                          alignment: Alignment.topCenter,
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: context.width * 0.04,
+                              vertical: context.height * 0.13,
+                            ),
+                            child: SearchBar(controller: searchController),
                           ),
                         ),
                       ],
                     ),
-                    Align(
-                      alignment: Alignment.topCenter,
-                      child: Padding(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: context.width * 0.04,
-                          vertical: context.height * 0.13,
-                        ),
-                        child: SearchBar(controller: searchController),
-                      ),
-                    ),
-                  ],
-                ),
-              );
-            },
-          ),
-        ),
+                  );
+                },
+              ),
+            ),
+          );
+        },
       ),
     );
   }
@@ -676,7 +352,7 @@ class _SideMenuState extends State<SideMenu> {
   void _autoScroll() {
     final maxScroll = controller.position.maxScrollExtent;
     final minScroll = controller.position.minScrollExtent;
-    final scrollAmount = 100.0;
+    const scrollAmount = 100.0;
 
     if (scrollForward) {
       controller
@@ -731,7 +407,7 @@ class _SideMenuState extends State<SideMenu> {
                 itemCount: widget.options.length,
                 itemBuilder: (context, index) {
                   final category = widget.options[index];
-                  Color categoryColor = selected == category
+                  final categoryColor = selected == category
                       ? HBMColors.blue // Selected category color
                       : HBMColors.charcoalGrey; // Default category color
                   return Padding(
@@ -800,7 +476,10 @@ class ProductGrid extends StatelessWidget {
         ),
         itemBuilder: (context, index) {
           final product = products[index];
-          return ProductCard(product: product, ref: ref,);
+          return ProductCard(
+            product: product,
+            ref: ref,
+          );
         },
       ),
     );
@@ -810,9 +489,9 @@ class ProductGrid extends StatelessWidget {
 // Widget for the Product Card
 class ProductCard extends StatelessWidget {
   const ProductCard({
-    super.key,
     required this.product,
     required this.ref,
+    super.key,
   });
 
   final ProductModel product;
@@ -827,7 +506,7 @@ class ProductCard extends StatelessWidget {
     context.read<ProductManagerBloc>().add(
           AddProductToCartEvent(
             productId: product.id,
-            quantity: product.quantity,
+            quantity: product.quantityAvailable,
             cartOwnerId: userId,
           ),
         );
@@ -929,8 +608,8 @@ class ProductCard extends StatelessWidget {
 // Widget for the Search Bar
 class SearchBar extends StatelessWidget {
   const SearchBar({
-    super.key,
     required this.controller,
+    super.key,
   });
 
   final TextEditingController controller;
@@ -960,7 +639,7 @@ class SearchBar extends StatelessWidget {
 
 // Widget for Vertical Text (unchanged)
 class VerticalText extends StatelessWidget {
-  const VerticalText({super.key, required this.text, required this.color});
+  const VerticalText({required this.text, required this.color, super.key});
 
   final String text;
   final Color color;

@@ -1,25 +1,19 @@
 import 'package:equatable/equatable.dart';
+import 'package:husbandman/core/utils/typedef.dart';
+import 'package:json_annotation/json_annotation.dart';
 
+part 'invitation_token_entity.g.dart';
+
+@JsonSerializable()
 class InvitationTokenEntity extends Equatable {
   const InvitationTokenEntity({
-    required this.id,
     required this.ownerName,
     required this.ownerEmail,
     required this.ownerId,
     required this.assigned,
     required this.value,
+    this.id = '',
   });
-
-  factory InvitationTokenEntity.fromMap(Map<String, dynamic> map) {
-    return InvitationTokenEntity(
-      id: map['_id'] as String,
-      ownerName: map['ownerName'] as String,
-      ownerEmail: map['ownerEmail'] as String,
-      ownerId: map['ownerId'] as String,
-      assigned: map['assigned'] as bool,
-      value: map['value'] as String,
-    );
-  }
 
   const InvitationTokenEntity.empty()
       : this(
@@ -31,6 +25,12 @@ class InvitationTokenEntity extends Equatable {
           value: 'empty.value',
         );
 
+  factory InvitationTokenEntity.fromJson(DataMap json) =>
+      _$InvitationTokenEntityFromJson(json);
+
+  DataMap toJson() => _$InvitationTokenEntityToJson(this);
+
+  @JsonKey(name: '_id')
   final String id;
   final String ownerName;
   final String ownerEmail;
@@ -40,15 +40,4 @@ class InvitationTokenEntity extends Equatable {
 
   @override
   List<Object> get props => [ownerEmail];
-
-  Map<String, dynamic> toMap() {
-    return {
-      '_id': id,
-      'ownerName': ownerName,
-      'ownerEmail': ownerEmail,
-      'ownerId': ownerId,
-      'assigned': assigned,
-      'value':value,
-    };
-  }
 }

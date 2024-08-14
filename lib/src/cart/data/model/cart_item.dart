@@ -1,8 +1,12 @@
+import 'package:husbandman/core/utils/typedef.dart';
 import 'package:husbandman/src/cart/domain/entity/cart_item_entity.dart';
+import 'package:json_annotation/json_annotation.dart';
 
+part 'cart_item.g.dart';
+
+@JsonSerializable()
 class CartItem extends CartItemEntity {
- const CartItem({
-    required super.id,
+  const CartItem({
     required super.productId,
     required super.productName,
     required super.productImage,
@@ -10,11 +14,13 @@ class CartItem extends CartItemEntity {
     required super.productQuantity,
     required super.sellerName,
     required super.sellerId,
+    required super.buyerId,
     required super.deliveryDate,
     required super.percentage,
+    super.id,
   });
 
- const CartItem.empty()
+  const CartItem.empty()
       : this(
           id: '',
           deliveryDate: '',
@@ -23,41 +29,15 @@ class CartItem extends CartItemEntity {
           productPrice: 0,
           productQuantity: 0,
           sellerId: '',
+          buyerId: '',
           sellerName: '',
           productImage: '',
           percentage: 0,
         );
 
-  factory CartItem.fromMap(Map<String, dynamic> map) {
-    return CartItem(
-      id: map['_id'] as String? ?? '',
-      productId: map['productId'] as String? ?? '',
-      productName: map['productName'] as String? ?? '',
-      productImage: map['productImage'] as String? ?? '',
-      productPrice: double.parse(map['price'].toString()) ?? 0.0,
-      productQuantity: map['quantity'] as int? ?? 0,
-      sellerName: map['sellerName'] as String? ?? '',
-      sellerId: map['sellerId'] as String? ?? '',
-      deliveryDate: map['deliveryDate'] as String? ?? '',
-      percentage: double.parse(map['percentage'].toString()) ?? 0.0,
-    );
-  }
+  factory CartItem.fromJson(DataMap json) => _$CartItemFromJson(json);
 
-  @override
-  Map<String, dynamic> toMap() {
-    return {
-      '_id': id,
-      'productId': productId,
-      'productName': productName,
-      'productImage': productImage,
-      'price': productPrice,
-      'quantity': productQuantity,
-      'sellerName': sellerName,
-      'sellerId': sellerId,
-      'deliveryDate': deliveryDate,
-      'percentage': percentage,
-    };
-  }
+  DataMap toMap() => _$CartItemToJson(this);
 
   @override
   List<dynamic> get props => [

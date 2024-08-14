@@ -6,7 +6,7 @@ part 'notification_entity.g.dart';
 
 @JsonSerializable(explicitToJson: true)
 class NotificationEntity {
-  NotificationEntity({
+ const NotificationEntity({
     required this.id,
     required this.ownerId,
     required this.unread,

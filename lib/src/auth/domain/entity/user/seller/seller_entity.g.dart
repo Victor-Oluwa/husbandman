@@ -7,18 +7,18 @@ part of 'seller_entity.dart';
 // **************************************************************************
 
 SellerEntity _$SellerEntityFromJson(Map<String, dynamic> json) => SellerEntity(
-      id: json['_id'] as String? ?? '',
       userType: json['userType'] as String,
       name: json['name'] as String,
       email: json['email'] as String,
       password: json['password'] as String,
+      id: json['_id'] as String? ?? '',
       phone:
           (json['phone'] as List<dynamic>?)?.map((e) => e as String).toList() ??
               const [],
       address: json['address'] == null
           ? const AddressEntity.empty()
           : AddressEntity.fromJson(json['address'] as Map<String, dynamic>),
-      dateJoined: json['dateJoined'] as String? ?? 'Date mot set',
+      dateJoined: json['dateJoined'] as String? ?? 'Date not set',
       balance: (json['balance'] as num?)?.toDouble() ?? 0,
       pendingFunds: (json['pendingFunds'] as num?)?.toDouble() ?? 0,
       totalWithdrawal: (json['totalWithdrawal'] as num?)?.toDouble() ?? 0,
@@ -29,7 +29,7 @@ SellerEntity _$SellerEntityFromJson(Map<String, dynamic> json) => SellerEntity(
               .toList() ??
           const ['Optional'],
       about: json['about'] as String? ?? 'Optional',
-      token: json['token'] as String,
+      token: json['token'] as String? ?? '',
       profilePicture: json['profilePicture'] as String? ?? '',
       notification: json['notification'] == null
           ? const NotificationEntity.empty()
@@ -43,16 +43,16 @@ SellerEntity _$SellerEntityFromJson(Map<String, dynamic> json) => SellerEntity(
       cartId: json['cartId'] as String? ?? 'Optional',
       orderId: json['orderId'] as String? ?? 'Optional',
       pendingOrderFunds: json['pendingOrderFunds'] == null
-          ? null
+          ? PendingOrderFundsEntity.empty
           : PendingOrderFundsEntity.fromJson(
               json['pendingOrderFunds'] as Map<String, dynamic>),
       ordered: json['ordered'] == null
-          ? null
+          ? OrderedEntity.empty
           : OrderedEntity.fromJson(json['ordered'] as Map<String, dynamic>),
-      pendingPaymentEntity: json['pendingPaymentEntity'] == null
-          ? null
+      pendingPayment: json['pendingPayment'] == null
+          ? PendingPaymentEntity.empty
           : PendingPaymentEntity.fromJson(
-              json['pendingPaymentEntity'] as Map<String, dynamic>),
+              json['pendingPayment'] as Map<String, dynamic>),
     );
 
 Map<String, dynamic> _$SellerEntityToJson(SellerEntity instance) =>
@@ -80,18 +80,18 @@ Map<String, dynamic> _$SellerEntityToJson(SellerEntity instance) =>
       'bannerImage': instance.bannerImage,
       'cartId': instance.cartId,
       'orderId': instance.orderId,
-      'pendingPaymentEntity': instance.pendingPaymentEntity?.toJson(),
-      'ordered': instance.ordered?.toJson(),
-      'pendingOrderFunds': instance.pendingOrderFunds?.toJson(),
+      'pendingPayment': instance.pendingPayment.toJson(),
+      'ordered': instance.ordered.toJson(),
+      'pendingOrderFunds': instance.pendingOrderFunds.toJson(),
     };
 
 PendingOrderFundsEntity _$PendingOrderFundsEntityFromJson(
         Map<String, dynamic> json) =>
     PendingOrderFundsEntity(
-      id: json['_id'] as String? ?? '',
       funds: (json['funds'] as List<dynamic>)
           .map((e) => FundEntity.fromJson(e as Map<String, dynamic>))
           .toList(),
+      id: json['_id'] as String? ?? '',
     );
 
 Map<String, dynamic> _$PendingOrderFundsEntityToJson(
@@ -102,18 +102,16 @@ Map<String, dynamic> _$PendingOrderFundsEntityToJson(
     };
 
 FundEntity _$FundEntityFromJson(Map<String, dynamic> json) => FundEntity(
-      id: json['_id'] as String? ?? '',
-      orderId: json['orderId'] as String,
       buyerId: json['buyerId'] as String,
       productId: json['productId'] as String,
       productName: json['productName'] as String,
       amountPending: (json['amountPending'] as num).toDouble(),
+      id: json['_id'] as String? ?? '',
     );
 
 Map<String, dynamic> _$FundEntityToJson(FundEntity instance) =>
     <String, dynamic>{
       '_id': instance.id,
-      'orderId': instance.orderId,
       'buyerId': instance.buyerId,
       'productId': instance.productId,
       'productName': instance.productName,
@@ -122,12 +120,12 @@ Map<String, dynamic> _$FundEntityToJson(FundEntity instance) =>
 
 OrderedEntity _$OrderedEntityFromJson(Map<String, dynamic> json) =>
     OrderedEntity(
-      id: json['_id'] as String? ?? '',
       totalEarning: (json['totalEarning'] as num).toDouble(),
       totalDeductible: (json['totalDeductible'] as num).toDouble(),
       orderedItems: (json['orderedItems'] as List<dynamic>)
           .map((e) => OrderedItemEntity.fromJson(e as Map<String, dynamic>))
           .toList(),
+      id: json['_id'] as String? ?? '',
     );
 
 Map<String, dynamic> _$OrderedEntityToJson(OrderedEntity instance) =>
@@ -140,7 +138,6 @@ Map<String, dynamic> _$OrderedEntityToJson(OrderedEntity instance) =>
 
 OrderedItemEntity _$OrderedItemEntityFromJson(Map<String, dynamic> json) =>
     OrderedItemEntity(
-      sellerId: json['sellerId'] as String,
       buyerId: json['buyerId'] as String,
       buyerName: json['buyerName'] as String,
       buyerImage: json['buyerImage'] as String,
@@ -160,7 +157,6 @@ OrderedItemEntity _$OrderedItemEntityFromJson(Map<String, dynamic> json) =>
 Map<String, dynamic> _$OrderedItemEntityToJson(OrderedItemEntity instance) =>
     <String, dynamic>{
       '_id': instance.id,
-      'sellerId': instance.sellerId,
       'buyerId': instance.buyerId,
       'buyerName': instance.buyerName,
       'buyerImage': instance.buyerImage,

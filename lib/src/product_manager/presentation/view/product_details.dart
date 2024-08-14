@@ -3,7 +3,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:husbandman/core/common/app/models/product_model.dart';
+import 'package:husbandman/src/product_manager/data/model/product_model.dart';
 import 'package:husbandman/core/common/app/provider/state_notifier_providers/user_provider.dart';
 import 'package:husbandman/core/common/widgets/hbm_text_widget.dart';
 import 'package:husbandman/core/common/widgets/snack_bar.dart';
@@ -11,12 +11,13 @@ import 'package:husbandman/core/extensions/context_extension.dart';
 import 'package:husbandman/core/res/color.dart';
 import 'package:husbandman/core/res/fonts.dart';
 import 'package:husbandman/core/services/injection/product_manager/product_manager_injection.dart';
+import 'package:husbandman/src/product_manager/domain/entity/product_entity.dart';
 import 'package:husbandman/src/product_manager/presentation/bloc/product_manager_bloc.dart';
 
 class ProductDetailsView extends ConsumerWidget {
   const ProductDetailsView({required this.product, super.key});
 
-  final ProductModel product;
+  final ProductEntity product;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -93,12 +94,12 @@ class ProductDetailsView extends ConsumerWidget {
                                   ),
                                   Wrap(
                                     children: [
-                                      Icon(Icons.star),
+                                      const Icon(Icons.star),
                                       SizedBox(
                                         width: context.width * 0.02,
                                       ),
                                       HBMTextWidget(
-                                          data: '${product.rating.length}'),
+                                          data: '${product.rating.length}',),
                                     ],
                                   ),
                                 ],
@@ -142,7 +143,7 @@ class ProductDetailsView extends ConsumerWidget {
                                     data: '₦${product.price}',
                                     fontFamily: HBMFonts.quicksandBold,
                                     fontSize: context.width * 0.05,
-                                  )
+                                  ),
                                 ],
                               ),
                               SizedBox(
@@ -153,12 +154,12 @@ class ProductDetailsView extends ConsumerWidget {
                                 child: Card(
                                   shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(12),
-                                      side: BorderSide(color: HBMColors.grey)),
+                                      side: BorderSide(color: HBMColors.grey),),
                                   margin: EdgeInsets.zero,
                                   color: Colors.transparent,
                                   elevation: 0,
                                   child: Padding(
-                                    padding: const EdgeInsets.all(8.0),
+                                    padding: const EdgeInsets.all(8),
                                     child: Row(
                                       mainAxisAlignment:
                                           MainAxisAlignment.spaceBetween,
@@ -173,12 +174,12 @@ class ProductDetailsView extends ConsumerWidget {
                                               children: [
                                                 Wrap(
                                                   children: [
-                                                    Icon(Icons.thumb_up),
+                                                    const Icon(Icons.thumb_up),
                                                     SizedBox(
                                                       width:
                                                           context.width * 0.01,
                                                     ),
-                                                    HBMTextWidget(data: '0')
+                                                    const HBMTextWidget(data: '0'),
                                                   ],
                                                 ),
                                                 SizedBox(
@@ -188,13 +189,13 @@ class ProductDetailsView extends ConsumerWidget {
                                                   children: [
                                                     Wrap(
                                                       children: [
-                                                        HBMTextWidget(
-                                                            data: '0'),
+                                                        const HBMTextWidget(
+                                                            data: '0',),
                                                         SizedBox(
                                                           width: context.width *
                                                               0.01,
                                                         ),
-                                                        Icon(Icons.thumb_down),
+                                                        const Icon(Icons.thumb_down),
                                                       ],
                                                     ),
                                                   ],
@@ -202,7 +203,7 @@ class ProductDetailsView extends ConsumerWidget {
                                               ],
                                             ),
                                             SizedBox(
-                                                height: context.height * 0.02),
+                                                height: context.height * 0.02,),
                                             TextButton(
                                               onPressed: () {
                                                 context
@@ -266,7 +267,7 @@ class ProductDetailsView extends ConsumerWidget {
                                               ),
                                             ),
                                           ],
-                                        )
+                                        ),
                                       ],
                                     ),
                                   ),
@@ -279,10 +280,10 @@ class ProductDetailsView extends ConsumerWidget {
                                 data: 'Product Description',
                                 fontFamily: HBMFonts.quicksandBold,
                               ),
-                              HBMTextWidget(
+                              const HBMTextWidget(
                                   textAlign: TextAlign.left,
                                   data:
-                                      'Im currently filling out the form for the IDAN showroom visit, but Im not sure what should go in these fields Sir, Im currently filling out the form for the IDAN showroom visit, but Im not sure what should go in these fieldsSir, Im currently filling out the form for the IDAN showroom visit, but Im not sure what should go in these fields'),
+                                      'Im currently filling out the form for the IDAN showroom visit, but Im not sure what should go in these fields Sir, Im currently filling out the form for the IDAN showroom visit, but Im not sure what should go in these fieldsSir, Im currently filling out the form for the IDAN showroom visit, but Im not sure what should go in these fields',),
                               SizedBox(
                                 height: context.height * 0.01,
                               ),
@@ -301,9 +302,8 @@ class ProductDetailsView extends ConsumerWidget {
                                 fontFamily: HBMFonts.quicksandBold,
                               ),
                               HBMTextWidget(
-                                  data: product.available == true
-                                      ? 'In Stock'
-                                      : 'Out of Stock'),
+                                  data: 'availability'
+                                      ),
                               SizedBox(
                                 height: context.height * 0.01,
                               ),
@@ -311,7 +311,7 @@ class ProductDetailsView extends ConsumerWidget {
                                 data: 'Quantity Left',
                                 fontFamily: HBMFonts.quicksandBold,
                               ),
-                              HBMTextWidget(data: product.quantity.toString()),
+                              HBMTextWidget(data: product.quantityAvailable.toString(),),
                               SizedBox(
                                 height: context.height * 0.01,
                               ),
@@ -320,7 +320,7 @@ class ProductDetailsView extends ConsumerWidget {
                                 fontFamily: HBMFonts.quicksandBold,
                               ),
                               HBMTextWidget(
-                                data: product.sold.toString(),
+                                data: product.numberSold.toString(),
                               ),
                             ],
                           ),
@@ -345,16 +345,15 @@ class ProductDetailsView extends ConsumerWidget {
                           color: HBMColors.coolGrey,
                           elevation: 10,
                           child: Align(
-                              alignment: Alignment.center,
                               child: Icon(
                                 Icons.arrow_back_ios,
                                 color: HBMColors.charcoalGrey,
-                              )),
+                              ),),
                         ),
                       ),
                     ),
                   ),
-                )
+                ),
               ],
             );
           },

@@ -5,6 +5,7 @@ import 'package:husbandman/src/payment/data/repo/payment_repo_impl.dart';
 import 'package:husbandman/src/payment/domain/usecase/add_new_card.dart';
 import 'package:husbandman/src/payment/domain/usecase/add_new_card_funding_history.dart';
 import 'package:husbandman/src/payment/domain/usecase/card_funding_address_auth.dart';
+import 'package:husbandman/src/payment/domain/usecase/card_funding_otp_validation.dart';
 import 'package:husbandman/src/payment/domain/usecase/card_funding_pin_auth.dart';
 import 'package:husbandman/src/payment/domain/usecase/card_funding_verification.dart';
 import 'package:husbandman/src/payment/domain/usecase/delete_card.dart';
@@ -12,7 +13,6 @@ import 'package:husbandman/src/payment/domain/usecase/fetch_card_funding_history
 import 'package:husbandman/src/payment/domain/usecase/fetch_cards.dart';
 import 'package:husbandman/src/payment/domain/usecase/initialize_card_funding.dart';
 import 'package:husbandman/src/payment/domain/usecase/set_card.dart';
-import 'package:husbandman/src/payment/domain/usecase/card_funding_otp_validation.dart';
 import 'package:husbandman/src/payment/domain/usecase/update_card_funding_history.dart';
 import 'package:husbandman/src/payment/presentation/bloc/payment_bloc.dart';
 
@@ -39,7 +39,7 @@ final paymentDatasourceProvider = Provider((ref) {
 
 final paymentRepoProvider = Provider((ref) {
   return PaymentRepoImpl(
-      paymentDatasource: ref.read(paymentDatasourceProvider));
+      paymentDatasource: ref.read(paymentDatasourceProvider),);
 });
 
 final addNewCardProvider = Provider((ref) {

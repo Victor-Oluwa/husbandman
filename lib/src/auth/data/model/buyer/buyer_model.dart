@@ -1,22 +1,25 @@
+import 'package:husbandman/src/auth/data/model/props/address/address_model.dart';
+import 'package:husbandman/src/auth/data/model/props/customer/customer_model.dart';
+import 'package:husbandman/src/auth/data/model/props/notification/notification_model.dart';
+import 'package:husbandman/src/auth/data/model/props/pendingPayment/pending_payment_model.dart';
 import 'package:husbandman/src/auth/domain/entity/user/buyer/buyer_entity.dart';
 import 'package:husbandman/src/auth/domain/entity/user/props/address/address_entity.dart';
 import 'package:husbandman/src/auth/domain/entity/user/props/customer/customer_entity.dart';
 import 'package:husbandman/src/auth/domain/entity/user/props/notification/notification_entity.dart';
-import 'package:husbandman/src/auth/domain/entity/user/props/pendingPayment/pending_payment_entity.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'buyer_model.g.dart';
 
 @JsonSerializable(explicitToJson: true)
 class BuyerModel extends BuyerEntity {
-  BuyerModel({
-    super.id,
+  const BuyerModel({
     required super.userType,
     required super.name,
     required super.email,
     required super.password,
+    required super.token,
+    super.id,
     super.phone,
-    super.address,
     super.dateJoined,
     super.balance,
     super.pendingFunds,
@@ -25,15 +28,15 @@ class BuyerModel extends BuyerEntity {
     super.withdrawHistoryId,
     super.fundingHistoryIds,
     super.about,
-    required super.token,
     super.profilePicture,
-    super.notification,
-    super.customer,
+    AddressModel super.address = AddressModel.empty,
+    NotificationModel super.notification = NotificationModel.empty,
+    CustomerModel super.customer = CustomerModel.empty,
     super.lastSeen,
     super.bannerImage,
     super.cartId,
     super.orderId,
-    super.pendingPaymentEntity,
+    PendingPaymentModel super.pendingPayment = PendingPaymentModel.empty,
   });
 
   factory BuyerModel.fromJson(Map<String, dynamic> json) =>

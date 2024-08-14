@@ -15,8 +15,7 @@ SellerModel _$SellerModelFromJson(Map<String, dynamic> json) => SellerModel(
       phone:
           (json['phone'] as List<dynamic>?)?.map((e) => e as String).toList() ??
               const [],
-      address: AddressModel.fromJson(json['address'] as Map<String, dynamic>),
-      dateJoined: json['dateJoined'] as String? ?? 'Date mot set',
+      dateJoined: json['dateJoined'] as String? ?? 'Date not set',
       balance: (json['balance'] as num?)?.toDouble() ?? 0,
       pendingFunds: (json['pendingFunds'] as num?)?.toDouble() ?? 0,
       totalWithdrawal: (json['totalWithdrawal'] as num?)?.toDouble() ?? 0,
@@ -27,23 +26,33 @@ SellerModel _$SellerModelFromJson(Map<String, dynamic> json) => SellerModel(
               .toList() ??
           const ['Optional'],
       about: json['about'] as String? ?? 'Optional',
-      token: json['token'] as String,
+      token: json['token'] as String? ?? '',
       profilePicture: json['profilePicture'] as String? ?? '',
-      notification: NotificationModel.fromJson(
-          json['notification'] as Map<String, dynamic>),
-      customer:
-          CustomerModel.fromJson(json['customer'] as Map<String, dynamic>),
       lastSeen: json['lastSeen'] as String? ?? '',
       bannerImage: json['bannerImage'] as String? ?? 'Optional',
       cartId: json['cartId'] as String? ?? 'Optional',
       orderId: json['orderId'] as String? ?? 'Optional',
+      notification: json['notification'] == null
+          ? NotificationModel.empty
+          : NotificationModel.fromJson(
+              json['notification'] as Map<String, dynamic>),
+      customer: json['customer'] == null
+          ? CustomerModel.empty
+          : CustomerModel.fromJson(json['customer'] as Map<String, dynamic>),
+      address: json['address'] == null
+          ? AddressModel.empty
+          : AddressModel.fromJson(json['address'] as Map<String, dynamic>),
       ordered: json['ordered'] == null
-          ? null
-          : OrderedEntity.fromJson(json['ordered'] as Map<String, dynamic>),
+          ? OrderedModel.empty
+          : OrderedModel.fromJson(json['ordered'] as Map<String, dynamic>),
       pendingOrderFunds: json['pendingOrderFunds'] == null
-          ? null
-          : PendingOrderFundsEntity.fromJson(
+          ? PendingOrderFundsModel.empty
+          : PendingOrderFundsModel.fromJson(
               json['pendingOrderFunds'] as Map<String, dynamic>),
+      pendingPayment: json['pendingPayment'] == null
+          ? PendingPaymentModel.empty
+          : PendingPaymentModel.fromJson(
+              json['pendingPayment'] as Map<String, dynamic>),
     );
 
 Map<String, dynamic> _$SellerModelToJson(SellerModel instance) =>
@@ -71,8 +80,41 @@ Map<String, dynamic> _$SellerModelToJson(SellerModel instance) =>
       'bannerImage': instance.bannerImage,
       'cartId': instance.cartId,
       'orderId': instance.orderId,
-      'ordered': instance.ordered?.toJson(),
-      'pendingOrderFunds': instance.pendingOrderFunds?.toJson(),
+      'pendingPayment': instance.pendingPayment.toJson(),
+      'ordered': instance.ordered.toJson(),
+      'pendingOrderFunds': instance.pendingOrderFunds.toJson(),
+    };
+
+PendingOrderFundsModel _$PendingOrderFundsModelFromJson(
+        Map<String, dynamic> json) =>
+    PendingOrderFundsModel(
+      funds: (json['funds'] as List<dynamic>)
+          .map((e) => FundEntity.fromJson(e as Map<String, dynamic>))
+          .toList(),
+      id: json['_id'] as String? ?? '',
+    );
+
+Map<String, dynamic> _$PendingOrderFundsModelToJson(
+        PendingOrderFundsModel instance) =>
+    <String, dynamic>{
+      '_id': instance.id,
+      'funds': instance.funds.map((e) => e.toJson()).toList(),
+    };
+
+FundModel _$FundModelFromJson(Map<String, dynamic> json) => FundModel(
+      buyerId: json['buyerId'] as String,
+      productId: json['productId'] as String,
+      productName: json['productName'] as String,
+      amountPending: (json['amountPending'] as num).toDouble(),
+      id: json['_id'] as String? ?? '',
+    );
+
+Map<String, dynamic> _$FundModelToJson(FundModel instance) => <String, dynamic>{
+      '_id': instance.id,
+      'buyerId': instance.buyerId,
+      'productId': instance.productId,
+      'productName': instance.productName,
+      'amountPending': instance.amountPending,
     };
 
 OrderedModel _$OrderedModelFromJson(Map<String, dynamic> json) => OrderedModel(
@@ -94,7 +136,6 @@ Map<String, dynamic> _$OrderedModelToJson(OrderedModel instance) =>
 
 OrderedItemModel _$OrderedItemModelFromJson(Map<String, dynamic> json) =>
     OrderedItemModel(
-      sellerId: json['sellerId'] as String,
       buyerId: json['buyerId'] as String,
       buyerName: json['buyerName'] as String,
       buyerImage: json['buyerImage'] as String,
@@ -114,7 +155,6 @@ OrderedItemModel _$OrderedItemModelFromJson(Map<String, dynamic> json) =>
 Map<String, dynamic> _$OrderedItemModelToJson(OrderedItemModel instance) =>
     <String, dynamic>{
       '_id': instance.id,
-      'sellerId': instance.sellerId,
       'buyerId': instance.buyerId,
       'buyerName': instance.buyerName,
       'buyerImage': instance.buyerImage,

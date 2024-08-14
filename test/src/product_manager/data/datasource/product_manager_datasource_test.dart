@@ -5,7 +5,7 @@ import 'dart:typed_data';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
-import 'package:husbandman/core/common/app/models/product_model.dart';
+import 'package:husbandman/src/product_manager/data/model/product_model.dart';
 import 'package:husbandman/core/common/app/provider/state_notifier_providers/seller_products_provider.dart';
 import 'package:husbandman/core/common/app/public_methods/cloudinary_upload/cloudinary_upload.dart';
 import 'package:husbandman/core/common/app/public_methods/file-picker/file_picker.dart';
@@ -46,7 +46,7 @@ void main() {
   const exceptionStatus = 500;
 
   const productManagerException = ProductManagerException(
-      message: exceptionMessage, statusCode: exceptionStatus);
+      message: exceptionMessage, statusCode: exceptionStatus,);
 
   setUp(() {
     client = MockHttpClient();
@@ -74,7 +74,7 @@ void main() {
 
   group('Compress Product Image', () {
     final uint8List1 = [
-      Uint8List.fromList([1, 2, 3, 4, 5])
+      Uint8List.fromList([1, 2, 3, 4, 5]),
     ];
     final tFiles = [File('image_path')];
     test(
@@ -101,7 +101,7 @@ void main() {
       () async {
         when(() => compressor.compressFile(any())).thenThrow(
           const CompressorException(
-              message: 'Failed to compress', statusCode: 500),
+              message: 'Failed to compress', statusCode: 500,),
         );
 
         final methodCall = datasource.compressProductImage;
@@ -598,7 +598,7 @@ void main() {
                 message: 'Failed to pick file',
                 statusCode: 500,
               ),
-            ));
+            ),);
 
         verify(() => pickFile.pickMultiple()).called(1);
         verifyNoMoreInteractions(pickFile);

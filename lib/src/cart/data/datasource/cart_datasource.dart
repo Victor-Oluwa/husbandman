@@ -1,5 +1,5 @@
-import 'package:husbandman/src/cart/domain/entity/cart_entity.dart';
 import 'package:husbandman/src/cart/data/model/cart_model.dart';
+import 'package:husbandman/src/cart/domain/entity/cart_entity.dart';
 
 abstract class CartDatasource{
 

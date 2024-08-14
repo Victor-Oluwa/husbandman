@@ -1,8 +1,5 @@
 import 'package:husbandman/core/utils/constants.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:supabase/supabase.dart';
-
-import 'package:supabase/supabase.dart';
 
 class SuperBaseInit {
 

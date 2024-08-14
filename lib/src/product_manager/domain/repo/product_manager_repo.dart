@@ -1,13 +1,11 @@
 import 'dart:io';
 import 'dart:typed_data';
 
-import 'package:husbandman/src/cart/domain/entity/cart_entity.dart';
-import 'package:husbandman/core/common/app/entities/product_entity.dart';
-import 'package:husbandman/core/common/app/models/product_model.dart';
+import 'package:husbandman/src/product_manager/domain/entity/product_entity.dart';
 import 'package:husbandman/core/enums/set_product_type.dart';
 import 'package:husbandman/core/enums/update_product.dart';
 import 'package:husbandman/core/utils/typedef.dart';
-import 'package:image_picker/image_picker.dart';
+import 'package:husbandman/src/cart/domain/entity/cart_entity.dart';
 
 abstract class ProductManagerRepo {
   const ProductManagerRepo();

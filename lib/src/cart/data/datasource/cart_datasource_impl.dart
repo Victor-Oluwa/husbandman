@@ -3,13 +3,13 @@ import 'dart:developer';
 
 import 'package:cloudinary/cloudinary.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:husbandman/src/cart/domain/entity/cart_entity.dart';
-import 'package:husbandman/src/cart/data/model/cart_model.dart';
 import 'package:husbandman/core/common/app/provider/state_notifier_providers/cart_provider.dart';
 import 'package:husbandman/core/error/exceptions.dart';
 import 'package:husbandman/core/utils/constants.dart';
 import 'package:husbandman/core/utils/typedef.dart';
 import 'package:husbandman/src/cart/data/datasource/cart_datasource.dart';
+import 'package:husbandman/src/cart/data/model/cart_model.dart';
+import 'package:husbandman/src/cart/domain/entity/cart_entity.dart';
 
 const kUpdateProductEndpoint = '/cart/update';
 const kDeleteCartItemEndpoint = '/cart/items/deleteOne';
@@ -77,6 +77,7 @@ class CartDatasourceImpl implements CartDatasource {
           },
         ),
       );
+
       if (response.statusCode != 200 && response.statusCode != 201) {
         throw CartException(
           message: response.data.toString(),
@@ -84,7 +85,16 @@ class CartDatasourceImpl implements CartDatasource {
         );
       }
 
-      return CartModel.fromMap(response.data??{});
+      final result = response.data;
+
+      if (result == null) {
+        throw const CartException(
+          message: 'Response returned null',
+          statusCode: 500,
+        );
+      }
+
+      return CartModel.fromJson(result);
     } on DioException catch (e) {
       final errorMessage = e.response?.data.toString() ?? e.message;
       final statusCode = e.response?.statusCode ?? 500;
@@ -104,12 +114,10 @@ class CartDatasourceImpl implements CartDatasource {
 
   @override
   Future<void> setCart({
-   required CartEntity cartEntity,
+    required CartEntity cartEntity,
   }) async {
     try {
-      _ref
-          .read(cartProvider.notifier)
-          .updateCart(cartEntity: cartEntity);
+      _ref.read(cartProvider.notifier).updateCart(cartEntity: cartEntity);
     } on CartException catch (e) {
       log('setCart Error from CartDatasourceImpl class: ${e.message}');
       rethrow;
@@ -118,7 +126,6 @@ class CartDatasourceImpl implements CartDatasource {
       throw CartException(message: e.toString(), statusCode: 500);
     }
   }
-
 
   @override
   Future<CartModel> updateItemQuantity({
@@ -148,7 +155,15 @@ class CartDatasourceImpl implements CartDatasource {
           statusCode: response.statusCode ?? 500,
         );
       }
-      return CartModel.fromMap(response.data ?? {});
+      final result = response.data;
+
+      if (result == null) {
+        throw const CartException(
+          message: 'Response returned null',
+          statusCode: 500,
+        );
+      }
+      return CartModel.fromJson(result);
     } on DioException catch (e) {
       final errorMessage = e.response?.data.toString() ?? e.message;
       final statusCode = e.response?.statusCode ?? 500;
@@ -188,15 +203,16 @@ class CartDatasourceImpl implements CartDatasource {
         );
       }
 
-      if (response.data == null) {
+      final result = response.data;
+
+      if (result == null) {
         throw const CartException(
-          message: 'Cart is empty',
-          statusCode: 501,
+          message: 'Response returned null',
+          statusCode: 500,
         );
       }
-      // log('Cart from datasource: ${response.data}');
 
-      return CartModel.fromMap(response.data ?? {});
+      return CartModel.fromJson(result);
     } on CartException catch (e) {
       log('fetchCart Error from CartDatasourceImpl: ${e.message}');
       rethrow;

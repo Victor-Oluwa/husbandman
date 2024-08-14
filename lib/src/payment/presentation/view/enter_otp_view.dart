@@ -15,7 +15,6 @@ import 'package:husbandman/core/res/color.dart';
 import 'package:husbandman/core/res/fonts.dart';
 import 'package:husbandman/core/services/injection/payment/payment_injection.dart';
 import 'package:husbandman/core/services/route_names.dart';
-import 'package:husbandman/core/utils/typedef.dart';
 import 'package:husbandman/src/payment/presentation/bloc/payment_bloc.dart';
 import 'package:pinput/pinput.dart';
 
@@ -174,7 +173,7 @@ class _EnterOTPViewState extends ConsumerState<EnterOTPView> {
         return;
       case null:
         Navigator.pushNamed(context, RouteNames.paymentSuccessfulViewWithArg,
-            arguments: 'Failed');
+            arguments: 'Failed',);
         return;
       case FundingStatus.none:
         Navigator.pushNamed(

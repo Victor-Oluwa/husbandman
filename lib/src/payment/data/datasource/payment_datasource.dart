@@ -5,7 +5,6 @@ import 'package:husbandman/core/utils/typedef.dart';
 import 'package:husbandman/src/payment/data/model/card_funding_address_auth_response.dart';
 import 'package:husbandman/src/payment/data/model/card_funding_pin_auth_response.dart';
 import 'package:husbandman/src/payment/data/model/initialize_card_funding_response_model.dart';
-import 'package:husbandman/src/payment/domain/entity/card_funding_address_auth_response_entity.dart';
 import 'package:husbandman/src/payment/domain/entity/card_funding_history_entity.dart';
 
 abstract class PaymentDatasource {
@@ -52,7 +51,7 @@ abstract class PaymentDatasource {
     required String city,
     required String state,
     required String country,
-    required String zipCode
+    required String zipCode,
   });
 
   Future<String> cardFundingOtpValidation({

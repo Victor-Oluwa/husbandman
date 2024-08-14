@@ -71,23 +71,15 @@ class CacheVerifiedInvitationTokenEvent extends AuthEvent{
 
 class FarmerSignUpEvent extends AuthEvent {
   const FarmerSignUpEvent({
-    required this.name,
-    required this.email,
-    required this.password,
-    required this.address,
-    required this.type,
+required this.seller,
     required this.invitationKey,
   });
 
-  final String name;
-  final String email;
-  final String password;
-  final String address;
-  final String type;
+final SellerEntity seller;
   final String invitationKey;
 
   @override
-  List<String> get props => [name, email, password, address, type];
+  List<dynamic> get props => [seller, invitationKey];
 }
 
 class ResetPasswordEvent extends AuthEvent {

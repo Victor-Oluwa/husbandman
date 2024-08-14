@@ -523,11 +523,7 @@ class _EnterAmountViewState extends ConsumerState<EnterAmountView> {
   void _handleContinuePressed(BuildContext context, PaymentCardEntity card) {
     if (_controller.text.isEmpty || double.parse(_controller.text) < 1) {
       HBMSnackBar.show(
-          context: context, content: 'Please enter a valid amount');
-      return;
-    }
-    if (card == null) {
-      HBMSnackBar.show(context: context, content: 'No card was selected');
+          context: context, content: 'Please enter a valid amount',);
       return;
     }
 
@@ -549,7 +545,7 @@ class _EnterAmountViewState extends ConsumerState<EnterAmountView> {
   }
 
   void _handleInitializedCardFunding(BuildContext context,
-      InitializedCardFunding state, PaymentCardEntity card, UserEntity user) {
+      InitializedCardFunding state, PaymentCardEntity card, UserEntity user,) {
     ref.invalidate(cardFundingHistoryIdProvider);
     setState(() {
       initFundingResponse = state.response;
@@ -571,20 +567,17 @@ class _EnterAmountViewState extends ConsumerState<EnterAmountView> {
   }
 
   void _handleAddedNewCardFundingHistory(
-      BuildContext context, AddedNewCardFundingHistory state) {
+      BuildContext context, AddedNewCardFundingHistory state,) {
     log('History written: ${state.historyId}');
     ref.read(cardFundingHistoryIdProvider.notifier).state = state.historyId;
 
     switch (whoUpdatedHistory) {
       case HistoryUpdatedBy.bloc1:
         _handleBloc1UpdatedHistory(context);
-        break;
       case HistoryUpdatedBy.bloc2:
         _handleBloc2UpdatedHistory(context);
-        break;
       case HistoryUpdatedBy.bloc3:
         _handleBloc3UpdatedHistory(context);
-        break;
       default:
         break;
     }
@@ -601,28 +594,23 @@ class _EnterAmountViewState extends ConsumerState<EnterAmountView> {
           RouteNames.enterCardPinViewWIthArgs,
           arguments: payload,
         );
-        break;
       case CardFundingAuthTypeEnum.redirecting:
         Navigator.pushNamed(
           context,
           RouteNames.breadBrowserViewWithArgs,
           arguments: initFundingResponse,
         );
-        break;
       case CardFundingAuthTypeEnum.addressRequired:
         Navigator.pushNamed(context, RouteNames.enterCardAddressView,
-            arguments: payload);
-        break;
+            arguments: payload,);
       case CardFundingAuthTypeEnum.verify:
         context.read<PaymentBloc>().add(CardFundingVerificationEvent(
-            transactionId: initFundingResponse.transactionId ?? ''));
-        break;
+            transactionId: initFundingResponse.transactionId ?? '',),);
       case null:
         HBMSnackBar.show(
             context: context,
             content:
-                'Failed to initialize transaction. Please try again later');
-        break;
+                'Failed to initialize transaction. Please try again later',);
     }
   }
 
@@ -641,25 +629,21 @@ class _EnterAmountViewState extends ConsumerState<EnterAmountView> {
     switch (fundingStatus) {
       case FundingStatus.successful:
         Navigator.pushNamed(context, RouteNames.paymentSuccessfulViewWithArg);
-        break;
       case FundingStatus.pending:
         Navigator.pushNamed(context, RouteNames.paymentSuccessfulViewWithArg,
-            arguments: 'Pending');
-        break;
+            arguments: 'Pending',);
       case FundingStatus.failed:
         Navigator.pushNamed(context, RouteNames.paymentSuccessfulViewWithArg,
-            arguments: 'Failed');
-        break;
+            arguments: 'Failed',);
       case null:
       case FundingStatus.none:
         Navigator.pushNamed(context, RouteNames.paymentSuccessfulViewWithArg,
-            arguments: 'Failed');
-        break;
+            arguments: 'Failed',);
     }
   }
 
   void _handleVerifiedCardFunding(
-      BuildContext context, VerifiedCardFunding state, String historyId) {
+      BuildContext context, VerifiedCardFunding state, String historyId,) {
     setState(() {
       whoUpdatedHistory = HistoryUpdatedBy.bloc3;
       verificationStatus = state.status;
@@ -689,10 +673,10 @@ class _EnterAmountViewState extends ConsumerState<EnterAmountView> {
   }
 
   void _handlePaymentHistoryError(
-      BuildContext context, PaymentHistoryError state) {
+      BuildContext context, PaymentHistoryError state,) {
     log('EnterAmountScreen; PaymentHistory: ${state.message}');
     HBMSnackBar.show(
-        context: context, content: 'Funding initialisation failed');
+        context: context, content: 'Funding initialisation failed',);
 
     Future<void>.delayed(const Duration(seconds: 3), () {
       Navigator.pushNamedAndRemoveUntil(

@@ -1,6 +1,6 @@
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:husbandman/core/common/app/entities/product_entity.dart';
+import 'package:husbandman/src/product_manager/domain/entity/product_entity.dart';
 import 'package:husbandman/core/enums/set_product_type.dart';
 import 'package:husbandman/core/error/failure.dart';
 import 'package:husbandman/src/product_manager/domain/repo/product_manager_repo.dart';
@@ -56,7 +56,7 @@ void main() {
           () => repo.setSellerProduct(
             productMap: params.productMap,
             productObject: params.productObject,
-            setProductType: params.setProductType
+            setProductType: params.setProductType,
           ),
         ).called(1);
         verifyNoMoreInteractions(repo);
@@ -70,7 +70,7 @@ void main() {
           () => repo.setSellerProduct(
             productMap: any(named: 'productMap'),
             productObject: any(named: 'productObject'),
-            setProductType: any(named: 'setProductType')
+            setProductType: any(named: 'setProductType'),
           ),
         ).thenAnswer(
           (_) async => Left(

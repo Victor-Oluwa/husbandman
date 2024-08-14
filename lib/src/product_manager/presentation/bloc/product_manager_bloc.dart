@@ -4,13 +4,12 @@ import 'dart:typed_data';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:husbandman/src/cart/domain/entity/cart_entity.dart';
-import 'package:husbandman/core/common/app/entities/product_entity.dart';
-import 'package:husbandman/src/cart/data/model/cart_item.dart';
-import 'package:husbandman/core/common/app/models/product_model.dart';
+import 'package:husbandman/src/product_manager/domain/entity/product_entity.dart';
+import 'package:husbandman/src/product_manager/data/model/product_model.dart';
 import 'package:husbandman/core/enums/set_product_type.dart';
 import 'package:husbandman/core/enums/update_product.dart';
 import 'package:husbandman/core/utils/typedef.dart';
+import 'package:husbandman/src/cart/domain/entity/cart_entity.dart';
 import 'package:husbandman/src/product_manager/domain/usecase/add_product_to_cart.dart';
 import 'package:husbandman/src/product_manager/domain/usecase/compress_product_image.dart';
 import 'package:husbandman/src/product_manager/domain/usecase/delete_product.dart';
@@ -29,7 +28,6 @@ import 'package:husbandman/src/product_manager/domain/usecase/update_product.dar
 import 'package:husbandman/src/product_manager/domain/usecase/upload_product.dart';
 
 part 'product_manager_event.dart';
-
 part 'product_manager_state.dart';
 
 class ProductManagerBloc
@@ -50,7 +48,7 @@ class ProductManagerBloc
       required UpdateProduct updateProduct,
       required UploadProduct uploadProduct,
       required AddProductToCart addProductToCart,
-      required GetImgUrlFromSupaBase getImgUrlFromSupaBase})
+      required GetImgUrlFromSupaBase getImgUrlFromSupaBase,})
       : _compressProductImage = compressProductImage,
         _deleteProduct = deleteProduct,
         _fetchFarmerProduct = fetchFarmerProduct,
@@ -329,7 +327,7 @@ class ProductManagerBloc
   }
 
   Future<void> _addProductToCartHandler(
-      AddProductToCartEvent event, Emitter<ProductManagerState> emit) async {
+      AddProductToCartEvent event, Emitter<ProductManagerState> emit,) async {
     final result = await _addProductToCart(
       AddProductToCartParams(
         productId: event.productId,

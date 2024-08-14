@@ -2,8 +2,8 @@ const constants = require('../../../constants');
 const error = require('../../../error');
 const InvitationKey = require("../../../model/invitation_key");
 
-async function findKey(farmerKey) {
-    const key = await InvitationKey.findOne({ value: farmerKey });
+async function findKey(farmerKey, session) {
+    const key = await InvitationKey.findOne({ value: farmerKey }).session(session);
     console.log('Found Key: ' + farmerKey);
 
 
@@ -22,7 +22,7 @@ async function findKey(farmerKey) {
     return key;
 }
 
-async function assignKey(key, email, name) {
+async function assignKey(key, email, name, session) {
     key.ownerName = name,
         key.ownerEmail = email;
     key.assigned = true;

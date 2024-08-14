@@ -12,6 +12,8 @@ import 'package:husbandman/core/utils/constants.dart';
 import 'package:husbandman/core/utils/typedef.dart';
 import 'package:husbandman/src/auth/data/datasource/auth_datasource.dart';
 import 'package:husbandman/src/auth/data/model/seller/seller_model.dart';
+import 'package:husbandman/src/auth/domain/entity/user/props/pendingPayment/pending_payment_entity.dart';
+import 'package:husbandman/src/auth/domain/entity/user/seller/seller_entity.dart';
 
 const kBuyerSignUpEndpoint = '/sign-up';
 const kFarmerSignUpEndpoint = '/farmer/sign-up';
@@ -162,11 +164,7 @@ class AuthDataSourceImpl implements AuthDataSource {
 
   @override
   Future<SellerModel> farmerSignUp({
-    required String name,
-    required String email,
-    required String password,
-    required String address,
-    required String type,
+    required SellerEntity seller,
     required String invitationKey,
   }) async {
     try {
@@ -178,14 +176,26 @@ class AuthDataSourceImpl implements AuthDataSource {
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },
-        body: jsonEncode({
-          'name': name,
-          'email': email,
-          'password': password,
-          'address': address,
-          'type': type,
-          'invitationKey': _ref.read(invitationKeyProvider),
-        }),
+        body: jsonEncode(
+          {
+            'invitationKey': _ref.read(invitationKeyProvider),
+            'name': seller.name,
+            'email': seller.email,
+            'password': seller.password,
+            'type': seller.userType,
+            'ordered': {
+              'totalEarning': seller.ordered.totalEarning,
+              'totalDeductible': seller.ordered.totalDeductible,
+              'orderedItems': <OrderedItemEntity>[],
+            },
+            'pendingOrderFunds': {
+              'funds': <FundEntity>[],
+            },
+            'pendingPayment': {
+              'payments': <PaymentEntity>[],
+            },
+          },
+        ),
       );
 
       if (response.statusCode != 201 && response.statusCode != 200) {
@@ -194,16 +204,18 @@ class AuthDataSourceImpl implements AuthDataSource {
           statusCode: response.statusCode,
         );
       }
-
       final responseMap = jsonDecode(response.body) as DataMap;
+      log('Farmer sign up response ${responseMap}');
 
       final sellerModel = SellerModel.fromJson(responseMap);
+
       return sellerModel;
-    } on AuthException catch (_) {
-      rethrow;
-    } catch (e) {
-      throw AuthException(message: e.toString(), statusCode: 500);
     }
+on AuthException catch (_) {
+  rethrow;
+} catch (e) {
+  throw AuthException(message: e.toString(), statusCode: 500);
+}
   }
 
   @override
@@ -382,9 +394,9 @@ class AuthDataSourceImpl implements AuthDataSource {
           message: response.data.toString(),
           statusCode: 500,
         );
-      }else{
+      } else {
         throw AuthException(
-          message: e.message??'Unknown Error',
+          message: e.message ?? 'Unknown Error',
           statusCode: 500,
         );
       }

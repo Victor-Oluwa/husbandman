@@ -1,6 +1,6 @@
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:husbandman/core/common/app/entities/product_entity.dart';
+import 'package:husbandman/src/product_manager/domain/entity/product_entity.dart';
 import 'package:husbandman/core/error/failure.dart';
 import 'package:husbandman/src/product_manager/domain/repo/product_manager_repo.dart';
 import 'package:husbandman/src/product_manager/domain/usecase/update_product.dart';
@@ -84,7 +84,7 @@ void main() {
 
         verify(
           () => repo.updateProduct(
-              culprit: params.culprit, newData: params.newData),
+              culprit: params.culprit, newData: params.newData,),
         ).called(1);
         verifyNoMoreInteractions(repo);
       },

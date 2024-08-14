@@ -18,7 +18,6 @@ const pendingPaymentSchema = new mongoose.Schema({
 })
 
 const fundSchema = new mongoose.Schema({
-    orderId: { type: String, required: true },
     buyerId: { type: String, required: true },
     productId: { type: String, required: true },
     productName: { type: String, required: true },
@@ -30,7 +29,6 @@ const pendingOrderFundsSchema = new mongoose.Schema({
 });
 
 const orderedItemsSchema = new mongoose.Schema({
-    sellerId: { type: String, required: true },
     buyerId: { type: String, required: true },
     buyerName: { type: String, required: true },
     buyerImage: { type: String, required: true },
@@ -73,9 +71,9 @@ const sellerSchema = mongoose.Schema({
     bannerImage: { type: String, default: '' },
     cartId: { type: String, default: '' },
     orderId: { type: String, default: '' },
-    ordered: { type: orderedSchema },
-    pendingOrderFunds: { type: pendingOrderFundsSchema },
-    pendingPayment: { type: pendingPaymentSchema }
+    ordered: { type: orderedSchema, required: true },
+    pendingOrderFunds: { type: pendingOrderFundsSchema, required: true },
+    pendingPayment: { type: pendingPaymentSchema, required: true },
 })
 
 const Seller = mongoose.model('Seller', sellerSchema);

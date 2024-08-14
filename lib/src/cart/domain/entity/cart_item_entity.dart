@@ -1,8 +1,12 @@
 import 'package:equatable/equatable.dart';
+import 'package:husbandman/core/utils/typedef.dart';
+import 'package:json_annotation/json_annotation.dart';
 
+part 'cart_item_entity.g.dart';
+
+@JsonSerializable()
 class CartItemEntity extends Equatable {
   const CartItemEntity({
-    required this.id,
     required this.productId,
     required this.productName,
     required this.productImage,
@@ -10,8 +14,10 @@ class CartItemEntity extends Equatable {
     required this.productQuantity,
     required this.sellerName,
     required this.sellerId,
+    required this.buyerId,
     required this.deliveryDate,
     required this.percentage,
+    this.id = '',
   });
 
   const CartItemEntity.empty()
@@ -23,26 +29,18 @@ class CartItemEntity extends Equatable {
           productPrice: 0,
           productQuantity: 0,
           sellerId: '',
+          buyerId: '',
           sellerName: '',
           productImage: '',
           percentage: 0,
         );
 
-  factory CartItemEntity.fromMap(Map<String, dynamic> map) {
-    return CartItemEntity(
-      id: map['_id'] as String? ?? '',
-      productId: map['productId'] as String? ?? '',
-      productName: map['productName'] as String? ?? '',
-      productImage: map['productImage'] as String? ?? '',
-      productPrice: double.parse(map['price'].toString()) ?? 0.0,
-      productQuantity: map['quantity'] as int? ?? 0,
-      sellerName: map['sellerName'] as String? ?? '',
-      sellerId: map['sellerId'] as String? ?? '',
-      deliveryDate: map['deliveryDate'] as String? ?? '',
-      percentage: double.parse(map['percentage'].toString()) ?? 0.0,
-    );
-  }
+  factory CartItemEntity.fromJson(DataMap json) =>
+      _$CartItemEntityFromJson(json);
 
+  DataMap toJson() => _$CartItemEntityToJson(this);
+
+  @JsonKey(name: '_id')
   final String id;
   final String productId;
   final String productName;
@@ -53,21 +51,7 @@ class CartItemEntity extends Equatable {
   final String sellerId;
   final String deliveryDate;
   final double percentage;
-
-  Map<String, dynamic> toMap() {
-    return {
-      '_id': id,
-      'productId': productId,
-      'productName': productName,
-      'productImage': productImage,
-      'price': productPrice,
-      'quantity': productQuantity,
-      'sellerName': sellerName,
-      'sellerId': sellerId,
-      'deliveryDate': deliveryDate,
-      'percentage': percentage,
-    };
-  }
+  final String buyerId;
 
   @override
   List<dynamic> get props => [

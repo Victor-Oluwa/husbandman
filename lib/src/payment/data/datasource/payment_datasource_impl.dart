@@ -161,7 +161,7 @@ class PaymentDatasourceImpl implements PaymentDatasource {
       final result = dataMaps.map(PaymentCardModel.fromMap).toList();
 
       return result;
-    } on PaymentException catch (e) {
+    } on PaymentException {
       rethrow;
     } catch (e) {
       throw PaymentException(message: e.toString(), statusCode: 500);
@@ -179,7 +179,7 @@ class PaymentDatasourceImpl implements PaymentDatasource {
         return;
       }
       _ref.read(paymentCardProvider.notifier).addNewCard(cards);
-    } on PaymentException catch (e) {
+    } on PaymentException {
       rethrow;
     } catch (e) {
       throw PaymentException(message: e.toString(), statusCode: 500);
@@ -297,7 +297,7 @@ class PaymentDatasourceImpl implements PaymentDatasource {
             transactionId: transactionId,
           );
       }
-    } on PaymentException catch (e) {
+    } on PaymentException {
       rethrow;
     } on DioException catch (e) {
       if (e.response != null) {
@@ -356,7 +356,7 @@ class PaymentDatasourceImpl implements PaymentDatasource {
       }
 
       return _parseCardFundingPinResponse(result);
-    } on PaymentException catch (e) {
+    } on PaymentException {
       rethrow;
     } on DioException catch (e) {
       if (e.response != null) {
@@ -487,7 +487,7 @@ class PaymentDatasourceImpl implements PaymentDatasource {
   }
 
   CardFundingAddressAuthResponse _parseCardFundingAddressResponse(
-      DataMap result) {
+      DataMap result,) {
     final message = result['message']?.toString() ?? '';
     final messageEnum = cardFundingValidationTypeEnumMap[message];
     final transactionId = result['transactionId']?.toString() ?? '';
@@ -565,7 +565,7 @@ class PaymentDatasourceImpl implements PaymentDatasource {
       }
 
       return jsonDecode(result).toString();
-    } on PaymentException catch (e) {
+    } on PaymentException {
       rethrow;
     } on DioException catch (e) {
       if (e.response != null) {
@@ -622,7 +622,7 @@ class PaymentDatasourceImpl implements PaymentDatasource {
       }
 
       return jsonDecode(result).toString();
-    } on PaymentException catch (e) {
+    } on PaymentException {
       rethrow;
     } on DioException catch (e) {
       if (e.response != null) {
@@ -751,7 +751,7 @@ class PaymentDatasourceImpl implements PaymentDatasource {
       }
 
       return jsonDecode(responseData).toString();
-    } on PaymentException catch (e) {
+    } on PaymentException {
       rethrow;
     } on DioException catch (e) {
       if (e.response != null) {

@@ -1,4 +1,3 @@
-import 'package:cloudinary/cloudinary.dart';
 import 'package:dartz/dartz.dart';
 import 'package:husbandman/core/common/app/entities/payment_card_entity.dart';
 import 'package:husbandman/core/common/app/models/payment_card_model.dart';

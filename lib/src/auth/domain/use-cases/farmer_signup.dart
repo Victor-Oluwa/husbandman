@@ -13,12 +13,8 @@ class FarmerSignUp extends UseCaseWithParams<SellerEntity, FarmerSignUpParams> {
 
   @override
   ResultFuture<SellerEntity> call(FarmerSignUpParams params) {
-   return _authRepo.farmerSignUp(
-      name: params.name,
-      email: params.email,
-      password: params.password,
-      address: params.address,
-      type: params.type,
+    return _authRepo.farmerSignUp(
+      seller: params.seller,
       invitationKey: params.invitationKey,
     );
   }
@@ -26,38 +22,22 @@ class FarmerSignUp extends UseCaseWithParams<SellerEntity, FarmerSignUpParams> {
 
 class FarmerSignUpParams extends Equatable {
   const FarmerSignUpParams({
-    required this.name,
-    required this.email,
-    required this.password,
-    required this.address,
-    required this.type,
+    required this.seller,
     required this.invitationKey,
   });
 
   const FarmerSignUpParams.empty()
       : this(
-          name: '',
-          email: '',
-          password: '',
-          address: '',
-          type: '',
           invitationKey: '',
+          seller: SellerEntity.empty,
         );
 
-  final String name;
-  final String email;
-  final String password;
-  final String address;
-  final String type;
+  final SellerEntity seller;
   final String invitationKey;
 
   @override
-  List<String> get props => [
-        name,
-        email,
-        address,
-        type,
-        password,
+  List<dynamic> get props => [
+        seller,
         invitationKey,
       ];
 }

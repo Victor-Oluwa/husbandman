@@ -1,5 +1,4 @@
 import 'package:husbandman/src/payment/domain/entity/card_funding_address_auth_response_entity.dart';
-import 'package:husbandman/src/payment/domain/entity/card_funding_pin_auth_response_entity.dart';
 
 class CardFundingAddressAuthResponse
     extends CardFundingAddressAuthResponseEntity {

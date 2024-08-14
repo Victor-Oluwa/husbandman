@@ -4,7 +4,7 @@ import 'package:json_annotation/json_annotation.dart';
 part 'address_entity.g.dart';
 @JsonSerializable()
 class AddressEntity {
-  AddressEntity({
+  const AddressEntity({
     required this.id,
     required this.fullAddress,
     required this.city,

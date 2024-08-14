@@ -1,4 +1,4 @@
-const kBaseUrl = 'http://192.168.144.1:3000';
+const kBaseUrl = 'http://192.168.72.1:3000';
 const kCloudinaryApiKey = '986773188828922';
 const kCloudinaryApiSecret = 'jNkAnxCCWLdadVMvsKCxf61jKRU';
 const kCloudinaryUploadPreset = 'cvyzrljr';
@@ -63,3 +63,12 @@ RegExp emailValidatorJargon = RegExp(
 // Madam Guyon
 // Robert Law
 // Watchman lee
+
+//What is your religion?
+
+
+// What will humans look like in 3000?
+// If this is so, future human hands and necks will be shaped differently.
+// Humanity may evolve to have claws instead of the shape of our present
+// hands for holding a smartphone. The human
+// neck may be bent to more conveniently look down at our personal computers.

@@ -7,18 +7,16 @@ part of 'buyer_model.dart';
 // **************************************************************************
 
 BuyerModel _$BuyerModelFromJson(Map<String, dynamic> json) => BuyerModel(
-      id: json['_id'] as String? ?? '',
       userType: json['userType'] as String,
       name: json['name'] as String,
       email: json['email'] as String,
       password: json['password'] as String,
+      token: json['token'] as String? ?? '',
+      id: json['_id'] as String? ?? '',
       phone:
           (json['phone'] as List<dynamic>?)?.map((e) => e as String).toList() ??
               const [],
-      address: json['address'] == null
-          ? const AddressEntity.empty()
-          : AddressEntity.fromJson(json['address'] as Map<String, dynamic>),
-      dateJoined: json['dateJoined'] as String? ?? 'Date mot set',
+      dateJoined: json['dateJoined'] as String? ?? 'Date not set',
       balance: (json['balance'] as num?)?.toDouble() ?? 0,
       pendingFunds: (json['pendingFunds'] as num?)?.toDouble() ?? 0,
       totalWithdrawal: (json['totalWithdrawal'] as num?)?.toDouble() ?? 0,
@@ -29,23 +27,25 @@ BuyerModel _$BuyerModelFromJson(Map<String, dynamic> json) => BuyerModel(
               .toList() ??
           const ['Optional'],
       about: json['about'] as String? ?? 'Optional',
-      token: json['token'] as String,
       profilePicture: json['profilePicture'] as String? ?? '',
+      address: json['address'] == null
+          ? AddressModel.empty
+          : AddressModel.fromJson(json['address'] as Map<String, dynamic>),
       notification: json['notification'] == null
-          ? const NotificationEntity.empty()
-          : NotificationEntity.fromJson(
+          ? NotificationModel.empty
+          : NotificationModel.fromJson(
               json['notification'] as Map<String, dynamic>),
       customer: json['customer'] == null
-          ? const CustomerEntity.empty()
-          : CustomerEntity.fromJson(json['customer'] as Map<String, dynamic>),
+          ? CustomerModel.empty
+          : CustomerModel.fromJson(json['customer'] as Map<String, dynamic>),
       lastSeen: json['lastSeen'] as String? ?? '',
       bannerImage: json['bannerImage'] as String? ?? 'Optional',
       cartId: json['cartId'] as String? ?? 'Optional',
       orderId: json['orderId'] as String? ?? 'Optional',
-      pendingPaymentEntity: json['pendingPaymentEntity'] == null
-          ? null
-          : PendingPaymentEntity.fromJson(
-              json['pendingPaymentEntity'] as Map<String, dynamic>),
+      pendingPayment: json['pendingPayment'] == null
+          ? PendingPaymentModel.empty
+          : PendingPaymentModel.fromJson(
+              json['pendingPayment'] as Map<String, dynamic>),
     );
 
 Map<String, dynamic> _$BuyerModelToJson(BuyerModel instance) =>
@@ -73,5 +73,5 @@ Map<String, dynamic> _$BuyerModelToJson(BuyerModel instance) =>
       'bannerImage': instance.bannerImage,
       'cartId': instance.cartId,
       'orderId': instance.orderId,
-      'pendingPaymentEntity': instance.pendingPaymentEntity?.toJson(),
+      'pendingPayment': instance.pendingPayment.toJson(),
     };

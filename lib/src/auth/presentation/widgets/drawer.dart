@@ -50,11 +50,9 @@ class BreadDrawer extends StatelessWidget {
       controller: advancedDrawerController,
       animationCurve: Curves.easeInOut,
       animationDuration: const Duration(milliseconds: 300),
-      animateChildDecoration: true,
-      rtlOpening: false,
       childDecoration: const BoxDecoration(
         boxShadow: <BoxShadow>[
-          BoxShadow(color: Colors.black12, blurRadius: 0.0),
+          BoxShadow(color: Colors.black12),
         ],
         borderRadius: BorderRadius.all(Radius.circular(16)),
       ),
@@ -73,7 +71,7 @@ class BreadDrawer extends StatelessWidget {
           horizontalTitleGap: context.width * 0.10,
           contentPadding: EdgeInsets.symmetric(
               horizontal: context.width * 0.08,
-              vertical: context.height * 0.04),
+              vertical: context.height * 0.04,),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -89,7 +87,7 @@ class BreadDrawer extends StatelessWidget {
                   ),
                 )
               else
-                ColoredBox(child: const SizedBox.shrink(), color: Colors.blue,),
+                const ColoredBox(color: Colors.blue,child: SizedBox.shrink(),),
               if (tileTwoName != null)
                 ListTile(
                   onTap: tileTwoCallback,
@@ -120,7 +118,7 @@ class BreadDrawer extends StatelessWidget {
                 ListTile(
                   onTap: tileFourCallback,
                   leading: Icon(Icons.people_alt_rounded,
-                      size: context.width * 0.08),
+                      size: context.width * 0.08,),
                   title: HBMTextWidget(
                     data: tileFourName ?? 'Unknown',
                     fontFamily: HBMFonts.quicksandNormal,

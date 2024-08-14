@@ -1,6 +1,7 @@
 import 'package:husbandman/core/utils/typedef.dart';
 import 'package:husbandman/src/auth/domain/entity/user/props/pendingPayment/pending_payment_entity.dart';
 import 'package:json_annotation/json_annotation.dart';
+
 part 'pending_payment_model.g.dart';
 
 @JsonSerializable(explicitToJson: true)
@@ -13,11 +14,14 @@ class PendingPaymentModel extends PendingPaymentEntity {
   factory PendingPaymentModel.fromJson(DataMap json) =>
       _$PendingPaymentModelFromJson(json);
 
+  @override
   DataMap toJson() => _$PendingPaymentModelToJson(this);
+  static const empty = PendingPaymentModel(
+    payments: [],
+  );
 
   @override
   List<Object?> get props => [id, payments];
-
 }
 
 @JsonSerializable()
@@ -37,15 +41,15 @@ class PaymentModel extends PaymentEntity {
 
   @override
   List<Object?> get props => [
-    id,
-    sellerId,
-    orderId,
-    productId,
-    productName,
-    sellerName,
-    timeStamp,
-    productPrice,
-  ];
+        id,
+        sellerId,
+        orderId,
+        productId,
+        productName,
+        sellerName,
+        timeStamp,
+        productPrice,
+      ];
 
   @override
   DataMap toJson() => _$PaymentModelToJson(this);

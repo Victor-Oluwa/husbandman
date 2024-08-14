@@ -1,6 +1,6 @@
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:husbandman/core/common/app/entities/product_entity.dart';
+import 'package:husbandman/src/product_manager/domain/entity/product_entity.dart';
 import 'package:husbandman/core/error/failure.dart';
 import 'package:husbandman/src/product_manager/domain/repo/product_manager_repo.dart';
 import 'package:husbandman/src/product_manager/domain/usecase/rate_product.dart';

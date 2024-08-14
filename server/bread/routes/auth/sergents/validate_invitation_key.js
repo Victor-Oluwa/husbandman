@@ -9,13 +9,13 @@ router.post(endpoints.VALIDATE_FARMER_INVITATION_KEY, async (req, res) => {
         const { invitationKey } = req.body;
 
         const key = await arsenal.validateKey(invitationKey);
-        console.log(key);
-        console.log('key');
+        console.log('Validated key: ' + key);
 
         res.status(200).json(key);
 
     } catch (e) {
-        arsenal.reportError(e, res);
+        console.log(e);
+        res.status(500).json(e.message);
     }
 });
 

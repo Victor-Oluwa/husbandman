@@ -5,7 +5,7 @@ part 'notification_model.g.dart';
 
 @JsonSerializable(explicitToJson: true)
 class NotificationModel extends NotificationEntity {
-  NotificationModel({
+ const NotificationModel({
     required super.id,
     required super.ownerId,
     required super.unread,
@@ -15,6 +15,14 @@ class NotificationModel extends NotificationEntity {
   factory NotificationModel.fromJson(Map<String, dynamic> json) =>
       _$NotificationModelFromJson(json);
 
+  static const empty = NotificationModel(
+    id: 'id',
+    ownerId: '',
+    unread: 0,
+    childNotification: [],
+  );
+
+  @override
   Map<String, dynamic> toJson() => _$NotificationModelToJson(this);
 }
 
@@ -31,5 +39,6 @@ class ChildNotificationModel extends ChildNotificationEntity {
   factory ChildNotificationModel.fromJson(Map<String, dynamic> json) =>
       _$ChildNotificationModelFromJson(json);
 
+  @override
   Map<String, dynamic> toJson() => _$ChildNotificationModelToJson(this);
 }

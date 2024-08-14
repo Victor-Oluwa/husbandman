@@ -68,7 +68,7 @@ class AllProductsList extends StatelessWidget {
                                 child: const HBMTextWidget(
                                     overflow: TextOverflow.ellipsis,
                                     data:
-                                    '29 bags of rice and 40 sweet potatoes'),
+                                    '29 bags of rice and 40 sweet potatoes',),
                               ),
                               HBMTextWidget(
                                 data: '12 weeks',
@@ -91,7 +91,7 @@ class AllProductsList extends StatelessWidget {
                             size: context.width * 0.03,
                           ),
                         ],
-                      )
+                      ),
                     ],
                   ),
                 );
@@ -99,14 +99,14 @@ class AllProductsList extends StatelessWidget {
               separatorBuilder: (context, index) {
                 return Padding(
                   padding: EdgeInsets.symmetric(
-                      vertical: context.height * 0.01),
+                      vertical: context.height * 0.01,),
                   child: Divider(
                     color: Colors.grey.shade400,
                   ),
                 );
               },
             ),
-          )
+          ),
         ],
       ),
     );

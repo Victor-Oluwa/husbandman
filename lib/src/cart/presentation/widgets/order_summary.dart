@@ -36,7 +36,7 @@ class OrderSummary extends StatelessWidget {
                 fontFamily: HBMFonts.exoBold,
                 fontWeight: FontWeight.bold,
               ),
-              SizedBox(height: 8),
+              const SizedBox(height: 8),
               Column(
                 children: items.map((item) {
                   return Padding(
@@ -48,7 +48,7 @@ class OrderSummary extends StatelessWidget {
                         SizedBox(
                           width: context.width * 0.40,
                           child: HBMTextWidget(
-                            data: '${item.name}',
+                            data: item.name,
                             overflow: TextOverflow.ellipsis,
                             color: HBMColors.coolGrey,
                             fontSize: context.width * 0.03,
@@ -62,7 +62,7 @@ class OrderSummary extends StatelessWidget {
                         SizedBox(
                           width: context.width * 0.20,
                           child: HBMTextWidget(
-                            data: '${item.price}',
+                            data: item.price,
                             color: HBMColors.coolGrey,
                             fontSize: context.width * 0.03,
                           ),
@@ -80,9 +80,8 @@ class OrderSummary extends StatelessWidget {
                 ),
               ),
               SizedBox(height: context.height * 0.01),
-              Divider(),
+              const Divider(),
               Row(
-                mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   HBMTextWidget(
                     data: 'Total:',

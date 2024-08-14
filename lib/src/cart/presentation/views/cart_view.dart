@@ -110,7 +110,7 @@ class _CartViewState extends ConsumerState<CartView> {
                         ),
                       );
                   HBMSnackBar.show(
-                      context: context, content: 'Quantity updated');
+                      context: context, content: 'Quantity updated',);
                 }
               },
             ),
@@ -287,7 +287,7 @@ class CartItemWidget extends StatelessWidget {
                   padding: EdgeInsets.zero,
                   onPressed: () {
                     showQuantityPickerDialog(
-                        cartItemId: cartItem.id, ref: ref, context: context);
+                        cartItemId: cartItem.id, ref: ref, context: context,);
                   },
                   icon: Wrap(
                     children: [
@@ -435,9 +435,8 @@ class _QuantityPickerState extends ConsumerState<QuantityPicker> {
 
 class OrderSummaryWidget extends StatelessWidget {
   const OrderSummaryWidget({
-    Key? key,
-    required this.cart,
-  }) : super(key: key);
+    required this.cart, super.key,
+  });
   final CartEntity cart;
 
   @override
@@ -451,7 +450,7 @@ class OrderSummaryWidget extends StatelessWidget {
     }).toList();
 
     final hiddenOrderItems = cart.items.length - orderItems.length;
-    final totalPrice = cart.items.fold(0.0, (sum, item) {
+    final totalPrice = cart.items.fold(double.parse('0'), (sum, item) {
       return sum +
           (double.tryParse(item.productPrice.toString()) ?? 0.0) *
               item.productQuantity;

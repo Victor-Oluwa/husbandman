@@ -145,7 +145,7 @@ void main() {
     test('Should throw [AuthException] when status code is not [200] or [201]',
         () async {
       when(() => client.post(any(),
-          headers: any(named: 'headers'), body: any(named: 'body'))).thenAnswer(
+          headers: any(named: 'headers'), body: any(named: 'body'),),).thenAnswer(
         (_) async => http.Response('User already exist', 400),
       );
 

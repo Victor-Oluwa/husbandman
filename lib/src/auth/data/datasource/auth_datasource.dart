@@ -1,9 +1,6 @@
-
 import 'package:husbandman/core/enums/update_user.dart';
 import 'package:husbandman/core/utils/typedef.dart';
-import 'package:husbandman/src/auth/data/model/buyer/buyer_model.dart';
 import 'package:husbandman/src/auth/domain/entity/user/seller/seller_entity.dart';
-import 'package:husbandman/src/auth/domain/use-cases/signup.dart';
 
 abstract class AuthDataSource {
   AuthDataSource();
@@ -25,11 +22,7 @@ abstract class AuthDataSource {
   Future<void> cacheVerifiedInvitationToken({required String token});
 
   Future<SellerEntity> farmerSignUp({
-    required String name,
-    required String email,
-    required String password,
-    required String address,
-    required String type,
+    required SellerEntity seller,
     required String invitationKey,
   });
 
@@ -60,6 +53,4 @@ abstract class AuthDataSource {
   Future<String> validateFarmerInvitationKey({
     required String invitationKey,
   });
-
 }
-

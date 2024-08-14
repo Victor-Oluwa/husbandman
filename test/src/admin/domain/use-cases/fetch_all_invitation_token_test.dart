@@ -1,6 +1,6 @@
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:husbandman/core/common/app/entities/invitation_token_entity.dart';
+import 'package:husbandman/src/admin/domain/entity/invitation_token_entity.dart';
 import 'package:husbandman/core/error/failure.dart';
 import 'package:husbandman/src/admin/domain/repo/admin_repo.dart';
 import 'package:husbandman/src/admin/domain/use-cases/fetch_all_invitation_token.dart';

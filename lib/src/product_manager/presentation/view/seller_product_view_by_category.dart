@@ -15,7 +15,7 @@ class SellerProductViewByCategory extends StatelessWidget {
       appBar: AppBar(
         elevation: 0,
         backgroundColor: Colors.transparent,
-        title: HBMTextWidget(
+        title: const HBMTextWidget(
           data: 'Grains',
         ),
         actions: [
@@ -31,7 +31,7 @@ class SellerProductViewByCategory extends StatelessWidget {
                 size: context.width * 0.09,
               ),
             ),
-          )
+          ),
         ],
       ),
       body: const AllProductsList(),

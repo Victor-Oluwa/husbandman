@@ -69,7 +69,7 @@ class _EnterCardPinViewState extends ConsumerState<EnterCardPinView> {
                   data: 'Authentication',
                   fontSize: context.width * 0.08,
                 ),
-                HBMTextWidget(data: 'Enter your card pin'),
+                const HBMTextWidget(data: 'Enter your card pin'),
                 SizedBox(height: context.height * 0.10),
                 Center(
                   child: Pinput(
@@ -95,7 +95,7 @@ class _EnterCardPinViewState extends ConsumerState<EnterCardPinView> {
   }
 
   void _handleAuthorizedCardFundingWithPin(BuildContext context,
-      AuthorizedCardFundingWithPin state, String historyId) {
+      AuthorizedCardFundingWithPin state, String historyId,) {
     log('Pin Authorised: ${state.response}');
     setState(() {
       authenticateFundingResponse = state.response;
@@ -188,7 +188,7 @@ class _EnterCardPinViewState extends ConsumerState<EnterCardPinView> {
         return;
       case null:
         Navigator.pushNamed(context, RouteNames.paymentSuccessfulViewWithArg,
-            arguments: 'Declined');
+            arguments: 'Declined',);
         return;
       case FundingStatus.none:
         Navigator.pushNamed(
@@ -209,7 +209,7 @@ class _EnterCardPinViewState extends ConsumerState<EnterCardPinView> {
   }
 
   void _handleVerifiedCardFunding(
-      BuildContext context, VerifiedCardFunding state, String historyId) {
+      BuildContext context, VerifiedCardFunding state, String historyId,) {
     log('Funding Verified: ${state.status}');
     setState(() {
       whoUpdatedHistory = HistoryUpdatedBy.bloc2;
@@ -238,7 +238,7 @@ class _EnterCardPinViewState extends ConsumerState<EnterCardPinView> {
   }
 
   void _handlePaymentHistoryError(
-      BuildContext context, PaymentHistoryError state) {
+      BuildContext context, PaymentHistoryError state,) {
     log('Update History Error: ${state.message}');
     HBMSnackBar.show(
       context: context,
@@ -257,7 +257,7 @@ class _EnterCardPinViewState extends ConsumerState<EnterCardPinView> {
   }
 
   void _handlePaymentError(
-      BuildContext context, PaymentError state, String historyId) {
+      BuildContext context, PaymentError state, String historyId,) {
     log('Payment Error: ${state.message}');
     setState(() {
       whoUpdatedHistory = HistoryUpdatedBy.bloc3;

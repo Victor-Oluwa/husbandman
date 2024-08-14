@@ -16,14 +16,11 @@ class UserNotifier extends StateNotifier<UserEntity> {
   UserNotifier()
       : super(
            const UserEntity(
-            id: '',
             userType: '',
             name: '',
             email: '',
             password: '',
             token: '',
-            profilePicture: '',
-            lastSeen: '',
           ),
         );
 

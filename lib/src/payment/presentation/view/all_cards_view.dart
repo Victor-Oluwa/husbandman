@@ -1,10 +1,11 @@
 import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:husbandman/core/common/app/entities/payment_card_entity.dart';
-import 'package:husbandman/core/common/app/provider/state_notifier_providers/payment_card_provider.dart';
 import 'package:husbandman/core/common/app/provider/argument_providers/selected_payment_card_provider.dart';
+import 'package:husbandman/core/common/app/provider/state_notifier_providers/payment_card_provider.dart';
 import 'package:husbandman/core/common/app/provider/state_notifier_providers/user_provider.dart';
 import 'package:husbandman/core/common/widgets/hbm_text_widget.dart';
 import 'package:husbandman/core/common/widgets/snack_bar.dart';
@@ -13,7 +14,6 @@ import 'package:husbandman/core/res/color.dart';
 import 'package:husbandman/core/res/fonts.dart';
 import 'package:husbandman/core/services/injection/payment/payment_injection.dart';
 import 'package:husbandman/core/services/route_names.dart';
-import 'package:husbandman/src/payment/presentation/bloc/payment_bloc.dart';
 import 'package:husbandman/src/payment/presentation/bloc/payment_bloc.dart';
 
 class AllCardsView extends ConsumerStatefulWidget {
@@ -118,7 +118,7 @@ class _AllCardsViewState extends ConsumerState<AllCardsView> {
                                     setState(() {
                                       ref
                                           .read(selectedPaymentCardProvider
-                                              .notifier)
+                                              .notifier,)
                                           .state = card;
 
                                       _selectedCard = value!;
@@ -130,7 +130,7 @@ class _AllCardsViewState extends ConsumerState<AllCardsView> {
                         // Spacer(),
                         Padding(
                           padding: EdgeInsets.symmetric(
-                              horizontal: context.width * 0.03),
+                              horizontal: context.width * 0.03,),
                           child: ElevatedButton(
                             onPressed: () {
                               if (selectedPaymentCard == null) {
@@ -208,6 +208,9 @@ class _AllCardsViewState extends ConsumerState<AllCardsView> {
 }
 
 class CardOption extends StatelessWidget {
+
+  const CardOption({required this.card, required this.cardHolder, required this.lastDigits, required this.cardLabel, required this.selectedCard, required this.value, required this.onChanged, super.key,
+  });
   final String cardHolder;
   final String lastDigits;
   final String cardLabel;
@@ -215,16 +218,6 @@ class CardOption extends StatelessWidget {
   final String value;
   final ValueChanged<String?>? onChanged;
   final PaymentCardEntity card;
-
-  CardOption({
-    required this.card,
-    required this.cardHolder,
-    required this.lastDigits,
-    required this.cardLabel,
-    required this.selectedCard,
-    required this.value,
-    required this.onChanged,
-  });
 
   @override
   Widget build(BuildContext context) {
@@ -246,7 +239,7 @@ class CardOption extends StatelessWidget {
               ),
               side: BorderSide(
                 color: HBMColors.charcoalGrey,
-              )),
+              ),),
           child: Padding(
             padding: EdgeInsets.symmetric(horizontal: context.width * 0.02),
             child: Row(
@@ -298,7 +291,7 @@ class CardOption extends StatelessWidget {
                           color: Colors.green,
                           fontFamily: HBMFonts.exo2,
                           fontSize: context.width * 0.03,
-                        )
+                        ),
                       ],
                     ),
                   ],
@@ -310,7 +303,7 @@ class CardOption extends StatelessWidget {
                         );
                   },
                   icon: const Icon(Icons.delete_outline_rounded),
-                )
+                ),
               ],
             ),
           ),

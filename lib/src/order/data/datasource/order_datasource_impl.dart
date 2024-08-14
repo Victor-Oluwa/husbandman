@@ -22,7 +22,7 @@ class OrderDatasourceImpl implements OrderDatasource {
 
   @override
   Future<OrderModel> createOrder({required OrderEntity order}) async {
-    log('Order: ${order.toMap()}');
+    log('Order: ${order.toJson()}');
     try {
       final response = await _dio.post<DataMap>(
         '$kBaseUrl$kCreateOrderEndpoint',
@@ -32,7 +32,7 @@ class OrderDatasourceImpl implements OrderDatasource {
           },
         ),
         data: jsonEncode(
-          order.toMap(),
+          order.toJson(),
         ),
       );
       log('Create order called');
@@ -52,21 +52,21 @@ class OrderDatasourceImpl implements OrderDatasource {
           statusCode: 500,
         );
       }
-      return OrderModel.fromMap(responseData);
+      return OrderModel.fromJson(responseData);
     } on OrderException catch (_) {
       rethrow;
-      // } on DioException catch (e) {
-      //   if (e.response?.data != null) {
-      //     throw OrderException(
-      //       message: e.response?.data.toString() ?? '',
-      //       statusCode: 500,
-      //     );
-      //   } else {
-      //     throw OrderException(
-      //       message: e.message ?? '',
-      //       statusCode: 500,
-      //     );
-      //   }
+      } on DioException catch (e) {
+        if (e.response?.data != null) {
+          throw OrderException(
+            message: e.response?.data.toString() ?? '',
+            statusCode: 500,
+          );
+        } else {
+          throw OrderException(
+            message: e.message ?? '',
+            statusCode: 500,
+          );
+        }
     } catch (e) {
       throw OrderException(
         message: e.toString(),
@@ -163,7 +163,7 @@ class OrderDatasourceImpl implements OrderDatasource {
           statusCode: 500,
         );
       }
-      return OrderModel.fromMap(responseData);
+      return OrderModel.fromJson(responseData);
     } on OrderException catch (_) {
       rethrow;
     } on DioException catch (e) {
@@ -220,7 +220,7 @@ class OrderDatasourceImpl implements OrderDatasource {
           statusCode: 500,
         );
       }
-      return OrderModel.fromMap(responseData);
+      return OrderModel.fromJson(responseData);
     } on OrderException catch (_) {
       rethrow;
     } on DioException catch (e) {

@@ -1,4 +1,4 @@
-import 'package:husbandman/core/common/app/entities/invitation_token_entity.dart';
+import 'package:husbandman/src/admin/domain/entity/invitation_token_entity.dart';
 import 'package:husbandman/core/enums/filter_user.dart';
 import 'package:husbandman/core/enums/search_user.dart';
 import 'package:husbandman/core/utils/typedef.dart';
@@ -25,7 +25,7 @@ abstract class AdminDatasource{
     required dynamic value,
   });
 
-  Future<String> generateUniqueInvitationToken();
+  Future<String> generateUniqueInvitationToken({required List<int> generatedToken});
 
   Future<void> shareInvitationTokenToEmail({
     required String token,

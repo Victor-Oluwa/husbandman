@@ -2,17 +2,14 @@ import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 import 'dart:typed_data';
-import 'package:dio/dio.dart';
 
+import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
-import 'package:husbandman/src/cart/domain/entity/cart_entity.dart';
-import 'package:husbandman/core/common/app/entities/product_entity.dart';
-import 'package:husbandman/core/common/app/models/product_model.dart';
+import 'package:husbandman/src/product_manager/domain/entity/product_entity.dart';
+import 'package:husbandman/src/product_manager/data/model/product_model.dart';
 import 'package:husbandman/core/common/app/provider/state_notifier_providers/general_product_provider.dart';
-import 'package:husbandman/core/common/app/provider/argument_providers/picked_product_image_provider.dart';
 import 'package:husbandman/core/common/app/provider/state_notifier_providers/seller_products_provider.dart';
-import 'package:husbandman/core/common/app/provider/state_notifier_providers/user_provider.dart';
 import 'package:husbandman/core/common/app/public_methods/cloudinary_upload/cloudinary_upload.dart';
 import 'package:husbandman/core/common/app/public_methods/file-picker/file_picker.dart';
 import 'package:husbandman/core/common/app/public_methods/file_compressor/file_compressor.dart';
@@ -22,6 +19,7 @@ import 'package:husbandman/core/enums/update_product.dart';
 import 'package:husbandman/core/error/exceptions.dart';
 import 'package:husbandman/core/utils/constants.dart';
 import 'package:husbandman/core/utils/typedef.dart';
+import 'package:husbandman/src/cart/domain/entity/cart_entity.dart';
 import 'package:husbandman/src/product_manager/data/datasource/product_manager_datasource.dart';
 
 const kDeleteProductEndpoint = '/farmer/product/delete';
@@ -89,23 +87,22 @@ class ProductManagerDatasourceImpl implements ProductManagerDatasource {
           statusCode: response.statusCode ?? 500,
         );
       }
-      return CartEntity.fromMap(responseData);
+      return CartEntity.fromJson(responseData);
     } on DioException catch (dioError) {
       log('Dio error asshole: $dioError');
 
-      if(dioError.response != null){
+      if (dioError.response != null) {
         throw ProductManagerException(
-          message: dioError.response?.data.toString()??'',
+          message: dioError.response?.data.toString() ?? '',
           statusCode: 500,
         );
-      }else{
+      } else {
         throw ProductManagerException(
-          message: dioError.message ??'',
+          message: dioError.message ?? '',
           statusCode: 500,
         );
       }
-
-    } on ProductManagerException catch (e) {
+    } on ProductManagerException {
       rethrow;
     } catch (e) {
       throw ProductManagerException(message: e.toString(), statusCode: 500);
@@ -128,7 +125,7 @@ class ProductManagerDatasourceImpl implements ProductManagerDatasource {
   }
 
   @override
-  Future<List<ProductEntity>> deleteProduct(String id) async {
+  Future<List<ProductModel>> deleteProduct(String id) async {
     try {
       final response = await _client.post(
         Uri.parse('$kBaseUrl$kDeleteProductEndpoint'),
@@ -148,11 +145,11 @@ class ProductManagerDatasourceImpl implements ProductManagerDatasource {
       }
 
       final products = List<DataMap>.from(jsonDecode(response.body) as List)
-          .map(ProductModel.fromMap)
+          .map(ProductModel.fromJson)
           .toList();
 
       return products;
-    } on ProductManagerException catch (e) {
+    } on ProductManagerException {
       rethrow;
     } catch (e) {
       throw ProductManagerException(message: e.toString(), statusCode: 500);
@@ -160,7 +157,7 @@ class ProductManagerDatasourceImpl implements ProductManagerDatasource {
   }
 
   @override
-  Future<List<ProductEntity>> fetchProducts({
+  Future<List<ProductModel>> fetchProducts({
     required int limit,
     required List<String> fetched,
   }) async {
@@ -197,7 +194,7 @@ class ProductManagerDatasourceImpl implements ProductManagerDatasource {
       }
 
       return responseData
-          .map((data) => ProductModel.fromMap(data as Map<String, dynamic>))
+          .map((data) => ProductModel.fromJson(data as Map<String, dynamic>))
           .toList();
     } on ProductManagerException catch (e) {
       log('Fetch product error: ${e.message}');
@@ -209,7 +206,7 @@ class ProductManagerDatasourceImpl implements ProductManagerDatasource {
   }
 
   @override
-  Future<List<ProductEntity>> fetchProductsByCategory({
+  Future<List<ProductModel>> fetchProductsByCategory({
     required String category,
     required int limit,
     required List<String> fetched,
@@ -241,7 +238,7 @@ class ProductManagerDatasourceImpl implements ProductManagerDatasource {
       }
 
       return List<DataMap>.from(response.data!)
-          .map(ProductModel.fromMap)
+          .map(ProductModel.fromJson)
           .toList();
     } on DioException catch (e) {
       if (e.response != null) {
@@ -261,7 +258,7 @@ class ProductManagerDatasourceImpl implements ProductManagerDatasource {
   }
 
   @override
-  Future<List<ProductEntity>> fetchFarmerProducts(String farmerEmail) async {
+  Future<List<ProductModel>> fetchFarmerProducts(String farmerEmail) async {
     try {
       final response = await _client.post(
         Uri.parse('$kBaseUrl$kFetchFarmerProductsEndpoint'),
@@ -279,9 +276,9 @@ class ProductManagerDatasourceImpl implements ProductManagerDatasource {
       }
 
       return List<DataMap>.from(jsonDecode(response.body) as List)
-          .map(ProductModel.fromMap)
+          .map(ProductModel.fromJson)
           .toList();
-    } on ProductManagerException catch (e) {
+    } on ProductManagerException {
       rethrow;
     } catch (e) {
       throw ProductManagerException(
@@ -329,7 +326,7 @@ class ProductManagerDatasourceImpl implements ProductManagerDatasource {
           sellerName: sellerName,
         );
       }
-    } on CloudinaryException catch (e) {
+    } on CloudinaryException {
       rethrow;
     } catch (e) {
       throw CloudinaryException(
@@ -340,7 +337,7 @@ class ProductManagerDatasourceImpl implements ProductManagerDatasource {
   }
 
   @override
-  Future<ProductEntity> likeProduct(String id) async {
+  Future<ProductModel> likeProduct(String id) async {
     try {
       final response = await _client.post(
         Uri.parse('$kBaseUrl$kLikeProductEndpoint'),
@@ -359,8 +356,8 @@ class ProductManagerDatasourceImpl implements ProductManagerDatasource {
         );
       }
 
-      return ProductModel.fromMap(jsonDecode(response.body) as DataMap);
-    } on ProductManagerException catch (e) {
+      return ProductModel.fromJson(jsonDecode(response.body) as DataMap);
+    } on ProductManagerException {
       rethrow;
     } catch (e) {
       throw ProductManagerException(message: e.toString(), statusCode: 500);
@@ -373,7 +370,7 @@ class ProductManagerDatasourceImpl implements ProductManagerDatasource {
       final result = await _pickFile.pickMultiple();
 
       return result;
-    } on FilePickerException catch (e) {
+    } on FilePickerException {
       rethrow;
     } catch (e) {
       throw FilePickerException(message: e.toString(), statusCode: 500);
@@ -381,7 +378,7 @@ class ProductManagerDatasourceImpl implements ProductManagerDatasource {
   }
 
   @override
-  Future<ProductEntity> rateProduct(String id) async {
+  Future<ProductModel> rateProduct(String id) async {
     try {
       final response = await _client.post(
         Uri.parse('$kBaseUrl$kRateProductEndpoint'),
@@ -400,8 +397,8 @@ class ProductManagerDatasourceImpl implements ProductManagerDatasource {
         );
       }
 
-      return ProductModel.fromMap(jsonDecode(response.body) as DataMap);
-    } on ProductManagerException catch (e) {
+      return ProductModel.fromJson(jsonDecode(response.body) as DataMap);
+    } on ProductManagerException {
       rethrow;
     } catch (e) {
       throw ProductManagerException(message: e.toString(), statusCode: 500);
@@ -409,10 +406,11 @@ class ProductManagerDatasourceImpl implements ProductManagerDatasource {
   }
 
   @override
-  Future<List<ProductEntity>> searchProduct(
-      {required String userId,
-      required String query,
-      required String searchBy}) async {
+  Future<List<ProductModel>> searchProduct({
+    required String userId,
+    required String query,
+    required String searchBy,
+  }) async {
     try {
       final response = await _client.post(
         Uri.parse('$kBaseUrl$kSearchProductEndpoint'),
@@ -433,15 +431,16 @@ class ProductManagerDatasourceImpl implements ProductManagerDatasource {
         );
       }
       return List<DataMap>.from(jsonDecode(response.body) as List)
-          .map(ProductModel.fromMap)
+          .map(ProductModel.fromJson)
           .toList();
-    } on ProductManagerException catch (e) {
+    } on ProductManagerException {
       rethrow;
     } catch (e) {
       throw ProductManagerException(message: e.toString(), statusCode: 500);
     }
   }
 
+  //TODO(): Correct this method
   @override
   Future<ProductModel> setSellerProduct({
     required SetProductType setProductType,
@@ -453,7 +452,7 @@ class ProductManagerDatasourceImpl implements ProductManagerDatasource {
       productModel =
           productObject.map((entity) => entity as ProductModel).toList();
     }
-    var firstProduct = ProductModel.empty();
+    var firstProduct = ProductModel.empty;
     try {
       if (productMap == null && productObject == null) {
         throw const ProductManagerException(
@@ -513,7 +512,7 @@ class ProductManagerDatasourceImpl implements ProductManagerDatasource {
       }
 
       return firstProduct;
-    } on ProductManagerException catch (e) {
+    } on ProductManagerException {
       rethrow;
     } catch (e) {
       throw ProductManagerException(message: e.toString(), statusCode: 500);
@@ -588,7 +587,7 @@ class ProductManagerDatasourceImpl implements ProductManagerDatasource {
                 .replaceProduct(mNewProduct: productMap);
           }
       }
-    } on ProductManagerException catch (e) {
+    } on ProductManagerException {
       rethrow;
     } catch (e) {
       throw ProductManagerException(message: e.toString(), statusCode: 500);
@@ -619,8 +618,8 @@ class ProductManagerDatasourceImpl implements ProductManagerDatasource {
         );
       }
 
-      return ProductModel.fromMap(jsonDecode(response.body) as DataMap);
-    } on ProductManagerException catch (e) {
+      return ProductModel.fromJson(jsonDecode(response.body) as DataMap);
+    } on ProductManagerException {
       rethrow;
     } catch (e) {
       throw ProductManagerException(
@@ -631,23 +630,24 @@ class ProductManagerDatasourceImpl implements ProductManagerDatasource {
   }
 
   @override
-  Future<ProductModel> uploadProduct(
-      {required String name,
-      required String video,
-      required List<String> image,
-      required String sellerName,
-      required String sellerEmail,
-      required bool available,
-      required int sold,
-      required int quantity,
-      required double price,
-      required String deliveryTime,
-      required String description,
-      required String measurement,
-      required bool alwaysAvailable,
-      required List<String> deliveryLocation,
-      required List<int> rating,
-      required int likes}) async {
+  Future<ProductModel> uploadProduct({
+    required String name,
+    required String video,
+    required List<String> image,
+    required String sellerName,
+    required String sellerEmail,
+    required bool available,
+    required int sold,
+    required int quantity,
+    required double price,
+    required String deliveryTime,
+    required String description,
+    required String measurement,
+    required bool alwaysAvailable,
+    required List<String> deliveryLocation,
+    required List<int> rating,
+    required int likes,
+  }) async {
     try {
       final response = await _client.post(
         Uri.parse('$kBaseUrl$kUploadProductEndpoint'),
@@ -683,10 +683,10 @@ class ProductManagerDatasourceImpl implements ProductManagerDatasource {
 
       log('Printing response: ${response.body}');
 
-      return ProductModel.fromMap(
+      return ProductModel.fromJson(
         DataMap.from(jsonDecode(response.body) as DataMap),
       );
-    } on ProductManagerException catch (e) {
+    } on ProductManagerException {
       rethrow;
     } catch (e) {
       throw ProductManagerException(
@@ -706,16 +706,18 @@ class ProductManagerDatasourceImpl implements ProductManagerDatasource {
           await _superBaseUpload.uploadMultipleImages(filePaths, folderPath);
       if (response.isEmpty) {
         throw const ProductManagerException(
-            message:
-                'Empty List was returned from uploadMultipleImages function',
-            statusCode: 500);
+          message: 'Empty List was returned from uploadMultipleImages function',
+          statusCode: 500,
+        );
       }
 
-      log('Log from ProductManagerDatasourceImpl: getImgUrlFromSupaBase response: $response');
+      log(
+        'Log from ProductManagerDatasourceImpl: getImgUrlFromSupaBase response: $response',
+      );
       return response;
-    } on SuperBaseException catch (e) {
+    } on SuperBaseException {
       rethrow;
-    } on ProductManagerException catch (e) {
+    } on ProductManagerException {
       rethrow;
     } catch (e) {
       throw ProductManagerException(message: e.toString(), statusCode: 500);

@@ -1,7 +1,8 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:http/http.dart' as http;
-import 'package:husbandman/core/common/app/models/invitation_token_model.dart';
+import 'package:husbandman/src/admin/data/model/invitation_token_model.dart';
 import 'package:husbandman/core/common/app/public_methods/token-generator/token_generator.dart';
 import 'package:husbandman/core/common/strings/error_messages.dart';
 import 'package:husbandman/core/enums/filter_user.dart';
@@ -125,7 +126,6 @@ class AdminDatasourceImpl implements AdminDatasource {
           'Content-Type': 'application/json; charset=UTF-8',
         },
       );
-
       if (response.statusCode != 200 && response.statusCode != 201) {
         throw AdminException(
           message: response.body,
@@ -134,10 +134,13 @@ class AdminDatasourceImpl implements AdminDatasource {
       }
 
       final result = List<DataMap>.from(jsonDecode(response.body) as List)
-          .map(InvitationTokenModel.fromMap)
+          .map(InvitationTokenModel.fromJson)
           .toList();
+      log('Fetch all invKey response: ${result}');
+
       return result;
-    } on AdminException catch (_) {
+    }
+    on AdminException catch (_) {
       rethrow;
     } catch (e) {
       throw AdminException(message: e.toString(), statusCode: 404);
@@ -165,7 +168,6 @@ class AdminDatasourceImpl implements AdminDatasource {
 
       final result = jsonDecode(response.body) as List<DataMap>;
       return result;
-
     } on AdminException catch (_) {
       rethrow;
     } catch (e) {
@@ -216,11 +218,12 @@ class AdminDatasourceImpl implements AdminDatasource {
   }
 
   @override
-  Future<String> generateUniqueInvitationToken() async {
+  Future<String> generateUniqueInvitationToken(
+      {required List<int> generatedToken}) async {
     try {
-      final result = _tokenGenerator.generateToken();
+      final result = _tokenGenerator.generateToken(generatedToken);
 
-      if (result.length > 8 || result.length < 8) {
+      if (result.length > 12 || result.length < 12) {
         throw const AdminException(
           message: kInvalidTokenLength,
           statusCode: 400,
@@ -301,9 +304,10 @@ class AdminDatasourceImpl implements AdminDatasource {
 
       if (response.statusCode != 200 && response.statusCode != 201) {
         throw AdminException(
-            message: response.body, statusCode: response.statusCode,);
+          message: response.body,
+          statusCode: response.statusCode,
+        );
       }
-
     } on AdminException catch (_) {
       rethrow;
     } catch (e) {

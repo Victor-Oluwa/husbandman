@@ -1,15 +1,21 @@
-import 'dart:math';
 import 'dart:developer' as dev;
+import 'dart:math';
+import 'package:crypto/crypto.dart';
 
 class TokenGenerator{
-  final Random _random = Random();
+  String generateToken(List<int> tokensFromDatabase) {
+    final generatedTokens = tokensFromDatabase.toSet();
+    const min = 100000000000; // 12-digit minimum
+    const max = 999999999999; // 12-digit maximum
+    int randomNumber;
 
-  String generateToken() {
-    // Generate a random number between 1000000 and 9999999
-    final randomNumber = _random.nextInt(9000000) + 10000000;
-    // Get the current timestamp in milliseconds
-    final timestamp = DateTime.now().millisecondsSinceEpoch;
-dev.log(randomNumber.toString());
+    do {
+      final part1 = Random().nextInt(900000) + 100000; // 6 digits
+      final part2 = Random().nextInt(900000) + 100000; // 6 digits
+      randomNumber = part1 * 1000000 + part2;
+    } while (generatedTokens.contains(randomNumber));
+    generatedTokens.add(randomNumber);
+    dev.log('Generated Tokens $generatedTokens');
     return randomNumber.toString();
   }
 

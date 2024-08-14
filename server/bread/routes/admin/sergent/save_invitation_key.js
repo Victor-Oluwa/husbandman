@@ -23,7 +23,8 @@ router.post(endpoints.SAVE_INVITATION_TOKEN, async (req, res) => {
         }
 
     } catch (e) {
-        arsenal.reportError(e, res);
+        console.log(e);
+        res.status(500).json(e.message);
     }
 });
 

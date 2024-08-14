@@ -58,7 +58,7 @@ class CategoryWidget extends StatelessWidget {
               fontFamily: HBMFonts.quicksandBold,
               color: HBMColors.charcoalGrey,
               fontSize: context.width*0.03,
-            )
+            ),
           ],
         ),
       ),

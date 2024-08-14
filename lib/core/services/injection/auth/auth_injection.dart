@@ -6,7 +6,6 @@ import 'package:husbandman/src/auth/data/datasource/auth_datasource_impl.dart';
 import 'package:husbandman/src/auth/data/repo/auth_repo_impl.dart';
 import 'package:husbandman/src/auth/domain/repo/auth_repo.dart';
 import 'package:husbandman/src/auth/domain/use-cases/authenticate_reset_password_token.dart';
-import 'package:husbandman/src/auth/domain/use-cases/signup.dart';
 import 'package:husbandman/src/auth/domain/use-cases/cache_user_token.dart';
 import 'package:husbandman/src/auth/domain/use-cases/cache_verified_invitation_token.dart';
 import 'package:husbandman/src/auth/domain/use-cases/farmer_signup.dart';
@@ -16,6 +15,7 @@ import 'package:husbandman/src/auth/domain/use-cases/send_reset_password_token.d
 import 'package:husbandman/src/auth/domain/use-cases/set_user.dart';
 import 'package:husbandman/src/auth/domain/use-cases/sign_in.dart';
 import 'package:husbandman/src/auth/domain/use-cases/sign_out.dart';
+import 'package:husbandman/src/auth/domain/use-cases/signup.dart';
 import 'package:husbandman/src/auth/domain/use-cases/update_user.dart';
 import 'package:husbandman/src/auth/domain/use-cases/validate_farmer_invitation_key.dart';
 import 'package:husbandman/src/auth/domain/use-cases/validate_user.dart';

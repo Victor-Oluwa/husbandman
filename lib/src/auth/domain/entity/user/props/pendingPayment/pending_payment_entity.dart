@@ -11,13 +11,12 @@ class PendingPaymentEntity extends Equatable {
     this.id = '',
   });
 
-   const PendingPaymentEntity.empty():this(
-     id: '',
-     payments: const [PaymentEntity.empty()],
-   );
-
   factory PendingPaymentEntity.fromJson(DataMap json) =>
       _$PendingPaymentEntityFromJson(json);
+
+   static const empty = PendingPaymentEntity(
+     payments: [PaymentEntity.empty()],
+   );
 
   @JsonKey(name: '_id')
   final String id;

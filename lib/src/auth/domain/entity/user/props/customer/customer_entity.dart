@@ -4,7 +4,7 @@ import 'package:json_annotation/json_annotation.dart';
 part 'customer_entity.g.dart';
 @JsonSerializable(explicitToJson: true)
 class CustomerEntity {
-  CustomerEntity({
+  const CustomerEntity({
     required this.id,
     required this.ownerId,
     required this.childCustomer,

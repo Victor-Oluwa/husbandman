@@ -19,28 +19,30 @@ List<Country> countries = [
 
 
 class Country {
-  final String name;
-  final List<Statee> states;
 
   Country({required this.name, required this.states});
+  final String name;
+  final List<Statee> states;
 }
 
 class Statee {
-  final String name;
-  final List<City> cities;
 
   Statee({required this.name, required this.cities});
+  final String name;
+  final List<City> cities;
 }
 
 class City {
-  final String name;
 
   City({required this.name});
+  final String name;
 }
 
 
 
 class LocationDropdown extends StatefulWidget {
+  const LocationDropdown({super.key});
+
   @override
   _LocationDropdownState createState() => _LocationDropdownState();
 }

@@ -38,7 +38,7 @@
 //                 context, OnboardingScreen.routeName, (route) => false,);
 //           }else if(state is FirstTimerStatus && !state.isFirstTimer){
 //
-//             // TODO(Auth): Authenticate with server
+//             // `TODO`(Auth): Authenticate with server
 //           }
 //
 //           return const Center(

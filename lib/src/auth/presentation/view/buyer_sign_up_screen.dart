@@ -160,7 +160,7 @@ class _FarmerSignUpScreenState extends ConsumerState<BuyerSignUpScreen> {
                           controller: _formScrollContainer,
                           child: Padding(
                             padding: EdgeInsets.symmetric(
-                                horizontal: sidePadding),
+                                horizontal: sidePadding,),
                             child: Form(
                               key: formKey,
                               child: Column(
