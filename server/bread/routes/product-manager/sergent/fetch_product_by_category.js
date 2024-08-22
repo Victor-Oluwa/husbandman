@@ -13,7 +13,7 @@ router.post(endpoints.FETCH_PRODUCT_BY_CATEGORY, async (req, res) => {
         const fetchedProducts = await fetched.map(id => mongoose.Types.ObjectId.createFromHexString(id));
 
         const products = await Product.aggregate([
-            { $match: { _id: { $nin: fetchedProducts }, type: category } },
+            { $match: { _id: { $nin: fetchedProducts }, category: category } },
             { $sample: { size: limit } }
         ]);
 

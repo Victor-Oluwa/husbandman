@@ -89,7 +89,6 @@ class ProductManagerDatasourceImpl implements ProductManagerDatasource {
       }
       return CartEntity.fromJson(responseData);
     } on DioException catch (dioError) {
-      log('Dio error asshole: $dioError');
 
       if (dioError.response != null) {
         throw ProductManagerException(
@@ -632,22 +631,31 @@ class ProductManagerDatasourceImpl implements ProductManagerDatasource {
   @override
   Future<ProductModel> uploadProduct({
     required String name,
-    required String video,
-    required List<String> image,
     required String sellerName,
     required String sellerEmail,
-    required bool available,
-    required int sold,
-    required int quantity,
+    required String sellerId,
+    required String video,
+    required List<String> image,
+    required bool isLive,
+    required int quantityAvailable,
     required double price,
-    required String deliveryTime,
+    required String deliveryDate,
     required String description,
     required String measurement,
-    required bool alwaysAvailable,
-    required List<String> deliveryLocation,
-    required List<int> rating,
-    required int likes,
+    required bool isAlwaysAvailable,
+    required List<String> deliveryLocations,
+    required String category,
   }) async {
+    /*
+    [log] ProductManagerError from ProductUploadBlocConsumerWidget: 500 Error:
+     StorageException(message: The resource already exists, statusCode: 409,
+     error: Duplicate)
+
+     delete item if deplicate error occures in superbase upload
+    */
+    log('Passed  name: $name');
+    log('Passed  measurement: $measurement');
+
     try {
       final response = await _client.post(
         Uri.parse('$kBaseUrl$kUploadProductEndpoint'),
@@ -660,17 +668,15 @@ class ProductManagerDatasourceImpl implements ProductManagerDatasource {
           'image': image,
           'sellerName': sellerName,
           'sellerEmail': sellerEmail,
-          'available': available,
-          'sold': sold,
-          'quantity': quantity,
+          'sellerId': sellerId,
+          'quantityAvailable': quantityAvailable,
           'price': price,
-          'deliveryTime': deliveryTime,
+          'deliveryDate': deliveryDate,
           'description': description,
           'measurement': measurement,
-          'alwaysAvailable': alwaysAvailable,
-          'deliveryLocation': deliveryLocation,
-          'rating': rating,
-          'likes': likes,
+          'isAlwaysAvailable': isAlwaysAvailable,
+          'deliveryLocations': deliveryLocations,
+          'category': category,
         }),
       );
 
@@ -684,7 +690,7 @@ class ProductManagerDatasourceImpl implements ProductManagerDatasource {
       log('Printing response: ${response.body}');
 
       return ProductModel.fromJson(
-        DataMap.from(jsonDecode(response.body) as DataMap),
+        jsonDecode(response.body) as DataMap,
       );
     } on ProductManagerException {
       rethrow;

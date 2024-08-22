@@ -22,7 +22,6 @@ class OrderDatasourceImpl implements OrderDatasource {
 
   @override
   Future<OrderModel> createOrder({required OrderEntity order}) async {
-    log('Order: ${order.toJson()}');
     try {
       final response = await _dio.post<DataMap>(
         '$kBaseUrl$kCreateOrderEndpoint',
@@ -35,7 +34,6 @@ class OrderDatasourceImpl implements OrderDatasource {
           order.toJson(),
         ),
       );
-      log('Create order called');
 
       final responseData = response.data;
 
@@ -52,7 +50,14 @@ class OrderDatasourceImpl implements OrderDatasource {
           statusCode: 500,
         );
       }
-      return OrderModel.fromJson(responseData);
+
+      log('Create order called: none');
+
+      final transformed = OrderModel.fromJson(responseData);
+      log('Create order called: $transformed');
+
+      return transformed;
+
     } on OrderException catch (_) {
       rethrow;
       } on DioException catch (e) {

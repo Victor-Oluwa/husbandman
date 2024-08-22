@@ -8,7 +8,10 @@ const route = express.Router();
 route.post(endpoints.UPLOAD_PRODUCT, async (req, res) => {
 
     try {
-        const { name, video, image, sellerName, sellerEmail, quantity, price, description, deliveryLocation, } = req.body;
+        const { name, sellerName, sellerEmail, sellerId, video, image,
+            quantityAvailable, price, deliveryDate, description,
+            measurement, deliveryLocations, category, } = req.body;
+        console.log('Measurement:' + measurement);
 
         let product = new Product({
             name: name,
@@ -16,10 +19,14 @@ route.post(endpoints.UPLOAD_PRODUCT, async (req, res) => {
             images: image,
             sellerName: sellerName,
             sellerEmail: sellerEmail,
-            quantity: quantity,
+            sellerId: sellerId,
+            quantityAvailable: quantityAvailable,
+            deliveryDate: deliveryDate,
             price: price,
+            measurement: measurement,
             description: description,
-            deliveryLocations: deliveryLocation,
+            deliveryLocations: deliveryLocations,
+            category: category,
         });
 
         product = await product.save();

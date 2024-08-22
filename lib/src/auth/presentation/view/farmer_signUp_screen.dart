@@ -98,11 +98,11 @@ class _FarmerSignUpScreenState extends ConsumerState<FarmerSignUpScreen> {
                       GestureDetector(
                         onTap: () {
                           setState(() {
-                            _nameController.text = 'Rumen';
-                            _emailController.text = 'farmer@gmail.com';
-                            _passwordController.text = '123456789';
-                            _addressController.text = 'asdfghhhjkl';
-                            _invitationKeyController.text = 'key';
+                            _nameController.text = 'Gabriel';
+                            _emailController.text = 'gabriel@gmail.com';
+                            _passwordController.text = '1234567';
+                            _addressController.text = 'address not set';
+                            _invitationKeyController.text = 'inv-key';
                           });
                         },
                         child: SvgPicture.asset(

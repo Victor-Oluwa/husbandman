@@ -23,7 +23,7 @@ Map<String, dynamic> _$PendingPaymentModelToJson(
 
 PaymentModel _$PaymentModelFromJson(Map<String, dynamic> json) => PaymentModel(
       sellerId: json['sellerId'] as String,
-      orderId: json['orderId'] as String,
+      orderName: json['orderName'] as String,
       productId: json['productId'] as String,
       sellerName: json['sellerName'] as String,
       timeStamp: json['timeStamp'] as String,
@@ -36,7 +36,7 @@ Map<String, dynamic> _$PaymentModelToJson(PaymentModel instance) =>
     <String, dynamic>{
       '_id': instance.id,
       'sellerId': instance.sellerId,
-      'orderId': instance.orderId,
+      'orderName': instance.orderName,
       'productId': instance.productId,
       'sellerName': instance.sellerName,
       'timeStamp': instance.timeStamp,

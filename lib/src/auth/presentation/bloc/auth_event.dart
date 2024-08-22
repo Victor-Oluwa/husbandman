@@ -115,14 +115,15 @@ class SendResetPasswordTokenEvent extends AuthEvent {
 }
 
 class UpdateUserEvent extends AuthEvent {
-  UpdateUserEvent({
+  const UpdateUserEvent({
+    required this.userId,
+    required this.userType,
     required this.newData,
     required this.culprit,
-  }) : assert(
-            newData is String || newData is File,
-            'User data must be either a '
-            " [String] or a [File]. It can't be a ${newData.runtimeType}");
+  });
 
+  final String userId;
+  final String userType;
   final dynamic newData;
   final UpdateUserCulprit culprit;
 

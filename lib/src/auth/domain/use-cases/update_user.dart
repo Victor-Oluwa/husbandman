@@ -11,6 +11,8 @@ class UpdateUser extends UseCaseWithParams<DataMap, UpdateUserParams> {
 
   @override
   ResultFuture<DataMap> call(UpdateUserParams params) => _authRepo.updateUser(
+        userId: params.userId,
+        userType: params.userType,
         newData: params.newData,
         culprit: params.culprit,
       );
@@ -18,16 +20,22 @@ class UpdateUser extends UseCaseWithParams<DataMap, UpdateUserParams> {
 
 class UpdateUserParams extends Equatable {
   const UpdateUserParams({
+    required this.userId,
+    required this.userType,
     required this.newData,
     required this.culprit,
   });
 
   const UpdateUserParams.empty()
       : this(
-          newData: 'empty.newData',
+          userId: '',
+          userType: '',
+          newData: '',
           culprit: UpdateUserCulprit.name,
         );
 
+  final String userId;
+  final String userType;
   final dynamic newData;
   final UpdateUserCulprit culprit;
 

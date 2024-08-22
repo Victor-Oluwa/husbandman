@@ -13,6 +13,14 @@ async function findCart(ownerId) {
 }
 
 async function deleteCartItem(cart, itemId) {
+    if (!itemId || !cart) {
+        throw new Error('Some passed arguments are undefined (itemId || cart)');
+    }
+
+    if (!cart.items) {
+        throw new Error('cart.items of item._id is undefined');
+    }
+
     // Find the index of the item with the given id
     const index = cart.items.findIndex(item => item._id.toString() === itemId);
 

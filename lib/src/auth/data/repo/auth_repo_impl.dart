@@ -173,11 +173,15 @@ class AuthRepoImpl implements AuthRepo {
 
   @override
   ResultFuture<DataMap> updateUser({
+    required String userId,
+    required String userType,
     required dynamic newData,
     required UpdateUserCulprit culprit,
   }) async {
     try {
       final result = await _authDataSource.updateUser(
+        userId: userId,
+        userType: userType,
         newData: newData,
         culprit: culprit,
       );

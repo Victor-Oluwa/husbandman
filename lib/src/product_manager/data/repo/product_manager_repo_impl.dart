@@ -235,40 +235,38 @@ class ProductManagerRepoImpl implements ProductManagerRepo {
   @override
   ResultFuture<ProductModel> uploadProduct({
     required String name,
-    required String video,
-    required List<String> image,
     required String sellerName,
     required String sellerEmail,
-    required bool available,
-    required int sold,
-    required int quantity,
+    required String sellerId,
+    required String video,
+    required List<String> image,
+    required bool isLive,
+    required int quantityAvailable,
     required double price,
-    required String deliveryTime,
+    required String deliveryDate,
     required String description,
     required String measurement,
-    required bool alwaysAvailable,
-    required List<String> deliveryLocation,
-    required List<int> rating,
-    required int likes,
+    required bool isAlwaysAvailable,
+    required List<String> deliveryLocations,
+    required String category,
   }) async {
     try {
       final result = await _productManagerDatasource.uploadProduct(
         name: name,
-        video: video,
-        image: image,
         sellerName: sellerName,
         sellerEmail: sellerEmail,
-        available: available,
-        sold: sold,
-        quantity: quantity,
+        sellerId: sellerId,
+        video: video,
+        image: image,
+        isLive: isLive,
+        quantityAvailable: quantityAvailable,
         price: price,
-        deliveryTime: deliveryTime,
+        deliveryDate: deliveryDate,
         description: description,
         measurement: measurement,
-        alwaysAvailable: alwaysAvailable,
-        deliveryLocation: deliveryLocation,
-        rating: rating,
-        likes: likes,
+        isAlwaysAvailable: isAlwaysAvailable,
+        deliveryLocations: deliveryLocations,
+        category: category,
       );
 
       return Right(result);
@@ -281,11 +279,13 @@ class ProductManagerRepoImpl implements ProductManagerRepo {
   ResultFuture<List<String>> getImgUrlFromSupaBase({
     required List<String> filePaths,
     required String folderPath,
-  })async {
+  }) async {
     try {
-    final result = await  _productManagerDatasource.getImgUrlFromSupaBase(
-          filePaths: filePaths, folderPath: folderPath,);
-    return Right(result);
+      final result = await _productManagerDatasource.getImgUrlFromSupaBase(
+        filePaths: filePaths,
+        folderPath: folderPath,
+      );
+      return Right(result);
     } on SuperBaseException catch (e) {
       return Left(SuperBaseFailure.fromException(e));
     } on ProductManagerException catch (e) {

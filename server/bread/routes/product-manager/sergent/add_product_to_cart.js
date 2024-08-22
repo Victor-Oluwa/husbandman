@@ -13,33 +13,51 @@ router.post(endpoints.ADD_PRODUCT_TO_CART, async (req, res) => {
         let product = await arsenal.findProductById(productId);
         await arsenal.checkIfProductIsAvailable(product, quantity);
 
+
         const ownerId = cartOwnerId;
         const newItem = {
             productId: product._id,
+            buyerId: ownerId,
+            sellerId: product.sellerId,
             productName: product.name,
             productImage: product.images[0],
-            productQuantity: quantity,
+            productQuantity: 1,
             sellerName: product.sellerName,
             sellerEmail: product.sellerEmail,
             productPrice: product.price,
-            percentage: product.price * 0.10
+            percentage: product.price * 0.10,
+            deliveryDate: product.deliveryDate
         };
 
         let cart = await Cart.findOne({ ownerId: ownerId });
 
         if (!cart) {
-            cart = await arsenal.createCart(ownerId, newItem);
-        } else {
-            await arsenal.checkIfProductExistInCart(product, cart);
-            console.log('Tried adding to crt');
-            cart = await arsenal.addToCart(cart, newItem);
+            cart = await arsenal.createCart(newItem, ownerId);
+            // product = await arsenal.updateProductQuantity(product, quantity);
+
+            await cart.save();
         }
 
-        // await arsenal.updateProductQuantity(product, quantity);
+
+        if (cart) {
+            let productExist = await arsenal.checkIfProductExistInCart(product, cart);
+
+            if (productExist) {
+                console.log('Product already exist in cart');
+                return res.status(200).json(cart);
+
+            }
+
+            cart = await arsenal.addCart(cart, newItem);
+            // product = await arsenal.updateProductQuantity(product, quantity);
+
+            await cart.save();
+        }
 
         res.status(200).json(cart);
 
     } catch (e) {
+
         console.log(e.message);
         res.status(500).json(e.message);
     }

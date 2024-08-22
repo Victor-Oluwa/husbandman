@@ -297,6 +297,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   ) async {
     final result = await _updateUser(
       UpdateUserParams(
+        userId: event.userId,
+        userType: event.userType,
         newData: event.newData,
         culprit: event.culprit,
       ),

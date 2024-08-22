@@ -10,6 +10,7 @@ OrderItemsEntity _$OrderItemsEntityFromJson(Map<String, dynamic> json) =>
     OrderItemsEntity(
       buyerId: json['buyerId'] as String,
       sellerId: json['sellerId'] as String,
+      sellerName: json['sellerName'] as String,
       itemId: json['itemId'] as String,
       itemName: json['itemName'] as String,
       itemImage: json['itemImage'] as String,
@@ -27,6 +28,7 @@ Map<String, dynamic> _$OrderItemsEntityToJson(OrderItemsEntity instance) =>
       '_id': instance.id,
       'buyerId': instance.buyerId,
       'sellerId': instance.sellerId,
+      'sellerName': instance.sellerName,
       'itemId': instance.itemId,
       'itemName': instance.itemName,
       'itemImage': instance.itemImage,

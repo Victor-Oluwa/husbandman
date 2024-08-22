@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-const { isAssertEntry } = require('typescript');
 const { Schema } = mongoose;
 
 const productSchema = new Schema({
@@ -13,7 +12,7 @@ const productSchema = new Schema({
     numberSold: { type: Number, default: 0 },
     quantityAvailable: { type: Number, required: true },
     price: { type: Number, required: true },
-    deliveryDate: { type: Date, required: true },
+    deliveryDate: { type: String, required: true },
     description: { type: String, required: true },
     measurement: { type: String, required: true },
     isAlwaysAvailable: { type: Boolean, default: false },

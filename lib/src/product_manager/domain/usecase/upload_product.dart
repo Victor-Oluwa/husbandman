@@ -14,98 +14,93 @@ class UploadProduct
   ResultFuture<ProductEntity> call(UploadProductParams params) =>
       _productManagerRepo.uploadProduct(
         name: params.name,
-        video: params.video,
-        image: params.image,
         sellerName: params.sellerName,
         sellerEmail: params.sellerEmail,
-        available: params.available,
-        sold: params.sold,
-        quantity: params.quantity,
+        sellerId: params.sellerId,
+        video: params.video,
+        image: params.image,
+        isLive: params.isLive,
+        quantityAvailable: params.quantityAvailable,
         price: params.price,
-        deliveryTime: params.deliveryTime,
+        deliveryDate: params.deliveryDate,
         description: params.description,
         measurement: params.measurement,
-        alwaysAvailable: params.alwaysAvailable,
-        deliveryLocation: params.deliveryLocation,
-        rating: params.rating,
-        likes: params.likes,
-      );
+        isAlwaysAvailable: params.isAlwaysAvailable,
+        deliveryLocations: params.deliveryLocations,
+        category: params.category,);
+
 }
 
 class UploadProductParams extends Equatable {
+
   const UploadProductParams({
     required this.name,
-    required this.video,
-    required this.image,
     required this.sellerName,
     required this.sellerEmail,
-    required this.available,
-    required this.sold,
-    required this.quantity,
+    required this.sellerId,
+    required this.video,
+    required this.image,
+    required this.isLive,
+    required this.quantityAvailable,
     required this.price,
-    required this.deliveryTime,
+    required this.deliveryDate,
     required this.description,
     required this.measurement,
-    required this.alwaysAvailable,
-    required this.deliveryLocation,
-    required this.rating,
-    required this.likes,
+    required this.isAlwaysAvailable,
+    required this.deliveryLocations,
+    required this.category
   });
 
-  UploadProductParams.empty()
-      : this(
-          image: ['empty.images'],
-          deliveryLocation: ['empty.deliveryLocations'],
-          price: 0,
-          video: 'empty.video',
-          sold: 0,
-          quantity: 0,
-          deliveryTime: 'empty.deliveryTime',
-          description: 'empty.description',
-          name: 'empty.name',
-          sellerName: 'empty.name',
-          sellerEmail: 'empty.email',
-          rating: [],
-          measurement: 'measurement.empty',
-          likes: 4,
-          available: true,
-          alwaysAvailable: true,
-        );
+  static const empty = UploadProductParams(
+    isAlwaysAvailable: false,
+    image: [''],
+    deliveryLocations: [],
+    price: 0,
+    video: '',
+    quantityAvailable: 0,
+    deliveryDate: '',
+    description: '',
+    name: '',
+    sellerName: '',
+    sellerEmail: '',
+    measurement: '',
+    category: '',
+    sellerId: '', isLive: true,
+  );
 
   final String name;
   final String video;
   final List<String> image;
   final String sellerName;
   final String sellerEmail;
-  final bool available;
-  final int sold;
-  final int quantity;
+  final String sellerId;
+  final bool isLive;
+  final int quantityAvailable;
   final double price;
-  final String deliveryTime;
+  final String deliveryDate;
   final String description;
   final String measurement;
-  final bool alwaysAvailable;
-  final List<String> deliveryLocation;
-  final List<int> rating;
-  final int likes;
+  final bool isAlwaysAvailable;
+  final List<String> deliveryLocations;
+  final String category;
 
   @override
-  List<Object?> get props => [
+  List<Object?> get props =>
+      [
         name,
         image,
         sellerEmail,
+        sellerId,
         description,
         price,
         video,
         sellerName,
-        available,
-        sold,
-        quantity,
-        deliveryTime,
+        isLive,
+        quantityAvailable,
+        deliveryDate,
         measurement,
-        alwaysAvailable,
-        deliveryLocation,
-        rating,
-        likes,
+        isAlwaysAvailable,
+        deliveryLocations,
+        category,
       ];
 }

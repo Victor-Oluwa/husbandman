@@ -9,6 +9,7 @@ import 'package:husbandman/core/common/app/provider/state_notifier_providers/gen
 import 'package:husbandman/core/common/app/provider/state_notifier_providers/user_provider.dart';
 import 'package:husbandman/core/common/widgets/bread_text_field.dart';
 import 'package:husbandman/core/common/widgets/hbm_text_widget.dart';
+import 'package:husbandman/core/common/widgets/snack_bar.dart';
 import 'package:husbandman/core/enums/set_product_type.dart';
 import 'package:husbandman/core/extensions/context_extension.dart';
 import 'package:husbandman/core/res/color.dart';
@@ -24,7 +25,7 @@ import 'package:husbandman/src/product_manager/presentation/bloc/product_manager
 
 final currentCategoryProvider = StateProvider<String>((_) => 'General');
 final categoryColorProvider =
-    StateProvider<Color>((_) => HBMColors.charcoalGrey);
+StateProvider<Color>((_) => HBMColors.charcoalGrey);
 
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
@@ -76,7 +77,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
 
   void _updateCurrentCategoryProvider(String category) {
     setState(() {
-      ref.read(currentCategoryProvider.notifier).state = category;
+      ref
+          .read(currentCategoryProvider.notifier)
+          .state = category;
     });
   }
 
@@ -99,7 +102,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
 
   Future<void> fetchProductsByCategory(String category) async {
     final fetchedProduct =
-        ref.read(generalProductProvider).map((product) => product.id).toList();
+    ref.read(generalProductProvider).map((product) => product.id).toList();
     if (category == options[0]) {
       productManagerBloc
           .add(FetchProductsEvent(limit: 8, fetched: fetchedProduct));
@@ -155,7 +158,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
             Navigator.pushNamedAndRemoveUntil(
               context,
               RouteNames.signInScreen,
-              (Route<dynamic> route) => false,
+                  (Route<dynamic> route) => false,
             );
           }
         },
@@ -188,27 +191,30 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                   if (state is FetchedProduct) {
                     log('product fetched from home');
                     final products =
-                        state.products.map((e) => e as ProductModel).toList();
+                    state.products.map((e) => e as ProductModel).toList();
                     context.read<ProductManagerBloc>().add(
-                          SetGeneralProductEvent(
-                            setProductType: SetProductType.insertNew,
-                            productObject: products,
-                          ),
-                        );
+                      SetGeneralProductEvent(
+                        setProductType: SetProductType.insertNew,
+                        productObject: products,
+                      ),
+                    );
                   }
                   if (state is FetchedProductByCategory) {
                     final products =
-                        state.products.map((e) => e as ProductModel).toList();
+                    state.products.map((e) => e as ProductModel).toList();
                     context.read<ProductManagerBloc>().add(
-                          SetGeneralProductEvent(
-                            setProductType: SetProductType.insertNew,
-                            productObject: products,
-                          ),
-                        );
+                      SetGeneralProductEvent(
+                        setProductType: SetProductType.insertNew,
+                        productObject: products,
+                      ),
+                    );
                   }
-                  if (state is AddProductToCartEvent) {
+
+                  if (state is ProductAddedToCart) {
                     log('Product added to cart');
+                    HBMSnackBar.show(context: context, content: 'Item added to cart');
                   }
+
                   if (state is ProductManagerError) {
                     log('An error occurred: ${state.message}');
                   }
@@ -231,18 +237,18 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                               onMenuButtonPressed: _handleMenuButtonPressed,
                               fetchProductsByCategory: fetchProductsByCategory,
                               updateCurrentCategoryProvider:
-                                  _updateCurrentCategoryProvider,
+                              _updateCurrentCategoryProvider,
                               invalidateProductsProvider:
-                                  _invalidateProductProvider,
+                              _invalidateProductProvider,
                               invalidateCurrentCategoryProvider:
-                                  _invalidateCurrentCategoryProvider,
+                              _invalidateCurrentCategoryProvider,
                             ),
                             Expanded(
                               child: ProductGrid(
                                 ref: ref,
                                 products: products,
                                 productGridScrollController:
-                                    _productGridScrollController,
+                                _productGridScrollController,
                               ),
                             ),
                           ],
@@ -303,78 +309,18 @@ class SideMenu extends StatefulWidget {
 
 class _SideMenuState extends State<SideMenu> {
   final ScrollController controller = ScrollController();
-  Timer? scrollTimer;
-  Timer? userInteractionTimer;
-  bool isUserInteracting = false; // To track if the user is interacting
-  bool scrollForward = true; // To track the scrolling direction
 
   String selected = '';
 
   @override
   void initState() {
     super.initState();
-    _startScrollCycle();
   }
 
   @override
   void dispose() {
-    scrollTimer?.cancel();
-    userInteractionTimer?.cancel();
     controller.dispose();
     super.dispose();
-  }
-
-  void _startScrollCycle() {
-    scrollTimer = Timer.periodic(const Duration(seconds: 5), (timer) {
-      if (!isUserInteracting) {
-        _autoScroll();
-      }
-    });
-  }
-
-  void _onUserInteraction() {
-    if (!isUserInteracting) {
-      setState(() {
-        isUserInteracting = true;
-      });
-      scrollTimer?.cancel(); // Stop auto-scrolling when the user interacts
-
-      userInteractionTimer?.cancel(); // Reset the inactivity timer
-      userInteractionTimer = Timer(const Duration(seconds: 3), () {
-        setState(() {
-          isUserInteracting = false;
-        });
-        _startScrollCycle();
-      });
-    }
-  }
-
-  void _autoScroll() {
-    final maxScroll = controller.position.maxScrollExtent;
-    final minScroll = controller.position.minScrollExtent;
-    const scrollAmount = 100.0;
-
-    if (scrollForward) {
-      controller
-          .animateTo(
-        (controller.offset + scrollAmount).clamp(minScroll, maxScroll),
-        duration: const Duration(seconds: 1),
-        curve: Curves.linear,
-      )
-          .then((_) {
-        scrollForward = false;
-      });
-    } else {
-      controller
-          .animateTo(
-        (controller.offset - scrollAmount).clamp(minScroll, maxScroll),
-        duration: const Duration(seconds: 1),
-        curve: Curves.linear,
-      )
-          .then((_) {
-        scrollForward = true;
-      });
-    }
   }
 
   @override
@@ -393,48 +339,39 @@ class _SideMenuState extends State<SideMenu> {
           ),
           SizedBox(height: context.height * 0.11),
           Expanded(
-            child: NotificationListener<ScrollNotification>(
-              onNotification: (scrollNotification) {
-                if (scrollNotification is UserScrollNotification ||
-                    scrollNotification is ScrollUpdateNotification) {
-                  _onUserInteraction();
-                }
-                return false;
-              },
-              child: ListView.builder(
-                controller: controller,
-                padding: EdgeInsets.zero,
-                itemCount: widget.options.length,
-                itemBuilder: (context, index) {
-                  final category = widget.options[index];
-                  final categoryColor = selected == category
-                      ? HBMColors.blue // Selected category color
-                      : HBMColors.charcoalGrey; // Default category color
-                  return Padding(
-                    padding: EdgeInsets.only(bottom: context.height * 0.01),
-                    child: Align(
-                      child: IconButton(
-                        onPressed: () {
-                          final isCurrentCategory =
-                              widget.checkCurrentCategory(category);
-                          if (!isCurrentCategory) {
-                            setState(() {
-                              selected = category;
-                            });
-                            widget.invalidateProductsProvider();
-                            widget.updateCurrentCategoryProvider(category);
-                            widget.fetchProductsByCategory(category);
-                          }
-                        },
-                        icon: VerticalText(
-                          text: category,
-                          color: categoryColor,
-                        ),
+            child: ListView.builder(
+              controller: controller,
+              padding: EdgeInsets.zero,
+              itemCount: widget.options.length,
+              itemBuilder: (context, index) {
+                final category = widget.options[index];
+                final categoryColor = selected == category
+                    ? HBMColors.blue // Selected category color
+                    : HBMColors.charcoalGrey; // Default category color
+                return Padding(
+                  padding: EdgeInsets.only(bottom: context.height * 0.01),
+                  child: Align(
+                    child: IconButton(
+                      onPressed: () {
+                        final isCurrentCategory =
+                        widget.checkCurrentCategory(category);
+                        if (!isCurrentCategory) {
+                          setState(() {
+                            selected = category;
+                          });
+                          widget.invalidateProductsProvider();
+                          widget.updateCurrentCategoryProvider(category);
+                          widget.fetchProductsByCategory(category);
+                        }
+                      },
+                      icon: VerticalText(
+                        text: category,
+                        color: categoryColor,
                       ),
                     ),
-                  );
-                },
-              ),
+                  ),
+                );
+              },
             ),
           ),
         ],
@@ -502,14 +439,16 @@ class ProductCard extends StatelessWidget {
     required WidgetRef ref,
     required BuildContext context,
   }) {
-    final userId = ref.read(userProvider).id;
+    final userId = ref
+        .read(userProvider)
+        .id;
     context.read<ProductManagerBloc>().add(
-          AddProductToCartEvent(
-            productId: product.id,
-            quantity: product.quantityAvailable,
-            cartOwnerId: userId,
-          ),
-        );
+      AddProductToCartEvent(
+        productId: product.id,
+        quantity: 1,
+        cartOwnerId: userId,
+      ),
+    );
   }
 
   @override

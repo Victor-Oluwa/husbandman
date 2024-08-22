@@ -8,16 +8,19 @@ const ordersItemsSchema = new mongoose.Schema({
     itemImage: { type: String, required: true },
     itemPrice: { type: Number, required: true },
     isItemDelivered: { type: Boolean, required: true },
-    itemDeliveryDate: { type: Date, required: true },
+    itemDescription: { type: String, default: '' },
+    itemDeliveryDate: { type: String, required: true },
     deductible: { type: Number, required: true },
     itemQuantity: { type: Number, required: true },
     buyerId: { type: String, required: true },
     sellerId: { type: String, required: true },
+    sellerName: { type: String, required: true },
 });
 
 const allOrdersSchema = new mongoose.Schema({
     grossTotal: { type: Number, required: true },
     orderName: { type: String, required: true },
+    totalPercentage: { type: Number, required: true },
     orderItems: [ordersItemsSchema],
 });
 
@@ -25,7 +28,7 @@ const allOrdersSchema = new mongoose.Schema({
 const orderSchema = new mongoose.Schema({
     ownerId: { type: String, required: true },
     grandTotal: { type: Number, required: true },
-    orders: [allOrdersSchema]
+    orders: [allOrdersSchema],
 });
 
 const Order = mongoose.model('Order', orderSchema);

@@ -1,4 +1,4 @@
-const kBaseUrl = 'http://192.168.72.1:3000';
+const kBaseUrl = 'http://192.168.255.1:3000';
 const kCloudinaryApiKey = '986773188828922';
 const kCloudinaryApiSecret = 'jNkAnxCCWLdadVMvsKCxf61jKRU';
 const kCloudinaryUploadPreset = 'cvyzrljr';
@@ -72,3 +72,39 @@ RegExp emailValidatorJargon = RegExp(
 // Humanity may evolve to have claws instead of the shape of our present
 // hands for holding a smartphone. The human
 // neck may be bent to more conveniently look down at our personal computers.
+
+// There is one book/audio book I've read about addiction. How they form, why you do what you do, and how to stop it. It helped me a lot.
+// Dopamine Nation: Finding Balance in the Age of Indulgence - Dr. Anna Lembke
+
+//Faith is when you act
+//You fetch the promise of God by confessing them
+
+//Scripture for Job and Direction
+
+//Academic success
+
+// John 14:14
+
+//Supply our needs according to his riches in glory
+// Every good thing come from God
+// I have understanding than all my teacher because I meditate on your word
+// Psalm 141: 3
+
+/*
+* Ask it complex and abstract question
+* Read 1984
+* Novus Ordo Seclorum
+* Yhwh
+* Behold nail behold hand
+* Yah
+* Hebrew/Greek
+* Yahuah
+**/
+
+/*
+* Wash all the plates on Monday*/
+
+
+// Pr@gemonawest.com1
+
+

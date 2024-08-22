@@ -42,6 +42,8 @@ abstract class AuthRepo {
   ResultFuture<void> signOut();
 
   ResultFuture<DataMap> updateUser({
+    required String userId,
+    required String userType,
     required dynamic newData,
     required UpdateUserCulprit culprit,
   });

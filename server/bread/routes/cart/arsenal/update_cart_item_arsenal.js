@@ -13,11 +13,31 @@ async function findCart(ownerId) {
 }
 
 async function updateCartQuantity(itemId, cart, quantity) {
-    let cartItem = cart.items.find(item => item._id.toString() === itemId);
+    if (!itemId || !cart || !quantity) {
+        throw new Error('Some passed arguments are undefined (itemId || cart || quantity)');
+    }
+    if (!cart.items) {
+        throw new Error('cart.items is undefined');
+    }
+
+    let cartItem = cart.items.find(item => {
+        if (!item._id) {
+            throw new Error('item._id is undefined');
+        }
+
+        return item._id.toString() === itemId;
+    });
+
     if (cartItem === -1) {
         throw new Error(error.FAILED_TO_FIND_CART_ITEM);
     }
-    cartItem.quantity = quantity;
+    if (!cartItem.productQuantity) {
+        throw new Error('cartItem.quantity is undefined');
+    }
+    cartItem.productQuantity = quantity;
+
+    console.log('CartItem: ' + cartItem)
+
 
     return cart;
 }

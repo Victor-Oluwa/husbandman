@@ -15,7 +15,8 @@ updateItemRouter.post(endpoints.UPDATE_ITEM_QUANTITY, async (req, res) => {
         res.status(200).json(cart);
 
     } catch (e) {
-        arsenal.reportError(e, res);
+        console.log(e);
+        res.status(500).json(e.message);
     }
 
 });

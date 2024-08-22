@@ -157,7 +157,7 @@ class SetGeneralProductEvent extends ProductManagerEvent {
 }
 
 class GetImgUrlFromSupaBaseEvent extends ProductManagerEvent {
- const GetImgUrlFromSupaBaseEvent({
+  const GetImgUrlFromSupaBaseEvent({
     required this.filePaths,
     required this.folderPath,
   });
@@ -165,8 +165,8 @@ class GetImgUrlFromSupaBaseEvent extends ProductManagerEvent {
   final List<String> filePaths;
   final String folderPath;
 
- @override
- List<dynamic> get props => [folderPath, filePaths];
+  @override
+  List<dynamic> get props => [folderPath, filePaths];
 }
 
 class UpdateProductEvent extends ProductManagerEvent {
@@ -185,39 +185,54 @@ class UpdateProductEvent extends ProductManagerEvent {
 class UploadProductEvent extends ProductManagerEvent {
   const UploadProductEvent({
     required this.name,
-    required this.video,
-    required this.image,
     required this.sellerName,
     required this.sellerEmail,
-    required this.available,
-    required this.sold,
-    required this.quantity,
+    required this.sellerId,
+    required this.video,
+    required this.image,
+    required this.isLive,
+    required this.quantityAvailable,
     required this.price,
-    required this.deliveryTime,
+    required this.deliveryDate,
     required this.description,
     required this.measurement,
-    required this.alwaysAvailable,
-    required this.deliveryLocation,
-    required this.rating,
-    required this.likes,
+    required this.isAlwaysAvailable,
+    required this.deliveryLocations,
+    required this.category,
   });
+
+  const UploadProductEvent.empty()
+      : name = '',
+        sellerName = '',
+        sellerEmail = '',
+        sellerId = '',
+        video = '',
+        image = const [],
+        isLive = false,
+        quantityAvailable = 0,
+        price = 0.0,
+        deliveryDate = '',
+        description = '',
+        measurement = '',
+        isAlwaysAvailable = false,
+        deliveryLocations = const [],
+        category = '';
 
   final String name;
   final String video;
   final List<String> image;
   final String sellerName;
+  final String sellerId;
   final String sellerEmail;
-  final bool available;
-  final int sold;
-  final int quantity;
+  final bool isLive;
+  final int quantityAvailable;
   final double price;
-  final String deliveryTime;
+  final String deliveryDate;
   final String description;
   final String measurement;
-  final bool alwaysAvailable;
-  final List<String> deliveryLocation;
-  final List<int> rating;
-  final int likes;
+  final bool isAlwaysAvailable;
+  final List<String> deliveryLocations;
+  final String category;
 
   @override
   List<Object> get props => [
@@ -226,16 +241,15 @@ class UploadProductEvent extends ProductManagerEvent {
         image,
         sellerName,
         sellerEmail,
-        available,
-        sold,
-        quantity,
+        sellerId,
+        isLive,
+        quantityAvailable,
         price,
-        deliveryTime,
+        deliveryDate,
         description,
         measurement,
-        alwaysAvailable,
-        deliveryLocation,
-        rating,
-        likes,
+        isAlwaysAvailable,
+        deliveryLocations,
+        category,
       ];
 }

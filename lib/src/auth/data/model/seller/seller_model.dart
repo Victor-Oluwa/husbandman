@@ -20,12 +20,12 @@ class SellerModel extends SellerEntity {
     required super.phone,
     required super.dateJoined,
     required super.balance,
-    required super.pendingFunds,
-    required super.totalWithdrawal,
-    required super.orderHistoryId,
-    required super.withdrawHistoryId,
-    required super.fundingHistoryIds,
-    required super.about,
+     super.pendingFunds,
+     super.totalWithdrawal,
+     super.orderHistoryId,
+     super.withdrawHistoryId,
+     super.fundingHistoryIds,
+     super.about,
     required super.token,
     required super.profilePicture,
     required super.lastSeen,
@@ -99,7 +99,7 @@ class OrderedModel extends OrderedEntity {
   const OrderedModel({
     required super.totalEarning,
     required super.totalDeductible,
-    required super.orderedItems,
+    required List<OrderedItemModel> super.orderedItems,
     super.id,
   });
 
@@ -118,7 +118,7 @@ class OrderedModel extends OrderedEntity {
   @override
   List<Object?> get props => [id, totalEarning, totalDeductible, orderedItems];
 }
-
+// Found Bug: Deductible
 @JsonSerializable()
 class OrderedItemModel extends OrderedItemEntity {
   const OrderedItemModel({

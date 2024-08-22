@@ -205,17 +205,16 @@ class AuthDataSourceImpl implements AuthDataSource {
         );
       }
       final responseMap = jsonDecode(response.body) as DataMap;
-      log('Farmer sign up response ${responseMap}');
+      log('Farmer sign up response $responseMap');
 
       final sellerModel = SellerModel.fromJson(responseMap);
 
       return sellerModel;
+    } on AuthException catch (_) {
+      rethrow;
+    } catch (e) {
+      throw AuthException(message: e.toString(), statusCode: 500);
     }
-on AuthException catch (_) {
-  rethrow;
-} catch (e) {
-  throw AuthException(message: e.toString(), statusCode: 500);
-}
   }
 
   @override
@@ -259,8 +258,6 @@ on AuthException catch (_) {
 
   @override
   Future<DataMap> setUser({required DataMap user}) async {
-    log('User map from datasource: $user');
-
     try {
       return _ref.read(userProvider.notifier).updateUserFromMap(map: user);
     } on AuthException catch (_) {
@@ -309,6 +306,8 @@ on AuthException catch (_) {
 
   @override
   Future<DataMap> updateUser({
+    required String userId,
+    required String userType,
     required dynamic newData,
     required UpdateUserCulprit culprit,
   }) async {
@@ -321,6 +320,8 @@ on AuthException catch (_) {
           },
         ),
         data: jsonEncode({
+          'userId': userId,
+          'userType': userType,
           'newData': newData,
           'culprit': culprit.name,
         }),
@@ -340,20 +341,31 @@ on AuthException catch (_) {
         );
       }
       return result;
+    } on DioException catch (e) {
+      final response = e.response;
+      if (response != null) {
+        throw AuthException(
+          message: response.data.toString(),
+          statusCode: 500,
+        );
+      } else {
+        throw AuthException(
+          message: e.message ?? '',
+          statusCode: 500,
+        );
+      }
     } on AuthException catch (_) {
       log('Update user error');
       rethrow;
     } catch (e) {
       log('Update user error');
       throw AuthException(message: e.toString(), statusCode: 400);
-    } finally {}
+    }
   }
 
   @override
   Future<DataMap> validateUser({required String token}) async {
     try {
-      log('Passed token: $token');
-
       final response = await Dio()
           .post<DataMap>(
             '$kBaseUrl$kValidateUserEndpoint',
@@ -368,7 +380,7 @@ on AuthException catch (_) {
             ),
           )
           .timeout(const Duration(seconds: 30));
-      log('Response: ${response.data}');
+      log('Response from datasource: ${response.data}');
       if (response.statusCode != 200 && response.statusCode != 201) {
         throw AuthException(
           message: response.data.toString(),
@@ -428,10 +440,8 @@ on AuthException catch (_) {
       }
       return jsonDecode(response.body) as String;
     } on AuthException catch (_) {
-      log('Validate Farmer Invitation Key');
       rethrow;
     } catch (e) {
-      log('Validate Farmer Invitation Key');
       throw AuthException(message: e.toString(), statusCode: 400);
     } finally {}
   }

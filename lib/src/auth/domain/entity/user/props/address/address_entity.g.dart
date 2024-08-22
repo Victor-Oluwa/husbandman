@@ -8,12 +8,12 @@ part of 'address_entity.dart';
 
 AddressEntity _$AddressEntityFromJson(Map<String, dynamic> json) =>
     AddressEntity(
-      id: json['_id'] as String,
       fullAddress: json['fullAddress'] as String,
       city: json['city'] as String,
       state: json['state'] as String,
       country: json['country'] as String,
       zipCode: json['zipCode'] as String,
+      id: json['_id'] as String? ?? '',
     );
 
 Map<String, dynamic> _$AddressEntityToJson(AddressEntity instance) =>

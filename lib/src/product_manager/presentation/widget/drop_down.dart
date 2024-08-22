@@ -11,7 +11,7 @@ import 'package:husbandman/core/res/fonts.dart';
 /// the selected product category. It is styled with specific colors and fonts
 /// defined in the application resources.
 
-class HBMDropDown extends StatefulWidget {
+class HBMDropDown extends StatelessWidget {
   /// Creates a [HBMDropDown] widget.
   ///
   /// The [items] parameter must not be null and provides the list of dropdown items.
@@ -19,7 +19,8 @@ class HBMDropDown extends StatefulWidget {
 
   const HBMDropDown({
     required this.items,
-    required this.ref,
+    required this.onChanged,
+    required this.value,
     super.key,
   });
 
@@ -27,13 +28,10 @@ class HBMDropDown extends StatefulWidget {
   final List<String> items;
 
   /// The reference to the Riverpod provider for managing state.
-  final WidgetRef ref;
 
-  @override
-  State<HBMDropDown> createState() => _HBMDropDownState();
-}
+  final void Function(String?)? onChanged;
+  final String value;
 
-class _HBMDropDownState extends State<HBMDropDown> {
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -50,11 +48,7 @@ class _HBMDropDownState extends State<HBMDropDown> {
             BorderRadius.circular(15), // Optional: Add rounded corners
       ),
       child: DropdownButton<String>(
-        value: widget.ref
-            .read(
-              selectedProductCategoryProvider.notifier,
-            )
-            .state,
+        value: value,
         // Get the current selected item from the provider
         icon: Icon(
           Icons.keyboard_arrow_down_rounded,
@@ -71,17 +65,8 @@ class _HBMDropDownState extends State<HBMDropDown> {
         // Set the dropdown menu background color
         isDense: true,
         // Make the dropdown more compact
-        onChanged: (String? newValue) {
-          setState(() {
-            final defaultValueFromProvider =
-                widget.ref.read(selectedProductCategoryProvider.notifier).state;
-
-            widget.ref.read(selectedProductCategoryProvider.notifier).state =
-                newValue ??
-                    defaultValueFromProvider; // Update the selected item state
-          });
-        },
-        items: widget.items.map<DropdownMenuItem<String>>((String value) {
+        onChanged: onChanged,
+        items: items.map<DropdownMenuItem<String>>((String value) {
           return DropdownMenuItem<String>(
             value: value,
             child: HBMTextWidget(

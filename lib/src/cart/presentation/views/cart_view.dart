@@ -91,12 +91,7 @@ class _CartViewState extends ConsumerState<CartView> {
                   log('Delete item state response length: ${state.cart.items.length}');
                   _cartBloc.add(SetCartEvent(cartEntity: state.cart));
                 } else if (state is DeletedCart) {
-                  final order = OrderEntity.fromCart(
-                    ownerId: ref.read(userProvider).id,
-                    cartItems: cart.items,
-                    orderName: 'Dorimo',
-                  );
-                  _orderBloc.add(CreateOrderEvent(order));
+                  log('Cart deleted');
                 } else if (state is CartSet) {
                   log('Cart set successfully');
                 } else if (state is CartError) {
@@ -312,63 +307,6 @@ class CartItemWidget extends StatelessWidget {
   }
 }
 
-void showQuantityPickerDialog({
-  required BuildContext context,
-  required WidgetRef ref,
-  required String cartItemId,
-}) {
-  showDialog<AlertDialog>(
-    context: context,
-    builder: (_) {
-      final owner = ref.watch(userProvider);
-      return Align(
-        alignment: Alignment.topCenter,
-        child: Padding(
-          padding: EdgeInsets.only(
-            top: context.height * 0.23,
-            bottom: context.height * 0.27,
-          ),
-          child: AlertDialog(
-            title: Center(
-              child: HBMTextWidget(
-                data: 'Pick quantity',
-                fontSize: context.width * 0.05,
-              ),
-            ),
-            content: const QuantityPicker(),
-            backgroundColor: HBMColors.coolGrey,
-            actionsAlignment: MainAxisAlignment.spaceBetween,
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.of(context).pop(),
-                child: const HBMTextWidget(data: 'Cancel'),
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  context.read<CartBloc>().add(
-                        UpdateItemQuantityEvent(
-                          quantity: ref.watch(quantityProvider),
-                          ownerId: owner.id,
-                          itemId: cartItemId,
-                        ),
-                      );
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: HBMColors.mediumGrey,
-                ),
-                child: HBMTextWidget(
-                  data: 'Save',
-                  color: HBMColors.coolGrey,
-                ),
-              ),
-            ],
-          ),
-        ),
-      );
-    },
-  );
-}
-
 class QuantityPicker extends ConsumerStatefulWidget {
   const QuantityPicker({super.key});
 
@@ -431,6 +369,64 @@ class _QuantityPickerState extends ConsumerState<QuantityPicker> {
       ),
     );
   }
+}
+
+void showQuantityPickerDialog({
+  required BuildContext context,
+  required WidgetRef ref,
+  required String cartItemId,
+}) {
+  showDialog<AlertDialog>(
+    context: context,
+    builder: (_) {
+      final owner = ref.watch(userProvider);
+      return Align(
+        alignment: Alignment.topCenter,
+        child: Padding(
+          padding: EdgeInsets.only(
+            top: context.height * 0.23,
+            bottom: context.height * 0.27,
+          ),
+          child: AlertDialog(
+            title: Center(
+              child: HBMTextWidget(
+                data: 'Pick quantity',
+                fontSize: context.width * 0.05,
+              ),
+            ),
+            content: const QuantityPicker(),
+            backgroundColor: HBMColors.coolGrey,
+            actionsAlignment: MainAxisAlignment.spaceBetween,
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: const HBMTextWidget(data: 'Cancel'),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  log('Passed quantity: ${ref.watch(quantityProvider)}');
+                  context.read<CartBloc>().add(
+                        UpdateItemQuantityEvent(
+                          quantity: ref.watch(quantityProvider),
+                          ownerId: owner.id,
+                          itemId: cartItemId,
+                        ),
+                      );
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: HBMColors.mediumGrey,
+                ),
+                child: HBMTextWidget(
+                  data: 'Save',
+                  color: HBMColors.coolGrey,
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    },
+  );
 }
 
 class OrderSummaryWidget extends StatelessWidget {

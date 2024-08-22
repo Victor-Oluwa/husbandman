@@ -28,28 +28,29 @@ import 'package:husbandman/src/product_manager/domain/usecase/update_product.dar
 import 'package:husbandman/src/product_manager/domain/usecase/upload_product.dart';
 
 part 'product_manager_event.dart';
+
 part 'product_manager_state.dart';
 
 class ProductManagerBloc
     extends Bloc<ProductManagerEvent, ProductManagerState> {
-  ProductManagerBloc(
-      {required CompressProductImage compressProductImage,
-      required DeleteProduct deleteProduct,
-      required FetchFarmerProduct fetchFarmerProduct,
-      required FetchProductsByCategory fetchProductsByCategory,
-      required FetchProducts fetchProducts,
-      required GetProductImageUrl getProductImageUrl,
-      required LikeProduct likeProduct,
-      required PickProductImage pickProductImage,
-      required RateProduct rateProduct,
-      required SearchProduct searchProduct,
-      required SetSellerProduct setSellerProduct,
-      required SetGeneralProducts setGeneralProducts,
-      required UpdateProduct updateProduct,
-      required UploadProduct uploadProduct,
-      required AddProductToCart addProductToCart,
-      required GetImgUrlFromSupaBase getImgUrlFromSupaBase,})
-      : _compressProductImage = compressProductImage,
+  ProductManagerBloc({
+    required CompressProductImage compressProductImage,
+    required DeleteProduct deleteProduct,
+    required FetchFarmerProduct fetchFarmerProduct,
+    required FetchProductsByCategory fetchProductsByCategory,
+    required FetchProducts fetchProducts,
+    required GetProductImageUrl getProductImageUrl,
+    required LikeProduct likeProduct,
+    required PickProductImage pickProductImage,
+    required RateProduct rateProduct,
+    required SearchProduct searchProduct,
+    required SetSellerProduct setSellerProduct,
+    required SetGeneralProducts setGeneralProducts,
+    required UpdateProduct updateProduct,
+    required UploadProduct uploadProduct,
+    required AddProductToCart addProductToCart,
+    required GetImgUrlFromSupaBase getImgUrlFromSupaBase,
+  })  : _compressProductImage = compressProductImage,
         _deleteProduct = deleteProduct,
         _fetchFarmerProduct = fetchFarmerProduct,
         _fetchProductsByCategory = fetchProductsByCategory,
@@ -327,7 +328,9 @@ class ProductManagerBloc
   }
 
   Future<void> _addProductToCartHandler(
-      AddProductToCartEvent event, Emitter<ProductManagerState> emit,) async {
+    AddProductToCartEvent event,
+    Emitter<ProductManagerState> emit,
+  ) async {
     final result = await _addProductToCart(
       AddProductToCartParams(
         productId: event.productId,
@@ -371,19 +374,18 @@ class ProductManagerBloc
         name: event.name,
         video: event.video,
         image: event.image,
+        sellerId: event.sellerId,
         sellerName: event.sellerName,
         sellerEmail: event.sellerEmail,
-        available: event.available,
-        sold: event.sold,
-        quantity: event.quantity,
+        isLive: event.isLive,
+        quantityAvailable: event.quantityAvailable,
         price: event.price,
-        deliveryTime: event.deliveryTime,
+        deliveryDate: event.deliveryDate,
         description: event.description,
         measurement: event.measurement,
-        alwaysAvailable: event.alwaysAvailable,
-        deliveryLocation: event.deliveryLocation,
-        rating: event.rating,
-        likes: event.likes,
+        isAlwaysAvailable: event.isAlwaysAvailable,
+        deliveryLocations: event.deliveryLocations,
+        category: event.category,
       ),
     );
 

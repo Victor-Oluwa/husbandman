@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:husbandman/core/common/widgets/hbm_text_widget.dart';
 import 'package:husbandman/core/extensions/context_extension.dart';
 import 'package:husbandman/core/res/color.dart';
+import 'package:husbandman/core/services/route_names.dart';
 
 class ProfileView extends StatelessWidget {
   const ProfileView({super.key});
@@ -28,7 +29,9 @@ class ProfileView extends StatelessWidget {
                       content: _accountInformationCard(context),
                     ),
                     _buildSection(
-                      onTap: () {},
+                      onTap: () {
+                        Navigator.pushNamed(context, RouteNames.sellerProducts);
+                      },
                       context: context,
                       title: 'PRODUCTS',
                       actionText: 'Manage',

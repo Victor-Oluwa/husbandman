@@ -32,7 +32,7 @@ class PendingPaymentEntity extends Equatable {
 class PaymentEntity extends Equatable {
   const PaymentEntity({
     required this.sellerId,
-    required this.orderId,
+    required this.orderName,
     required this.productId,
     required this.sellerName,
     required this.timeStamp,
@@ -44,7 +44,7 @@ class PaymentEntity extends Equatable {
   factory PaymentEntity.fromJson(DataMap json) => _$PaymentEntityFromJson(json);
 
   const PaymentEntity.empty():this(
-    orderId: '',
+    orderName: '',
     productId: '',
     productName: '',
     productPrice: 0,
@@ -57,7 +57,7 @@ class PaymentEntity extends Equatable {
   @JsonKey(name: '_id')
   final String id;
   final String sellerId;
-  final String orderId;
+  final String orderName;
   final String productId;
   final String sellerName;
   final String timeStamp;
@@ -68,7 +68,7 @@ class PaymentEntity extends Equatable {
   List<Object?> get props => [
         id,
         sellerId,
-        orderId,
+        orderName,
         productId,
         productName,
         sellerName,

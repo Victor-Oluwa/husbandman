@@ -5,10 +5,10 @@ const customerSchema = require('./customer');
 
 const paymentSchema = new mongoose.Schema({
     sellerId: { type: String, required: true },
-    orderId: { type: String, required: true },
+    orderName: { type: String, required: true },
     productId: { type: String, required: true },
     sellerName: { type: String, required: true },
-    timeStamp: { type: String, required: true },
+    timeStamp: { type: Date, required: true },
     productName: { type: String, required: true },
     productPrice: { type: Number, required: true },
 })
@@ -28,16 +28,18 @@ const pendingOrderFundsSchema = new mongoose.Schema({
     funds: [fundSchema]
 });
 
+//ID for pnding order funds
+
 const orderedItemsSchema = new mongoose.Schema({
     buyerId: { type: String, required: true },
     buyerName: { type: String, required: true },
-    buyerImage: { type: String, required: true },
+    buyerImage: { type: String, default: '' },
     buyerEmail: { type: String, required: true },
     buyerAddress: { type: addressSchema, required: true },
     productName: { type: String, required: true },
     productImage: { type: String, required: true },
     productPrice: { type: String, required: true },
-    deductable: { type: String, required: true },
+    deductible: { type: String, required: true },
     productQuantity: { type: String, required: true },
     productDeliveryDate: { type: String, required: true },
     isItemDelivered: { type: Boolean, required: true }

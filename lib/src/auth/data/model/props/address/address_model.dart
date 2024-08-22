@@ -6,19 +6,18 @@ part 'address_model.g.dart';
 @JsonSerializable()
 class AddressModel extends AddressEntity {
   const AddressModel({
-    required super.id,
     required super.fullAddress,
     required super.city,
     required super.state,
     required super.country,
     required super.zipCode,
+    super.id,
   });
 
   factory AddressModel.fromJson(Map<String, dynamic> json) =>
       _$AddressModelFromJson(json);
 
   static const empty = AddressModel(
-    id: '',
     fullAddress: '',
     city: '',
     state: '',

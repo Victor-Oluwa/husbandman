@@ -44,6 +44,8 @@ abstract class AuthDataSource {
   Future<void> signOut();
 
   Future<DataMap> updateUser({
+    required String userId,
+    required String userType,
     required dynamic newData,
     required UpdateUserCulprit culprit,
   });

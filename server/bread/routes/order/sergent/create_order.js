@@ -4,6 +4,7 @@ const Order = require('../../../model/order');
 const Seller = require('../../../model/seller');
 const Buyer = require('../../../model/buyer');
 const mongoose = require('mongoose');
+const Product = require('../../../model/product');
 
 const createOrderRoute = express.Router();
 
@@ -12,16 +13,18 @@ createOrderRoute.post(endpoints.CREATE_ORDER, async (req, res) => {
     session.startTransaction();
 
     try {
-        const order = req.body;
+        let order = req.body;
+
 
         const existingOrder = await getExistingOrder(order.ownerId, session);
         let newOrder = await placeOrder(existingOrder, order, session);
+        await updateProductQuantity(order, session)
 
-        let seller = await updateSellerOrderedItems(order, session);
-        seller = await updateSellerPendingOrderFunds(order, session);
+        await updateSellerOrderedItems(order, session);
+        await updateSellerPendingOrderFunds(order, session);
+        await updateBuyerPendingFunds(order, session);
 
-        await newOrder.save({ session });
-        await seller.save({ session });
+        //Delete user cart
 
         await session.commitTransaction();
         session.endSession();
@@ -41,23 +44,49 @@ async function getExistingOrder(ownerId, session) {
 }
 
 async function createOrder(order, session) {
+
+    order.orders.forEach(singleOrder => {
+        if (!singleOrder._id) singleOrder._id = new mongoose.Types.ObjectId();
+        singleOrder.orderItems.forEach(item => {
+            if (!item._id) item._id = new mongoose.Types.ObjectId();
+        });
+    });
+
     const newOrder = new Order({
         ownerId: order.ownerId,
         grandTotal: order.grandTotal,
         orders: order.orders,
     });
+
+    await newOrder.save({ session });
+
     return newOrder;
 }
 
+
 async function addNewOrder(existingOrder, order, session) {
+
+    order.orders.forEach(singleOrder => {
+        if (!singleOrder._id) singleOrder._id = new mongoose.Types.ObjectId();
+        singleOrder.orderItems.forEach(item => {
+            if (!item._id) item._id = new mongoose.Types.ObjectId();
+        });
+    });
+
     const newOrderData = {
         grossTotal: order.orders[0].grossTotal,
         orderName: order.orders[0].orderName,
+        totalPercentage: order.orders[0].totalPercentage,
         orderItems: order.orders[0].orderItems,
     };
+
     existingOrder.orders.push(newOrderData);
+
+    await existingOrder.save({ session });
+
     return existingOrder;
 }
+
 
 async function placeOrder(existingOrder, order, session) {
     if (existingOrder) {
@@ -70,57 +99,152 @@ async function placeOrder(existingOrder, order, session) {
 }
 
 async function updateSellerPendingOrderFunds(order, session) {
-    let orderItem = order.orders[0].orderItems[0];
-    const amountPending = orderItem.itemPrice - orderItem.deductible;
+    let orderItems = order.orders[0].orderItems;
+    for (const item of orderItems) {
 
-    let seller = await Seller.findById(orderItem.sellerId).session(session);
-    if (!seller) {
-        throw new Error('Failed to find seller by ID');
+        const amountPending = item.itemPrice - item.deductible;
+        let seller = await Seller.findById(item.sellerId).session(session);
+
+        let fund = {
+            buyerId: item.buyerId,
+            productId: item.itemId,
+            productName: item.itemName,
+            amountPending: amountPending,
+        }
+
+        if (!seller) {
+            throw new Error('Failed to find seller by ID');
+        }
+
+        seller.pendingOrderFunds.funds.push(fund);
+        await seller.save({ session });
+
+    };
+
+
+}
+
+async function updateProductQuantity(order, session) {
+
+    let orderItems = order.orders[0].orderItems;
+
+    for (const item of orderItems) {
+        let product = await Product.findById(item.itemId).session(session);
+
+        if (!product) {
+            throw new Error('Failed to find product by id while processing order');
+        }
+
+        let newQuantity = (product.quantityAvailable -= item.itemQuantity);
+
+        if (newQuantity < 1) {
+            product.isLive = false;
+        }
+
+        await product.save({ session });
     }
 
-    let fund = {
-        buyerId: orderItem.buyerId,
-        productId: orderItem.itemId,
-        productName: orderItem.itemName,
-        amountPending: amountPending,
+}
+
+async function updateBuyerPendingFunds(order, session) {
+    const orderItems = order.orders[0].orderItems;
+
+    let buyer = await Buyer.findById(orderItems[0].buyerId).session(session);
+
+    if (!buyer) {
+        buyer = await Seller.findById(orderItems[0].buyerId).session(session);
+
+        if (!buyer) {
+            throw new Error('Failed to find buyer by ID');
+
+        }
     }
 
-    seller.pendingOrderFunds.funds.push(fund);
-    return seller;
+
+    for (const item of orderItems) {
+
+        console.log('Seller Name: ' + item.sellerName);
+        console.log('Order Name: ' + order.orders[0].orderName)
+
+
+        let payment = {
+            sellerId: item.sellerId,
+            orderName: order.orders[0].orderName,
+            productId: item.itemId,
+            sellerName: item.sellerName,
+            timeStamp: new Date(),
+            productName: item.itemName,
+            productPrice: item.itemPrice,
+        }
+
+
+        buyer.pendingPayment.payments.push(payment);
+        await buyer.save({ session });
+
+    }
+
+    return buyer;
 }
 
 async function updateSellerOrderedItems(order, session) {
-    const orderItem = order.orders[0].orderItems[0];
 
-    let seller = await Seller.findById(orderItem.sellerId).session(session);
-    let buyer = await Buyer.findById(orderItem.buyerId).session(session);
+    const orderItems = order.orders[0].orderItems;
+    for (const item of orderItems) {
 
-    if (!seller) {
-        throw new Error('Failed to find seller by ID');
+        // Fetch the seller and buyer using their IDs
+        const seller = await Seller.findById(item.sellerId).session(session);
+        if (!seller) {
+            throw new Error(`Failed to find seller with ID: ${item.sellerId}`);
+        }
+
+        let buyer = await Buyer.findById(item.buyerId).session(session);
+        if (!buyer) {
+            buyer = await Seller.findById(item.buyerId).session(session);
+            if (!buyer) {
+                throw new Error(`Failed to find buyer with ID: ${item.buyerId}`);
+
+            }
+        }
+
+
+        let orderedItem = {
+            buyerId: item.buyerId,
+            buyerName: buyer.name,
+            buyerImage: buyer.image,
+            buyerEmail: buyer.email,
+            buyerAddress: buyer.address,
+            productName: item.itemName,
+            productImage: item.itemImage,
+            productPrice: item.itemPrice,
+            deductible: item.deductible,
+            productQuantity: item.itemQuantity,
+            productDeliveryDate: item.itemDeliveryDate,
+            isItemDelivered: item.isItemDelivered
+        }
+
+        const totalEarning = item.itemPrice - item.deductible;
+
+        // If seller's ordered data doesn't exist, initialize it
+        if (!seller.ordered.totalEarning) {
+            seller.ordered = {
+                totalEarning: totalEarning,
+                totalDeductible: item.deductible,
+                orderedItems: [orderedItem],
+            };
+
+        } else {
+            // Update existing ordered data
+            seller.ordered.totalEarning += totalEarning;
+            seller.ordered.totalDeductible += item.deductible;
+            seller.ordered.orderedItems.push(orderedItem);
+        }
+
+        // Save the updated seller document in the session
+        await seller.save({ session });
     }
 
-    if (!buyer) {
-        throw new Error('Failed to find buyer by ID');
-    }
+    //Check the ordered property of a newly created seller
 
-    let orderedItem = {
-        buyerId: orderItem.buyerId,
-        buyerName: buyer.name,
-        buyerImage: buyer.image,
-        buyerEmail: buyer.email,
-        buyerAddress: buyer.address,
-        productName: orderItem.itemName,
-        productImage: orderItem.itemImage,
-        productPrice: orderItem.itemPrice,
-        deductable: orderItem.deductible,
-        productQuantity: orderItem.itemQuantity,
-        productDeliveryDate: orderItem.itemDeliveryDate,
-        isItemDelivered: orderItem.isItemDelivered
-    }
-
-    seller.ordered.orderedItems.push(orderedItem);
-
-    return seller;
 }
 
 module.exports = createOrderRoute;

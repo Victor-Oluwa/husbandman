@@ -121,7 +121,7 @@ OrderedModel _$OrderedModelFromJson(Map<String, dynamic> json) => OrderedModel(
       totalEarning: (json['totalEarning'] as num).toDouble(),
       totalDeductible: (json['totalDeductible'] as num).toDouble(),
       orderedItems: (json['orderedItems'] as List<dynamic>)
-          .map((e) => OrderedItemEntity.fromJson(e as Map<String, dynamic>))
+          .map((e) => OrderedItemModel.fromJson(e as Map<String, dynamic>))
           .toList(),
       id: json['_id'] as String? ?? '',
     );

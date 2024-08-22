@@ -28,7 +28,7 @@ class PendingPaymentModel extends PendingPaymentEntity {
 class PaymentModel extends PaymentEntity {
   const PaymentModel({
     required super.sellerId,
-    required super.orderId,
+    required super.orderName,
     required super.productId,
     required super.sellerName,
     required super.timeStamp,
@@ -43,7 +43,7 @@ class PaymentModel extends PaymentEntity {
   List<Object?> get props => [
         id,
         sellerId,
-        orderId,
+        orderName,
         productId,
         productName,
         sellerName,

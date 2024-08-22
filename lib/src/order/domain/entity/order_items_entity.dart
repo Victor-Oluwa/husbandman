@@ -10,6 +10,7 @@ class OrderItemsEntity extends Equatable {
   const OrderItemsEntity({
     required this.buyerId,
     required this.sellerId,
+    required this.sellerName,
     required this.itemId,
     required this.itemName,
     required this.itemImage,
@@ -26,6 +27,7 @@ class OrderItemsEntity extends Equatable {
   factory OrderItemsEntity.fromCartItem(CartItemEntity cartItem) {
     return OrderItemsEntity(
       sellerId: cartItem.sellerId,
+      sellerName: cartItem.sellerName,
       buyerId: cartItem.buyerId,
       itemId: cartItem.productId,
       itemName: cartItem.productName,
@@ -45,7 +47,7 @@ class OrderItemsEntity extends Equatable {
   static const empty = OrderItemsEntity(
     buyerId: '',
     sellerId: '',
-    id: '',
+    sellerName: '',
     itemId: '',
     itemName: '',
     itemImage: '',
@@ -61,6 +63,7 @@ class OrderItemsEntity extends Equatable {
   final String id;
   final String buyerId;
   final String sellerId;
+  final String sellerName;
   final String itemId;
   final String itemName;
   final String itemImage;
@@ -79,6 +82,7 @@ class OrderItemsEntity extends Equatable {
     itemImage,
     buyerId,
     sellerId,
+    sellerName,
     itemDescription,
     itemPrice,
     isItemDelivered,

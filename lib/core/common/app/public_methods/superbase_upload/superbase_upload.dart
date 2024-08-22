@@ -18,7 +18,7 @@ class SuperBaseUpload {
         final fileName = basename(file.path);
         final fullPath = '$folderPath/$fileName';
 
-        final response = await superBaseInit.client.storage
+        await superBaseInit.client.storage
             .from(
                 'Product Images',)
             .upload(fullPath, file);

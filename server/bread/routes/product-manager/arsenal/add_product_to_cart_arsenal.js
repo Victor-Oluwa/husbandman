@@ -5,53 +5,54 @@ const Cart = require('../../../model/cart');
 const error = require('../../../error');
 const status = require('../../../status');
 
-async function addToCart(cart, newItem) {
-    console.log('Adding adding adding');
-    cart.items.push(newItem);
+async function createCart(newItem, ownerId) {
 
-    await cart.save();
-    console.log('Item added to existing cart.');
-    return cart;
-}
-
-async function createCart(ownerId, newItem) {
     const newCart = new Cart({
         ownerId: ownerId,
         items: [newItem],
     });
 
-    await newCart.save();
     console.log('New cart created and item added.');
     return newCart;
+
 }
 
-async function updateProductQuantity(product, quantity) {
-    product.quantity -= quantity;
+async function addCart(cart, newItem) {
+    cart.items.push(newItem);
+    console.log('Item added to existing cart.');
 
-    if (product.quantity < 1) {
-        product.available = false;
-    }
-    await product.save();
+    return cart;
+
 }
+
+
+// async function updateProductQuantity(product, quantity) {
+//     product.quantityAvailable -= quantity;
+
+//     if (product.quantityAvailable < 1) {
+//         product.isLive = false;
+//     }
+//     return product;
+// }
 
 async function checkIfProductExistInCart(product, cart) {
 
     const productExist = cart.items.find(item => item.productId === product._id.toString());
-
-    if (productExist) {
-        throw new Error(error.PRODUCT_ALREADY_IN_CART);
-    }
-    return cart;
+    return productExist;
 }
 
 async function checkIfProductIsAvailable(product, quantity) {
-    if (!product.available) {
-        throw new Error(error.PRODUCT_NOT_AVAILABLE);
+    if (!product) {
+        throw new Error('Failed to find product by id');
     }
 
-    if (product.quantity < quantity) {
+    console.log('Quantity' + quantity);
+    console.log('Available' + product.quantityAvailable);
+
+    if (product.quantityAvailable < quantity) {
         throw new Error(error.PRODUCT_OUT_OF_STOCK);
     }
+
 }
 
 async function findProductById(id) {
@@ -94,10 +95,9 @@ function reportError(e, res) {
 }
 
 module.exports = {
-    addToCart,
+    addCart,
     createCart,
     findProductById,
-    updateProductQuantity,
     checkIfProductExistInCart,
     checkIfProductIsAvailable,
     reportError

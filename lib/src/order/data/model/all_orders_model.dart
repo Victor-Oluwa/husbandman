@@ -8,12 +8,18 @@ part 'all_orders_model.g.dart';
 @JsonSerializable(explicitToJson: true)
 class AllOrdersModel extends AllOrdersEntity {
   const AllOrdersModel({
-     required super.grossTotal, required super.orderName, required List<OrderItemsModel> super.orderItems, required super.totalPercentage, super.id,
+    required super.grossTotal,
+    required super.orderName,
+    required List<OrderItemsModel> super.orderItems,
+    required super.totalPercentage,
+    super.id,
   });
 
-  factory AllOrdersModel.fromJson(DataMap json)=> _$AllOrdersModelFromJson(json);
+  factory AllOrdersModel.fromJson(DataMap json) =>
+      _$AllOrdersModelFromJson(json);
+
   @override
-  DataMap toJson()=> _$AllOrdersModelToJson(this);
+  DataMap toJson() => _$AllOrdersModelToJson(this);
 
   static const empty = AllOrdersModel(
     grossTotal: 0,

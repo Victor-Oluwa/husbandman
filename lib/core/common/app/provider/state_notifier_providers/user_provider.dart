@@ -1,4 +1,3 @@
-import 'dart:developer';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:husbandman/core/error/exceptions.dart';
@@ -26,7 +25,6 @@ class UserNotifier extends StateNotifier<UserEntity> {
 
   DataMap updateUserFromMap({required DataMap map}) {
     final userType = map['userType'];
-    log('User map from provider: $map');
     switch (userType) {
       case 'Buyer':
         state = BuyerEntity.fromJson(map);

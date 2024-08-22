@@ -66,21 +66,32 @@ class UploadButtonWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return TextButton(
+    return OutlinedButton(
       onPressed: () {
         // Validate the form and check if the category is selected correctly
         if (!formKey.currentState!.validate() ||
             ref.read(selectedProductCategoryProvider) == items[0]) {
           HBMSnackBar.show(
-              context: context,
-              content: 'Kindly attend to all fields correctly',);
+            context: context,
+            content: 'Kindly attend to all fields correctly',
+          );
           return;
         }
 
         // Check if an image has been picked
         if (ref.read(pickedProductImageProvider) == null) {
           HBMSnackBar.show(
-              context: context, content: 'You have not picked an image',);
+            context: context,
+            content: 'You have not picked an image',
+          );
+          return;
+        }
+
+        if(ref.read(selectedProductCategoryProvider).isEmpty){
+          HBMSnackBar.show(
+            context: context,
+            content: 'You have not selected a category',
+          );
           return;
         }
 
@@ -99,18 +110,28 @@ class UploadButtonWidget extends StatelessWidget {
               ),
             );
       },
-      style: TextButton.styleFrom(
-        fixedSize: Size(context.width * 0.90, context.height * 0.07),
+      style: OutlinedButton.styleFrom(
+        elevation: 5,
+        fixedSize: Size(context.width, context.height * 0.07),
         // Set button size
-        backgroundColor: HBMColors.mediumGrey,
+        // backgroundColor: HBMColors.mediumGrey,
         // Set background color
+        side: BorderSide(
+          color: HBMColors.mediumGrey,
+          width: 3,
+        ),
         shape: RoundedRectangleBorder(
-            borderRadius:
-                BorderRadius.circular(15),), // Set shape with rounded corners
+          borderRadius: BorderRadius.circular(15),
+          /*
+
+          * */
+        ), // Set shape with rounded corners
       ),
       child: HBMTextWidget(
-          data: 'Upload',
-          color: HBMColors.coolGrey,), // Set button text and color
+        data: 'Upload',
+        color: HBMColors.mediumGrey,
+        fontSize: context.width * 0.05,
+      ), // Set button text and color
     );
   }
 }
