@@ -1,4 +1,4 @@
-const kBaseUrl = 'http://192.168.255.1:3000';
+const kBaseUrl = 'http://192.168.182.1:3000';
 const kCloudinaryApiKey = '986773188828922';
 const kCloudinaryApiSecret = 'jNkAnxCCWLdadVMvsKCxf61jKRU';
 const kCloudinaryUploadPreset = 'cvyzrljr';
@@ -107,4 +107,10 @@ RegExp emailValidatorJargon = RegExp(
 
 // Pr@gemonawest.com1
 
-
+//Stars: Hydrogen and helium held by it's own gravity
+//Sun: One million times bigger that the earth
+// One of the biggest stars in the observasable universe: UY SCUTI
+//2.5 million light years
+// centralia pennsylvania
+// Deplomatic
+//Geo political

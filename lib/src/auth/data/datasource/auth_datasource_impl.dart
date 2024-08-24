@@ -183,17 +183,6 @@ class AuthDataSourceImpl implements AuthDataSource {
             'email': seller.email,
             'password': seller.password,
             'type': seller.userType,
-            'ordered': {
-              'totalEarning': seller.ordered.totalEarning,
-              'totalDeductible': seller.ordered.totalDeductible,
-              'orderedItems': <OrderedItemEntity>[],
-            },
-            'pendingOrderFunds': {
-              'funds': <FundEntity>[],
-            },
-            'pendingPayment': {
-              'payments': <PaymentEntity>[],
-            },
           },
         ),
       );

@@ -15,7 +15,7 @@ router.post(endpoints.FARMER_SIGNUP, async (req, res) => {
 
 
     try {
-        const { name, email, password, type, invitationKey, ordered, pendingOrderFunds, pendingPayment } = req.body;
+        const { name, email, password, type, invitationKey } = req.body;
 
         console.log('Passed Key: ' + invitationKey);
         await arsenal.checkIfUserAlreadyExist(email, type, session);
@@ -29,9 +29,8 @@ router.post(endpoints.FARMER_SIGNUP, async (req, res) => {
             name: name,
             email: email,
             password: hashedPassword,
-            ordered: ordered,
-            pendingOrderFunds: pendingOrderFunds,
-            pendingPayment: pendingPayment,
+            dataJoined: new Date(),
+            userType: type,
         });
 
         let token = await arsenal.createJWT(newSeller);

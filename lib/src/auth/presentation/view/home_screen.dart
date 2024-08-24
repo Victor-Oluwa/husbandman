@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
@@ -7,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:husbandman/core/common/app/provider/state_notifier_providers/general_product_provider.dart';
 import 'package:husbandman/core/common/app/provider/state_notifier_providers/user_provider.dart';
+import 'package:husbandman/core/common/app/public_methods/loading/loading_controller.dart';
 import 'package:husbandman/core/common/widgets/bread_text_field.dart';
 import 'package:husbandman/core/common/widgets/hbm_text_widget.dart';
 import 'package:husbandman/core/common/widgets/snack_bar.dart';
@@ -21,11 +21,12 @@ import 'package:husbandman/src/auth/domain/entity/home_category_content.dart';
 import 'package:husbandman/src/auth/presentation/bloc/auth_bloc.dart';
 import 'package:husbandman/src/auth/presentation/widgets/drawer.dart';
 import 'package:husbandman/src/product_manager/data/model/product_model.dart';
+import 'package:husbandman/src/product_manager/domain/entity/product_entity.dart';
 import 'package:husbandman/src/product_manager/presentation/bloc/product_manager_bloc.dart';
 
 final currentCategoryProvider = StateProvider<String>((_) => 'General');
 final categoryColorProvider =
-StateProvider<Color>((_) => HBMColors.charcoalGrey);
+    StateProvider<Color>((_) => HBMColors.charcoalGrey);
 
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
@@ -77,9 +78,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
 
   void _updateCurrentCategoryProvider(String category) {
     setState(() {
-      ref
-          .read(currentCategoryProvider.notifier)
-          .state = category;
+      ref.read(currentCategoryProvider.notifier).state = category;
     });
   }
 
@@ -101,8 +100,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
   }
 
   Future<void> fetchProductsByCategory(String category) async {
+    LoadingIndicatorController.instance.show();
     final fetchedProduct =
-    ref.read(generalProductProvider).map((product) => product.id).toList();
+        ref.read(generalProductProvider).map((product) => product.id).toList();
     if (category == options[0]) {
       productManagerBloc
           .add(FetchProductsEvent(limit: 8, fetched: fetchedProduct));
@@ -158,7 +158,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
             Navigator.pushNamedAndRemoveUntil(
               context,
               RouteNames.signInScreen,
-                  (Route<dynamic> route) => false,
+              (Route<dynamic> route) => false,
             );
           }
         },
@@ -188,20 +188,22 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
             pageBody: Scaffold(
               body: BlocConsumer<ProductManagerBloc, ProductManagerState>(
                 listener: (context, state) {
-                  if (state is FetchedProduct) {
-                    log('product fetched from home');
-                    final products =
-                    state.products.map((e) => e as ProductModel).toList();
-                    context.read<ProductManagerBloc>().add(
-                      SetGeneralProductEvent(
-                        setProductType: SetProductType.insertNew,
-                        productObject: products,
-                      ),
-                    );
-                  }
                   if (state is FetchedProductByCategory) {
+                    log('Category products fetched');
                     final products =
-                    state.products.map((e) => e as ProductModel).toList();
+                        state.products.map((e) => e).toList();
+                    context.read<ProductManagerBloc>().add(
+                          SetGeneralProductEvent(
+                            setProductType: SetProductType.insertNew,
+                            productObject: products,
+                          ),
+                        );
+                  }
+
+                  if(state is FetchedProduct){
+                    log('product fetched');
+                    final products =
+                    state.products.map((e) => e).toList();
                     context.read<ProductManagerBloc>().add(
                       SetGeneralProductEvent(
                         setProductType: SetProductType.insertNew,
@@ -210,13 +212,25 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                     );
                   }
 
+                  if(state is GeneralProductSet){
+                    LoadingIndicatorController.instance.hide();
+
+                  }
+
                   if (state is ProductAddedToCart) {
+                    LoadingIndicatorController.instance.hide();
                     log('Product added to cart');
-                    HBMSnackBar.show(context: context, content: 'Item added to cart');
+                    HBMSnackBar.show(
+                        context: context, content: 'Item added to cart');
                   }
 
                   if (state is ProductManagerError) {
                     log('An error occurred: ${state.message}');
+                    LoadingIndicatorController.instance.hide();
+                    HBMSnackBar.show(
+                      context: context,
+                      content: 'oops.. an error occurred',
+                    );
                   }
                 },
                 builder: (context, state) {
@@ -237,18 +251,18 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                               onMenuButtonPressed: _handleMenuButtonPressed,
                               fetchProductsByCategory: fetchProductsByCategory,
                               updateCurrentCategoryProvider:
-                              _updateCurrentCategoryProvider,
+                                  _updateCurrentCategoryProvider,
                               invalidateProductsProvider:
-                              _invalidateProductProvider,
+                                  _invalidateProductProvider,
                               invalidateCurrentCategoryProvider:
-                              _invalidateCurrentCategoryProvider,
+                                  _invalidateCurrentCategoryProvider,
                             ),
                             Expanded(
                               child: ProductGrid(
                                 ref: ref,
                                 products: products,
                                 productGridScrollController:
-                                _productGridScrollController,
+                                    _productGridScrollController,
                               ),
                             ),
                           ],
@@ -313,11 +327,6 @@ class _SideMenuState extends State<SideMenu> {
   String selected = '';
 
   @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
   void dispose() {
     controller.dispose();
     super.dispose();
@@ -354,7 +363,7 @@ class _SideMenuState extends State<SideMenu> {
                     child: IconButton(
                       onPressed: () {
                         final isCurrentCategory =
-                        widget.checkCurrentCategory(category);
+                            widget.checkCurrentCategory(category);
                         if (!isCurrentCategory) {
                           setState(() {
                             selected = category;
@@ -439,16 +448,14 @@ class ProductCard extends StatelessWidget {
     required WidgetRef ref,
     required BuildContext context,
   }) {
-    final userId = ref
-        .read(userProvider)
-        .id;
+    final userId = ref.read(userProvider).id;
     context.read<ProductManagerBloc>().add(
-      AddProductToCartEvent(
-        productId: product.id,
-        quantity: 1,
-        cartOwnerId: userId,
-      ),
-    );
+          AddProductToCartEvent(
+            productId: product.id,
+            quantity: 1,
+            cartOwnerId: userId,
+          ),
+        );
   }
 
   @override
@@ -509,7 +516,7 @@ class ProductCard extends StatelessWidget {
           child: IconButton(
             padding: EdgeInsets.zero,
             onPressed: () {
-              log('Called');
+              LoadingIndicatorController.instance.show();
               addProductToCart(
                 product: product,
                 ref: ref,

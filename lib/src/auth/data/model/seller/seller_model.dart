@@ -118,7 +118,7 @@ class OrderedModel extends OrderedEntity {
   @override
   List<Object?> get props => [id, totalEarning, totalDeductible, orderedItems];
 }
-// Found Bug: Deductible
+
 @JsonSerializable()
 class OrderedItemModel extends OrderedItemEntity {
   const OrderedItemModel({

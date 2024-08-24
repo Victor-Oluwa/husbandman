@@ -58,7 +58,7 @@ const sellerSchema = mongoose.Schema({
     password: { type: String, required: true },
     phone: [],
     address: { type: addressSchema },
-    dataJoined: { type: Date },
+    dataJoined: { type: Date, required: true },
     balance: { type: Number, default: 0 },
     pendingFunds: { type: Number, default: 0 },
     totalWithdrawal: { type: Number, default: 0 },
@@ -73,9 +73,9 @@ const sellerSchema = mongoose.Schema({
     bannerImage: { type: String, default: '' },
     cartId: { type: String, default: '' },
     orderId: { type: String, default: '' },
-    ordered: { type: orderedSchema, required: true },
-    pendingOrderFunds: { type: pendingOrderFundsSchema, required: true },
-    pendingPayment: { type: pendingPaymentSchema, required: true },
+    ordered: { type: orderedSchema },
+    pendingOrderFunds: { type: pendingOrderFundsSchema },
+    pendingPayment: { type: pendingPaymentSchema },
 })
 
 const Seller = mongoose.model('Seller', sellerSchema);

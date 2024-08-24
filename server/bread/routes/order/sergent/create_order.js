@@ -81,7 +81,6 @@ async function addNewOrder(existingOrder, order, session) {
     };
 
     existingOrder.orders.push(newOrderData);
-
     await existingOrder.save({ session });
 
     return existingOrder;
@@ -103,7 +102,11 @@ async function updateSellerPendingOrderFunds(order, session) {
     for (const item of orderItems) {
 
         const amountPending = item.itemPrice - item.deductible;
+
         let seller = await Seller.findById(item.sellerId).session(session);
+        if (!seller) {
+            throw new Error(`Failed to find seller with ID: ${item.sellerId}`);
+        }
 
         let fund = {
             buyerId: item.buyerId,
@@ -112,11 +115,17 @@ async function updateSellerPendingOrderFunds(order, session) {
             amountPending: amountPending,
         }
 
-        if (!seller) {
-            throw new Error('Failed to find seller by ID');
+        if (!seller.pendingOrderFunds) {
+            console.log('Creating new pending order funds');
+            seller.pendingOrderFunds = {
+                funds: [fund]
+            }
+        } else {
+            console.log('Updating pending order funds');
+            seller.pendingOrderFunds.funds.push(fund);
+
         }
 
-        seller.pendingOrderFunds.funds.push(fund);
         await seller.save({ session });
 
     };
@@ -125,7 +134,7 @@ async function updateSellerPendingOrderFunds(order, session) {
 }
 
 async function updateProductQuantity(order, session) {
-
+    console.log('Updating product quantity');
     let orderItems = order.orders[0].orderItems;
 
     for (const item of orderItems) {
@@ -135,11 +144,18 @@ async function updateProductQuantity(order, session) {
             throw new Error('Failed to find product by id while processing order');
         }
 
-        let newQuantity = (product.quantityAvailable -= item.itemQuantity);
+        const deductable = product.quantityAvailable -= item.itemQuantity;
 
-        if (newQuantity < 1) {
-            product.isLive = false;
+        if (deductable >= 1) {
+            let newQuantity = (product.quantityAvailable -= item.itemQuantity);
+
+            if (newQuantity < 1) {
+                product.isLive = false;
+            }
+        } else {
+
         }
+
 
         await product.save({ session });
     }
@@ -163,10 +179,6 @@ async function updateBuyerPendingFunds(order, session) {
 
     for (const item of orderItems) {
 
-        console.log('Seller Name: ' + item.sellerName);
-        console.log('Order Name: ' + order.orders[0].orderName)
-
-
         let payment = {
             sellerId: item.sellerId,
             orderName: order.orders[0].orderName,
@@ -177,20 +189,27 @@ async function updateBuyerPendingFunds(order, session) {
             productPrice: item.itemPrice,
         }
 
+        if (!buyer.pendingPayment) {
+            console.log('Creating new pending payment');
+            buyer.pendingPayment = {
+                payments: [payment]
+            }
+        } else {
+            console.log('Updating pending payment');
+            buyer.pendingPayment.payments.push(payment);
+        }
 
-        buyer.pendingPayment.payments.push(payment);
         await buyer.save({ session });
 
     }
 
-    return buyer;
 }
 
 async function updateSellerOrderedItems(order, session) {
 
     const orderItems = order.orders[0].orderItems;
-    for (const item of orderItems) {
 
+    for (const item of orderItems) {
         // Fetch the seller and buyer using their IDs
         const seller = await Seller.findById(item.sellerId).session(session);
         if (!seller) {
@@ -225,7 +244,8 @@ async function updateSellerOrderedItems(order, session) {
         const totalEarning = item.itemPrice - item.deductible;
 
         // If seller's ordered data doesn't exist, initialize it
-        if (!seller.ordered.totalEarning) {
+        if (!seller.ordered) {
+            console.log('Creating new ordered data');
             seller.ordered = {
                 totalEarning: totalEarning,
                 totalDeductible: item.deductible,
@@ -233,6 +253,8 @@ async function updateSellerOrderedItems(order, session) {
             };
 
         } else {
+            console.log('Update existing ordered data');
+
             // Update existing ordered data
             seller.ordered.totalEarning += totalEarning;
             seller.ordered.totalDeductible += item.deductible;
@@ -243,7 +265,6 @@ async function updateSellerOrderedItems(order, session) {
         await seller.save({ session });
     }
 
-    //Check the ordered property of a newly created seller
 
 }
 

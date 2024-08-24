@@ -7,6 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:husbandman/core/common/app/provider/state_notifier_providers/cart_provider.dart';
 import 'package:husbandman/core/common/app/provider/state_notifier_providers/user_provider.dart';
+import 'package:husbandman/core/common/app/public_methods/loading/loading_controller.dart';
 import 'package:husbandman/core/common/widgets/bread_text_field.dart';
 import 'package:husbandman/core/common/widgets/hbm_text_widget.dart';
 import 'package:husbandman/core/common/widgets/snack_bar.dart';
@@ -82,10 +83,12 @@ class _CheckOutViewState extends ConsumerState<CheckOutView> {
               listener: (context, state) {
                 if (state is OrderCreated) {
                   log('Order created');
-
-                  HBMSnackBar.show(context: context, content: 'Order placed');
+                  LoadingIndicatorController.instance.hide();
 
                   Navigator.pop(context);
+                  Future.delayed(const Duration(seconds: 1), () {
+                    HBMSnackBar.show(context: context, content: 'Order placed');
+                  });
                 }
 
                 if (state is OrderError) {
@@ -98,7 +101,14 @@ class _CheckOutViewState extends ConsumerState<CheckOutView> {
             child: BlocConsumer<AuthBloc, AuthState>(
               listener: (context, state) {
                 if (state is UserUpdated) {
-                  showNameOrderDialog(context);
+                  LoadingIndicatorController.instance.hide();
+
+                  Future.delayed(
+                    const Duration(seconds: 1),
+                    () {
+                      showNameOrderDialog(context);
+                    },
+                  );
                   log('User updates successfully');
                 }
 
@@ -371,6 +381,7 @@ class _CheckOutViewState extends ConsumerState<CheckOutView> {
           ElevatedButton(
             onPressed: () {
               if (_formKey.currentState!.validate()) {
+                LoadingIndicatorController.instance.show();
                 updateAddress(context);
               }
             },

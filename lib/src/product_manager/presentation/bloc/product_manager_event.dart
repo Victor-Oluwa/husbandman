@@ -150,10 +150,10 @@ class SetGeneralProductEvent extends ProductManagerEvent {
 
   final SetProductType setProductType;
   final List<DataMap>? productMap;
-  final List<ProductModel>? productObject;
+  final List<ProductEntity>? productObject;
 
   @override
-  List<Object> get props => [setProductType, productMap!, productObject!];
+  List<dynamic> get props => [setProductType, productMap, productObject];
 }
 
 class GetImgUrlFromSupaBaseEvent extends ProductManagerEvent {

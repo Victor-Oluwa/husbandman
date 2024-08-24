@@ -1,4 +1,3 @@
-// import 'package:cloudinary_url_gen/cloudinary.dart';
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
@@ -9,9 +8,8 @@ import 'package:husbandman/core/extensions/context_extension.dart';
 import 'package:husbandman/core/res/color.dart';
 import 'package:husbandman/core/res/fonts.dart';
 import 'package:husbandman/core/res/media_res.dart';
-import 'package:husbandman/core/services/routes.dart';
 import 'package:husbandman/core/services/shared_preference.dart';
-import 'package:husbandman/src/admin/presentation/view/key_generator_screen.dart';
+import 'package:husbandman/src/order/presentation/view/seller_order_view.dart';
 import 'package:lottie/lottie.dart';
 
 Future<void> main() async {
@@ -68,7 +66,8 @@ class MyApp extends ConsumerWidget {
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
       themeMode: ThemeMode.light,
-      onGenerateRoute: generateRoute,
+      // onGenerateRoute: generateRoute,
+      home: const SellerOrderView(),
       builder: (context, child) {
         return Stack(
           children: [
@@ -78,11 +77,21 @@ class MyApp extends ConsumerWidget {
               builder: (context, isLoading, child) {
                 log(isLoading.toString());
                 if (isLoading) {
-                  return SizedBox(
-                    // color: Colors.transparent,
-                    child: Center(
-                      child: Lottie.asset(MediaRes.theBossHand),
-                    ),
+                  return Stack(
+                    children: [
+                      Align(
+                        child: SizedBox(
+                          // height: context.height*0.15,
+                          width: context.width*0.30,
+                          child: Center(
+                            child: Lottie.asset(MediaRes.orbit),
+                          ),
+                        ),
+                      ),
+                      Container(
+                        color: Colors.transparent,
+                      ),
+                    ],
                   );
                 } else {
                   return const SizedBox.shrink();

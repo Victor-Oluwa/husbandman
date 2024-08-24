@@ -19,12 +19,12 @@ const pendingPaymentSchema = new mongoose.Schema({
 
 const buyerSchema = mongoose.Schema({
     name: { type: String, required: true },
-    userType: { type: String, required: true },
+    userType: { type: String, default: 'Buyer' },
     email: { type: String, required: true },
     password: { type: String, required: true },
     phone: [],
     address: { type: addressSchema },
-    dataJoined: { type: Date },
+    dataJoined: { type: Date, required: true },
     balance: { type: Number, default: 0 },
     pendingFunds: { type: Number, default: 0 },
     totalWithdrawal: { type: Number, default: 0 },

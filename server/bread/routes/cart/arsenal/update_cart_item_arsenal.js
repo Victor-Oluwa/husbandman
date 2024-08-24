@@ -1,6 +1,7 @@
 const Cart = require('../../../model/cart');
 const error = require('../../../error');
 const status = require('../../../status');
+const Product = require('../../../model/product');
 
 
 async function findCart(ownerId) {
@@ -13,31 +14,22 @@ async function findCart(ownerId) {
 }
 
 async function updateCartQuantity(itemId, cart, quantity) {
-    if (!itemId || !cart || !quantity) {
-        throw new Error('Some passed arguments are undefined (itemId || cart || quantity)');
-    }
-    if (!cart.items) {
-        throw new Error('cart.items is undefined');
-    }
 
-    let cartItem = cart.items.find(item => {
-        if (!item._id) {
-            throw new Error('item._id is undefined');
-        }
-
-        return item._id.toString() === itemId;
-    });
+    let cartItem = cart.items.find(item => item._id.toString() === itemId);
 
     if (cartItem === -1) {
         throw new Error(error.FAILED_TO_FIND_CART_ITEM);
     }
-    if (!cartItem.productQuantity) {
-        throw new Error('cartItem.quantity is undefined');
+
+
+    const product = await Product.findById(cartItem.productId);
+    if (!product) {
+        throw new Error(`Failed to find product with ID: ${cartItem.productId}`);
     }
-    cartItem.productQuantity = quantity;
 
-    console.log('CartItem: ' + cartItem)
-
+    if (product.quantityAvailable > quantity) {
+        cartItem.productQuantity = quantity;
+    }
 
     return cart;
 }

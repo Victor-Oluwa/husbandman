@@ -29,5 +29,5 @@ class MediaRes {
 
   static const pageUnderConstruction =
       '$_baseLottie/page_under_construction.json';
-  static const theBossHand = '$_baseLottie/the_boss_hand.json';
+  static const orbit = '$_baseLottie/orbit.json';
 }

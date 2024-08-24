@@ -33,8 +33,6 @@ router.post(endpoints.ADD_PRODUCT_TO_CART, async (req, res) => {
 
         if (!cart) {
             cart = await arsenal.createCart(newItem, ownerId);
-            // product = await arsenal.updateProductQuantity(product, quantity);
-
             await cart.save();
         }
 
@@ -49,8 +47,6 @@ router.post(endpoints.ADD_PRODUCT_TO_CART, async (req, res) => {
             }
 
             cart = await arsenal.addCart(cart, newItem);
-            // product = await arsenal.updateProductQuantity(product, quantity);
-
             await cart.save();
         }
 

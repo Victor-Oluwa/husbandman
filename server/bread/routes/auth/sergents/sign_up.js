@@ -36,6 +36,7 @@ router.post(endpoints.SIGNUP, async (req, res) => {
                     email: email,
                     password: hashedPassword,
                     userType: type,
+                    dataJoined: new Date(),
 
                 });
 
@@ -47,6 +48,8 @@ router.post(endpoints.SIGNUP, async (req, res) => {
                     name: name,
                     email: email,
                     password: hashedPassword,
+                    dataJoined: new Date(),
+
                 });
 
                 return await saveUser(newAdmin);
